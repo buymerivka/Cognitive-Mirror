@@ -18,6 +18,7 @@ class ParsedSentence:
 def replace_html_tags_with_spaces(text: str) -> str:
     def replacer(match: re.Match) -> str:
         return ' ' * len(match.group(0))
+
     return re.sub(r'<[^>]+>', replacer, text)
 
 
