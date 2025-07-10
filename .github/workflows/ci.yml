@@ -41,7 +41,7 @@ jobs:
           pip install pytest
 
       - name: Run pytest
-        run: pytest tests/
+        run: PYTHONPATH=./ pytest tests/
 
   lint:
     name: Ruff linter
