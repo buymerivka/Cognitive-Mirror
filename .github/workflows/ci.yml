@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔍 Validate branch name
+      - name: Validate branch name
         run: |
           BRANCH="${{ github.head_ref }}"
           if [[ "$BRANCH" =~ ^(ag|yk)[0-9]{6}(_[0-9]+)?$ || "$BRANCH" =~ ^(fix|feature|v)+ ]]; then
