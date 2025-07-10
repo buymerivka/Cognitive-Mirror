@@ -3,7 +3,7 @@ from typing import List
 import spacy
 import re
 
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load('en_core_web_sm')
 
 
 @dataclass
@@ -18,15 +18,15 @@ class ParsedSentence:
 def replace_html_tags_with_spaces(text: str) -> str:
     def replacer(match: re.Match) -> str:
         return ' ' * len(match.group(0))
-    return re.sub(r"<[^>]+>", replacer, text)
+    return re.sub(r'<[^>]+>', replacer, text)
 
 
 def preprocessing(text: str) -> List[ParsedSentence]:
-    cleaned = text.replace("\r\n", "\n").replace("\r", "\n")
-    cleaned = re.sub(r"\n\s*\n+", "\n\n", cleaned)
+    cleaned = text.replace('\r\n', '\n').replace('\r', '\n')
+    cleaned = re.sub(r'\n\s*\n+', '\n\n', cleaned)
     cleaned = cleaned.strip()
     cleaned = replace_html_tags_with_spaces(cleaned)
-    paragraphs = cleaned.split("\n\n")
+    paragraphs = cleaned.split('\n\n')
     offset = 0
     result = []
 
@@ -37,7 +37,7 @@ def preprocessing(text: str) -> List[ParsedSentence]:
             item = sent.text
             item = item.strip()
             abs_end = abs_start + len(item)
-            item = re.sub(r"[ \t]+", " ", item)
+            item = re.sub(r'[ \t]+', ' ', item)
             result.append(
                 ParsedSentence(
                     paragraphIndex=p_idx,
