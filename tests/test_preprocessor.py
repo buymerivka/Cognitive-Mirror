@@ -1,4 +1,5 @@
 import unittest
+
 from app.tools import preprocessor
 
 
@@ -28,7 +29,7 @@ class TestPreprocessing(unittest.TestCase):
         self.assertTrue(text[result[1].charStart:result[1].charEnd + 1].startswith('Sentence'))
 
     def test_complicated_input(self):
-        text = '''\nFirst sentence. <br> Second sentence.\nThird <i>sentence</i> is here.\n\nFourth sentence. 
+        text = '''\nFirst sentence. <br> Second sentence.\nThird <i>sentence</i> is here.\n\nFourth sentence.
         Fifth sentence'''
         result = preprocessor.preprocessing(text)
 

@@ -1,7 +1,8 @@
+import re
 from dataclasses import dataclass
 from typing import List
+
 import spacy
-import re
 
 nlp = spacy.load('en_core_web_sm')
 
