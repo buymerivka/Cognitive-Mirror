@@ -1,0 +1,106 @@
+[
+  {
+    "text": "If you're not a success, you're a total failure.",
+    "label": "Black-and-white thinking"
+  },
+  {
+    "text": "She’s either completely trustworthy or not at all.",
+    "label": "Black-and-white thinking"
+  },
+  {
+    "text": "He forgot my birthday once; he never cares about me.",
+    "label": "Overgeneralization"
+  },
+  {
+    "text": "All millennials are lazy and entitled.",
+    "label": "Overgeneralization"
+  },
+  {
+    "text": "If we don’t increase the defense budget, we’ll be invaded.",
+    "label": "Appeal to fear"
+  },
+  {
+    "text": "Without this vaccine, your family is at serious risk.",
+    "label": "Appeal to fear"
+  },
+  {
+    "text": "Think of the poor children who will suffer if you vote no.",
+    "label": "Appeal to emotion"
+  },
+  {
+    "text": "Only a monster would refuse to help those puppies.",
+    "label": "Appeal to emotion"
+  },
+  {
+    "text": "What would you expect from someone who failed high school?",
+    "label": "Personal attack"
+  },
+  {
+    "text": "You're just too stupid to understand the facts.",
+    "label": "Personal attack"
+  },
+  {
+    "text": "The corrupt bureaucrats are stealing from hardworking citizens.",
+    "label": "Loaded language"
+  },
+  {
+    "text": "That idiotic proposal will destroy the economy.",
+    "label": "Loaded language"
+  },
+  {
+    "text": "We either ban all cars or accept climate disaster.",
+    "label": "False dilemma"
+  },
+  {
+    "text": "You're either with us or against us.",
+    "label": "False dilemma"
+  },
+  {
+    "text": "You want fewer military bases? So you want the country defenseless?",
+    "label": "Strawman argument"
+  },
+  {
+    "text": "He said we should have fewer exams, so he wants school to be a joke.",
+    "label": "Strawman argument"
+  },
+  {
+    "text": "If we allow one exception, soon everyone will demand special treatment.",
+    "label": "Slippery slope"
+  },
+  {
+    "text": "Legalizing that drug will lead to total social collapse.",
+    "label": "Slippery slope"
+  },
+  {
+    "text": "This one study shows it works, so it must be true.",
+    "label": "Cherry picking"
+  },
+  {
+    "text": "Let’s ignore the dozens of failed trials and focus on the one success.",
+    "label": "Cherry picking"
+  },
+  {
+    "text": "We’re engaging in enhanced interrogation techniques.",
+    "label": "Euphemistic framing"
+  },
+  {
+    "text": "It’s not a layoff; we’re rightsizing the company.",
+    "label": "Euphemistic framing"
+  },
+  {
+    "text": "He supports that policy? So did a known criminal.",
+    "label": "Guilt by association"
+  },
+  {
+    "text": "She attended the same school as the cult leader—suspicious.",
+    "label": "Guilt by association"
+  },
+  {
+    "text": "Everyone’s switching to this product, so it must be the best.",
+    "label": "Bandwagon fallacy"
+  },
+  {
+    "text": "All your friends are doing it—why aren’t you?",
+    "label": "Bandwagon fallacy"
+  }
+]
