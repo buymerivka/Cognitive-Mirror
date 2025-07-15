@@ -1,9 +1,15 @@
 backports.tarfile==1.2.0
+fastapi==0.116.0
+httpx==0.28.1
 importlib-metadata==8.0.0
 jaraco.collections==5.1.0
 pandas==2.3.0
 pip-chill==1.0.3
 platformdirs==4.2.2
 scikit-learn==1.7.0
+pipreqs==0.5.0
+ruff==0.12.2
 spacy==3.8.7
+tinycss2==1.4.0
 tomli==2.0.1
+uvicorn==0.35.0
