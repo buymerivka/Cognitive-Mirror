@@ -8,18 +8,23 @@ class TestEmotionClassifier(unittest.TestCase):
     def test_single_emotion(self):
         result = emotion_classify("I'm so proud of myself today!", n=1)
         self.assertIsInstance(result, dict)
-        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result['predictions']), 1)
 
-        top_emotion, confidence = next(iter(result.items()))
+        top_emotion, confidence = result['predictions'][0]['label'], result['predictions'][0]['score']
         self.assertIsInstance(top_emotion, str)
         self.assertTrue(0 <= float(confidence) <= 1)
 
     def test_top_n_emotions(self):
         result = emotion_classify('I am happy, excited and a little nervous', n=3)
-        self.assertEqual(len(result), 3)
-        for label, conf in result.items():
+        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result['predictions']), 3)
+
+        for emotion_w_score in result['predictions']:
+            label = emotion_w_score['label']
+            score = emotion_w_score['score']
             self.assertIsInstance(label, str)
-            self.assertTrue(0 <= float(conf) <= 1)
+            self.assertTrue(0 <= float(score) <= 1)
 
     def test_empty_input(self):
         result = emotion_classify('', n=3)
