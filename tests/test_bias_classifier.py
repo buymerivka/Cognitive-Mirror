@@ -1,6 +1,6 @@
 import unittest
 
-from app.model import bias_classifier
+from app.models import bias_classifier
 
 
 class TestBiasClassifier(unittest.TestCase):
