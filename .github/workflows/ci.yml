@@ -2,7 +2,10 @@ name: Python CI
 
 on:
   pull_request:
-    branches: [main, v1.0]
+    branches:
+      - main
+      - v1.0
+      - 'v.[0-9]+.[0-9]+'
 
 jobs:
   branch-naming:
