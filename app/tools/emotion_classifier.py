@@ -4,6 +4,7 @@ import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from app.tools.emotion_model_download import ensure_model
+from app.tools.preprocessor import preprocessing
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,6 +39,29 @@ def emotion_classify(text: str, n: int = 1):
     }
 
 
-if __name__ == '__main__':
-    print(emotion_classify("I'm so proud of myself today!"))
-    print(emotion_classify("I'm so proud of myself today!", 2))
+def text_classify_by_sentence(text: str, n: int = 1):
+    sentences = [data.text for data in preprocessing(text)]
+    result = []
+    for sentence in sentences:
+        result.append(emotion_classify(sentence, n))
+
+    return result
+
+
+def text_classify_by_paragraph(text: str, n: int = 1):
+    parsed_data = preprocessing(text)
+    print(parsed_data)
+    paragraphs = []
+    current_paragraph_idx = -1
+    for data in parsed_data:
+        if data.paragraphIndex == current_paragraph_idx:
+            paragraphs[-1] += ' ' + data.text
+        else:
+            paragraphs.append(data.text)
+            current_paragraph_idx += 1
+    result = []
+    print(paragraphs)
+    for paragraph in paragraphs:
+        result.append(emotion_classify(paragraph, n))
+
+    return result
