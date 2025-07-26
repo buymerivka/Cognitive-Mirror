@@ -32,4 +32,5 @@ def emotion_classify(text: str, n: int = 1):
 
 
 if __name__ == '__main__':
-    print(emotion_classify('.'))
+    print(emotion_classify("I'm so proud of myself today!"))
+    print(emotion_classify("I'm so proud of myself today!", 2))
