@@ -11,6 +11,7 @@ class TestBiasClassifier(unittest.TestCase):
 
         clf = bias_classifier.BiasClassifier()
         clf.train(text, labels)
+        clf.save()
         predictions = clf.predict(['This dog is mad, so all dogs are mad.'])
 
         assert isinstance(predictions, list)

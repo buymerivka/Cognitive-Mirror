@@ -1,8 +1,11 @@
-
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
+
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 class BiasClassifier:
@@ -45,10 +48,10 @@ class BiasClassifier:
             for text, result in zip(texts, results)
         ]
 
-    def save(self, model_path='../models/model.joblib', vectorizer_path='../models/vectorizer.joblib'):
+    def save(self, model_path=f'{BASE_DIR}/models/model.joblib', vectorizer_path=f'{BASE_DIR}/models/vectorizer.joblib'):
         joblib.dump(self.model, model_path)
         joblib.dump((self.vectorizer, self.label_encoder), vectorizer_path)
 
-    def load(self, model_path='../models/model.joblib', vectorizer_path='../models/vectorizer.joblib'):
+    def load(self, model_path=f'{BASE_DIR}/models/model.joblib', vectorizer_path=f'{BASE_DIR}/models/vectorizer.joblib'):
         self.model = joblib.load(model_path)
         self.vectorizer, self.label_encoder = joblib.load(vectorizer_path)
