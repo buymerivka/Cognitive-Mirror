@@ -1,4 +1,3 @@
-import json
 
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer

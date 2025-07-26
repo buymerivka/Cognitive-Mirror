@@ -14,7 +14,7 @@ class TestBiasClassifier(unittest.TestCase):
         predictions = clf.predict(['This dog is mad, so all dogs are mad.'])
 
         assert isinstance(predictions, list)
-        self.assertEqual(len(predictions[0]['predictions']), 1 )
+        self.assertEqual(len(predictions[0]['predictions']), 1)
         assert isinstance(predictions[0], dict)
 
     def test_train_predict_2(self):
@@ -27,7 +27,7 @@ class TestBiasClassifier(unittest.TestCase):
         predictions = clf.predict(['This dog is mad, so all dogs are mad.'], 3)
 
         assert isinstance(predictions, list)
-        self.assertEqual(len(predictions[0]['predictions']), 3 )
+        self.assertEqual(len(predictions[0]['predictions']), 3)
         assert isinstance(predictions[0], dict)
 
     def test_feature_count(self):
