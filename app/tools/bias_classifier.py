@@ -57,3 +57,15 @@ class BiasClassifier:
              vectorizer_path=f'{BASE_DIR}/models/vectorizer.joblib'):
         self.model = joblib.load(model_path)
         self.vectorizer, self.label_encoder = joblib.load(vectorizer_path)
+#
+# if __name__ == '__main__':
+#     bias = BiasClassifier()
+#     bias.load()
+#     # with open("../datasets/small_dataset.json", "r", encoding="utf-8") as f:
+#     #     data = json.load(f)
+#     #
+#     # texts = [item["text"] for item in data]
+#     # labels = [item["label"] for item in data]
+#     # bias.train(texts, labels)
+#     # bias.save()
+#     print(bias.predict(['Make America Great Again!'], 16))

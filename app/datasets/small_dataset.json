@@ -1,106 +1,114 @@
 [
   {
-    "text": "If you're not a success, you're a total failure.",
-    "label": "Black-and-white thinking"
-  },
-  {
-    "text": "She’s either completely trustworthy or not at all.",
-    "label": "Black-and-white thinking"
-  },
-  {
-    "text": "He forgot my birthday once; he never cares about me.",
-    "label": "Overgeneralization"
-  },
-  {
-    "text": "All millennials are lazy and entitled.",
-    "label": "Overgeneralization"
-  },
-  {
-    "text": "If we don’t increase the defense budget, we’ll be invaded.",
-    "label": "Appeal to fear"
-  },
-  {
-    "text": "Without this vaccine, your family is at serious risk.",
-    "label": "Appeal to fear"
-  },
-  {
-    "text": "Think of the poor children who will suffer if you vote no.",
-    "label": "Appeal to emotion"
-  },
-  {
-    "text": "Only a monster would refuse to help those puppies.",
-    "label": "Appeal to emotion"
-  },
-  {
-    "text": "What would you expect from someone who failed high school?",
-    "label": "Personal attack"
-  },
-  {
-    "text": "You're just too stupid to understand the facts.",
-    "label": "Personal attack"
-  },
-  {
     "text": "The corrupt bureaucrats are stealing from hardworking citizens.",
-    "label": "Loaded language"
+    "label": "Loaded_language"
   },
   {
     "text": "That idiotic proposal will destroy the economy.",
-    "label": "Loaded language"
+    "label": "Loaded_language"
   },
   {
-    "text": "We either ban all cars or accept climate disaster.",
-    "label": "False dilemma"
+    "text": "Coronavirus emergency is ’Public Enemy Number 1’.",
+    "label": "Name_Calling,Labeling"
   },
   {
-    "text": "You're either with us or against us.",
-    "label": "False dilemma"
+    "text": "Only a fool would believe that climate change isn't real.",
+    "label": "Name_Calling,Labeling"
   },
   {
-    "text": "You want fewer military bases? So you want the country defenseless?",
-    "label": "Strawman argument"
+    "text": "War, war, war — that’s all they ever want.",
+    "label": "Repetition"
   },
   {
-    "text": "He said we should have fewer exams, so he wants school to be a joke.",
-    "label": "Strawman argument"
+    "text": "Freedom is what we fight for. Freedom is what we live for. Freedom defines us.",
+    "label": "Repetition"
   },
   {
-    "text": "If we allow one exception, soon everyone will demand special treatment.",
-    "label": "Slippery slope"
+    "text": "Coronavirus ‘risk to the American people remains very low’, Trump said.",
+    "label": "Exaggeration,Minimisation"
   },
   {
-    "text": "Legalizing that drug will lead to total social collapse.",
-    "label": "Slippery slope"
+    "text": "This is just a minor hiccup — the economy is stronger than ever.",
+    "label": "Exaggeration,Minimisation"
   },
   {
-    "text": "This one study shows it works, so it must be true.",
-    "label": "Cherry picking"
+    "text": "Can the same be said for the Obama Administration?",
+    "label": "Doubt"
   },
   {
-    "text": "Let’s ignore the dozens of failed trials and focus on the one success.",
-    "label": "Cherry picking"
+    "text": "Do we really know what their true intentions are?",
+    "label": "Doubt"
   },
   {
-    "text": "We’re engaging in enhanced interrogation techniques.",
-    "label": "Euphemistic framing"
+    "text": "If we don’t increase the defense budget, we’ll be invaded.",
+    "label": "Appeal_to_fear-prejudice"
   },
   {
-    "text": "It’s not a layoff; we’re rightsizing the company.",
-    "label": "Euphemistic framing"
+    "text": "Without this vaccine, your family is at serious risk.",
+    "label": "Appeal_to_fear-prejudice"
   },
   {
-    "text": "He supports that policy? So did a known criminal.",
-    "label": "Guilt by association"
+    "text": "Mueller attempts to stop the will of We the People!!! It’s time to jail Mueller.",
+    "label": "Flag-Waving"
   },
   {
-    "text": "She attended the same school as the cult leader—suspicious.",
-    "label": "Guilt by association"
+    "text": "Support our troops by standing against those who criticize our nation’s values.",
+    "label": "Flag-Waving"
   },
   {
-    "text": "Everyone’s switching to this product, so it must be the best.",
-    "label": "Bandwagon fallacy"
+    "text": "If France had not have declared war on Germany then World War II would have never happened.",
+    "label": "Causal_Oversimplification"
   },
   {
-    "text": "All your friends are doing it—why aren’t you?",
-    "label": "Bandwagon fallacy"
+    "text": "Crime rates are high simply because kids play too many video games.",
+    "label": "Causal_Oversimplification"
+  },
+  {
+    "text": "“BUILD THE WALL!” Trump tweeted.",
+    "label": "Slogans"
+  },
+  {
+    "text": "Yes We Can!",
+    "label": "Slogans"
+  },
+  {
+    "text": "Monsignor Jean-François Lantheaume, who served as first Counsellor of the Nunciature in Washington, confirmed that 'Viganò said the truth. That’s all.'",
+    "label": "Appeal_to_Authority"
+  },
+  {
+    "text": "According to Dr. James Peterson, a Nobel Prize-winning scientist, this supplement will improve brain function by 70%.",
+    "label": "Appeal_to_Authority"
+  },
+  {
+    "text": "Francis said these words: “Everyone is guilty for the good he could have done and did not do . . . If we do not oppose evil, we tacitly feed it.”",
+    "label": "Black-and-White_Fallacy"
+  },
+  {
+    "text": "If you're not with us, then you're definitely against us.",
+    "label": "Black-and-White_Fallacy"
+  },
+  {
+    "text": "I do not really see any problems there. Marx is the President.",
+    "label": "Thought-terminating_Cliches"
+  },
+  {
+    "text": "It is what it is, so let's just move on.",
+    "label": "Thought-terminating_Cliches"
+  },
+  {
+    "text": "President Trump —who himself avoided national military service in the 1960’s— keeps beating the war drums over North Korea.",
+    "label": "Whataboutism,Straw_Men,Red_Herring"
+  },
+  {
+    "text": "“Take it seriously, but with a large grain of salt.” Which is just Allen’s more nuanced way of saying: “Don’t believe it.”",
+    "label": "Whataboutism,Straw_Men,Red_Herring"
+  },
+  {
+    "text": "He tweeted, “EU no longer considers #Hamas a terrorist group. Time for US to do same.”",
+    "label": "Bandwagon,Reductio_ad_hitlerum"
+  },
+  {
+    "text": "“Vichy journalism,” a term which now fits so much of the mainstream media. It collaborates in the same way that the Vichy government in France collaborated with the Nazis.",
+    "label": "Bandwagon,Reductio_ad_hitlerum"
   }
 ]
