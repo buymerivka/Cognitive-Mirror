@@ -10,14 +10,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ensure_model()
 
-'''
-    paragraphIndex: int
-    sentenceIndex: int
-    text: str
-    charStart: int
-    charEnd: int
-'''
-
 
 def emotion_classify(text: str, paragraph_index: int, sentence_index: int, char_start: int, char_end: int, n: int = 1):
     if n > 28:
