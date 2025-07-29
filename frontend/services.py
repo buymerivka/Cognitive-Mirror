@@ -7,10 +7,19 @@ load_dotenv()
 API_BASE_URL: str = os.getenv('API_BASE_URL')
 
 
-def create_request(request_text: str):
-    api_response = requests.post(f'{API_BASE_URL}/analyze',
+def create_request_propaganda(request_text: str, top_n: int = 1):
+    api_response = requests.post(f'{API_BASE_URL}/analyze_propaganda?top_n={top_n}',
                                  json={'input_data': request_text})
 
     if api_response.status_code == 200:
-        return api_response.json()['parsed_data']
+        return api_response.json()['analyzed_data']
+    return None
+
+
+def create_request_emotions(request_text: str, top_n: int = 1):
+    api_response = requests.post(f'{API_BASE_URL}/analyze_emotions?top_n={top_n}',
+                                 json={'input_data': request_text})
+
+    if api_response.status_code == 200:
+        return api_response.json()['analyzed_data']
     return None
