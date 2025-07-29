@@ -4,13 +4,14 @@ import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from app.tools.emotion_model_download import ensure_model
+from app.tools.preprocessor import preprocessing
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ensure_model()
 
 
-def emotion_classify(text: str, n: int = 1):
+def emotion_classify(text: str, paragraph_index: int, sentence_index: int, char_start: int, char_end: int, n: int = 1):
     if n > 28:
         n = 28
     local_model_path = f'{BASE_DIR}/models/bert-goemotions'
@@ -34,10 +35,48 @@ def emotion_classify(text: str, n: int = 1):
         'predictions': [{
             'label': list(top_emotions.keys())[i],
             'score': list(top_emotions.values())[i],
-        } for i in range(len(top_emotions))]
+        } for i in range(len(top_emotions))],
+        'paragraphIndex': paragraph_index,
+        'sentenceIndex': sentence_index,
+        'charStart': char_start,
+        'charEnd': char_end,
     }
 
 
-if __name__ == '__main__':
-    print(emotion_classify("I'm so proud of myself today!"))
-    print(emotion_classify("I'm so proud of myself today!", 2))
+def text_classify_by_sentence(text: str, n: int = 1):
+    sentences_data = [data for data in preprocessing(text)]
+    result = []
+    for sentence_data in sentences_data:
+        result.append(emotion_classify(sentence_data.text, sentence_data.paragraphIndex, sentence_data.sentenceIndex,
+                      sentence_data.charStart, sentence_data.charEnd, n))
+
+    return result
+
+
+def text_classify_by_paragraph(text: str, n: int = 1):
+    parsed_data = preprocessing(text)
+    paragraphs = []
+    current_paragraph_idx = -1
+    print(parsed_data)
+    for data in parsed_data:
+        if data.paragraphIndex == current_paragraph_idx:
+            paragraphs[-1]['text'] += ' ' + data.text
+            paragraphs[-1]['char_end'] = data.charEnd
+        else:
+            paragraphs.append({'text': data.text,
+                               'sentence_id': -1,
+                               'paragraph_id': data.paragraphIndex,
+                               'char_start': data.charStart,
+                               'char_end': data.charEnd})
+            current_paragraph_idx += 1
+    result = []
+
+    for paragraph in paragraphs:
+        result.append(emotion_classify(paragraph['text'],
+                                       paragraph['paragraph_id'],
+                                       paragraph['sentence_id'],
+                                       paragraph['char_start'],
+                                       paragraph['char_end'],
+                                       n))
+    print(result)
+    return result
