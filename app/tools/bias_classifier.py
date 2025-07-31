@@ -3,6 +3,7 @@ import os
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import FeatureUnion
 from sklearn.preprocessing import LabelEncoder
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -10,8 +11,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 class BiasClassifier:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer(ngram_range=(1, 2), max_features=50000, analyzer='char_wb')
-        self.model = LogisticRegression(max_iter=1000)
+        self.vectorizer = FeatureUnion([
+            ('word', TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
+            ('char_wb', TfidfVectorizer(ngram_range=(3, 6), analyzer='char', strip_accents='unicode'))
+        ])
+        self.model = LogisticRegression(C=10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42,
+                                        verbose=1)
         self.label_encoder = LabelEncoder()
 
     def train(self, texts, labels):
@@ -48,24 +53,12 @@ class BiasClassifier:
             for text, result in zip(texts, results)
         ]
 
-    def save(self, model_path=f'{BASE_DIR}/models/model.joblib',
-             vectorizer_path=f'{BASE_DIR}/models/vectorizer.joblib'):
+    def save(self, model_path=f'{BASE_DIR}/models/propaganda_model/model.joblib',
+             vectorizer_path=f'{BASE_DIR}/models/propaganda_model/vectorizer.joblib'):
         joblib.dump(self.model, model_path)
         joblib.dump((self.vectorizer, self.label_encoder), vectorizer_path)
 
-    def load(self, model_path=f'{BASE_DIR}/models/model.joblib',
-             vectorizer_path=f'{BASE_DIR}/models/vectorizer.joblib'):
+    def load(self, model_path=f'{BASE_DIR}/models/propaganda_model/model.joblib',
+             vectorizer_path=f'{BASE_DIR}/models/propaganda_model/vectorizer.joblib'):
         self.model = joblib.load(model_path)
         self.vectorizer, self.label_encoder = joblib.load(vectorizer_path)
-#
-# if __name__ == '__main__':
-#     bias = BiasClassifier()
-#     bias.load()
-#     # with open("../datasets/small_dataset.json", "r", encoding="utf-8") as f:
-#     #     data = json.load(f)
-#     #
-#     # texts = [item["text"] for item in data]
-#     # labels = [item["label"] for item in data]
-#     # bias.train(texts, labels)
-#     # bias.save()
-#     print(bias.predict(['Make America Great Again!'], 16))

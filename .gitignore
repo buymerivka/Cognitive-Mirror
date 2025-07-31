@@ -211,3 +211,6 @@ __marimo__/
 
 # model
 app/models/bert-goemotions/pytorch_model.bin
+
+corpus/
+app/tools/data_parser.py
