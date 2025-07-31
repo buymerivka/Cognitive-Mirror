@@ -1,12 +1,10 @@
 import os
-import json
-from pprint import pprint
 
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder
 from sklearn.pipeline import FeatureUnion
+from sklearn.preprocessing import LabelEncoder
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -14,10 +12,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 class BiasClassifier:
     def __init__(self):
         self.vectorizer = FeatureUnion([
-            ("word", TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
-            ("char_wb", TfidfVectorizer(ngram_range=(3, 6), analyzer='char', strip_accents='unicode'))
+            ('word', TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
+            ('char_wb', TfidfVectorizer(ngram_range=(3, 6), analyzer='char', strip_accents='unicode'))
         ])
-        self.model = LogisticRegression(C = 10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42, verbose=1)
+        self.model = LogisticRegression(C=10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42,
+                                        verbose=1)
         self.label_encoder = LabelEncoder()
 
     def train(self, texts, labels):
