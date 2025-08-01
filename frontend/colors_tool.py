@@ -1,19 +1,13 @@
 propaganda_colors = {
-    'Loaded_language': '#e6194b',                       # Red
-    'Name_Calling,Labeling': '#3cb44b',                 # Green
-    'Repetition': '#0082c8',                            # Blue
-    'Exaggeration,Minimisation': '#f58231',             # Orange
-    'Doubt': '#46f0f0',                                 # Cyan
-    'Appeal_to_fear-prejudice': '#f032e6',              # Pink
-    'Flag-Waving': '#d2f53c',                           # Lime
-    'Causal_Oversimplification': '#fabebe',             # Light pink
-    'Slogans': '#008080',                               # Teal
-    'Appeal_to_Authority': '#e6beff',                   # Lavender
-    'Black-and-White_Fallacy': '#aa6e28',               # Brown
-    'Thought-terminating_Cliches': '#ffe119',           # Light yellow
-    'Whataboutism,Straw_Men,Red_Herring': '#800000',    # Maroon
-    'Bandwagon,Reductio_ad_hitlerum': '#911eb4',        # Peach
-    'Neutral': '#a9a9a9',                               # Dark gray
+    'none': '#ffffff',                      # White
+    'false dilemma': '#b0c4de',             # Light steel blue
+    'slippery slope': '#cdb79e',            # Warm beige
+    'appeal to nature': '#b2d8b2',          # Soft green
+    'appeal to authority': '#c0b7dd',       # Light lavender
+    'appeal to majority': '#f0d9b5',        # Pale almond
+    'hasty generalization': '#e6ccb2',      # Muted peach
+    'appeal to worse problems': '#c2d6d6',  # Desaturated teal
+    'appeal to tradition': '#deb887',       # Burlywood
 }
 
 emotion_colors = {
@@ -44,5 +38,5 @@ emotion_colors = {
     'remorse': '#8b0000',           # Dark red
     'sadness': '#000075',           # Dark blue
     'surprise': '#f032e6',          # Pink
-    'neutral': '#a9a9a9',           # Dark gray
+    'neutral': '#ffffff',           # White
 }

@@ -214,3 +214,6 @@ app/models/bert-goemotions/pytorch_model.bin
 
 corpus/
 app/tools/data_parser.py
+
+app/datasets/test.py
+app/datasets/labels.json
