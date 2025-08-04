@@ -52,3 +52,20 @@ def preprocessing(text: str) -> List[ParsedSentence]:
             offset = abs_end
 
     return result
+
+
+def clean_text(text):
+    # Remove newline characters and extra spaces
+    text = re.sub(r'\s+', ' ', text)
+
+    # Remove unwanted punctuation (keep apostrophes and hyphens for GloVe compatibility)
+    text = re.sub(r'[^\w\s\'-]', '', text)
+
+    # Lowercase
+    text = text.lower()
+
+    # Optionally: remove standalone digits (not words like "brl 300")
+    text = re.sub(r'\b\d+\b', '', text)
+
+    # Strip leading/trailing whitespace
+    return text.strip()

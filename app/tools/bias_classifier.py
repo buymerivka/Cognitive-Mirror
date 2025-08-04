@@ -13,7 +13,7 @@ class BiasClassifier:
     def __init__(self):
         self.vectorizer = FeatureUnion([
             ('word', TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
-            ('char_wb', TfidfVectorizer(ngram_range=(3, 6), analyzer='char', strip_accents='unicode'))
+            ('char_wb', TfidfVectorizer(ngram_range=(1, 6), analyzer='char', strip_accents='unicode'))
         ])
         self.model = LogisticRegression(C=10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42,
                                         verbose=1)
