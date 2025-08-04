@@ -57,7 +57,6 @@ def text_classify_by_paragraph(text: str, n: int = 1):
     parsed_data = preprocessing(text)
     paragraphs = []
     current_paragraph_idx = -1
-    print(parsed_data)
     for data in parsed_data:
         if data.paragraphIndex == current_paragraph_idx:
             paragraphs[-1]['text'] += ' ' + data.text
@@ -78,5 +77,4 @@ def text_classify_by_paragraph(text: str, n: int = 1):
                                        paragraph['char_start'],
                                        paragraph['char_end'],
                                        n))
-    print(result)
     return result
