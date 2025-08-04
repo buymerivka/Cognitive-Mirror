@@ -1,11 +1,9 @@
 import json
 
-from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, confusion_matrix
 
 from app.tools.bias_classifier import BiasClassifier
-
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     bias = BiasClassifier()
@@ -37,5 +35,3 @@ if __name__ == '__main__':
     plt.title('Confusion Matrix')
     plt.tight_layout()
     plt.show()
-
-
