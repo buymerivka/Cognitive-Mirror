@@ -1,10 +1,12 @@
 import os
 
 import joblib
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import FeatureUnion
 from sklearn.preprocessing import LabelEncoder
+from sklearn.utils.class_weight import compute_class_weight
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -13,7 +15,7 @@ class BiasClassifier:
     def __init__(self):
         self.vectorizer = FeatureUnion([
             ('word', TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
-            ('char_wb', TfidfVectorizer(ngram_range=(3, 6), analyzer='char', strip_accents='unicode'))
+            ('char_wb', TfidfVectorizer(ngram_range=(1, 6), analyzer='char', strip_accents='unicode'))
         ])
         self.model = LogisticRegression(C=10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42,
                                         verbose=1)

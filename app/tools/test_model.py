@@ -4,6 +4,9 @@ from sklearn.metrics import accuracy_score
 
 from app.tools.bias_classifier import BiasClassifier
 
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
 if __name__ == '__main__':
     bias = BiasClassifier()
     bias.load()
@@ -25,3 +28,14 @@ if __name__ == '__main__':
         print(f'{true_label:<30} {pred:<30} {match}')
 
     print(f'Accuracy: {accuracy:.2%}')
+
+    cm = confusion_matrix(labels, predicted_labels)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm,
+                                  display_labels=bias.label_encoder.classes_)
+
+    disp.plot(xticks_rotation='vertical', cmap='Blues')
+    plt.title('Confusion Matrix')
+    plt.tight_layout()
+    plt.show()
+
+
