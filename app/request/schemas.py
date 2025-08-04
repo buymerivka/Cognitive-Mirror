@@ -9,4 +9,9 @@ class RequestSchema(BaseModel):
 
 
 class ResponseSchema(BaseModel):
-    parsed_data: list[dict]
+    analyzed_data: list[dict]
+
+
+class TotalResponseSchema(BaseModel):
+    propaganda_analyzed: list[dict]
+    emotions_analyzed: list[dict]

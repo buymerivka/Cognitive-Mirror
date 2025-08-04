@@ -1,6 +1,6 @@
 import unittest
 
-from app.model import bias_classifier
+from app.tools import bias_classifier
 
 
 class TestBiasClassifier(unittest.TestCase):
@@ -14,8 +14,20 @@ class TestBiasClassifier(unittest.TestCase):
         predictions = clf.predict(['This dog is mad, so all dogs are mad.'])
 
         assert isinstance(predictions, list)
-        assert 'Overgeneralization' in predictions[0]['bias probabilities']
-        assert 'Cherry picking' in predictions[0]['bias probabilities']
+        self.assertEqual(len(predictions[0]['predictions']), 1)
+        assert isinstance(predictions[0], dict)
+
+    def test_train_predict_2(self):
+        text = ['He is either bad or good person', 'All zoomers are productive.',
+                'This politicians is corrupt, so all politicians are corrupt.']
+        labels = ['Black-and-white thinking', 'Overgeneralization', 'Cherry picking']
+
+        clf = bias_classifier.BiasClassifier()
+        clf.train(text, labels)
+        predictions = clf.predict(['This dog is mad, so all dogs are mad.'], 3)
+
+        assert isinstance(predictions, list)
+        self.assertEqual(len(predictions[0]['predictions']), 3)
         assert isinstance(predictions[0], dict)
 
     def test_feature_count(self):

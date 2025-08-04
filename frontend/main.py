@@ -3,7 +3,12 @@ import os
 from dotenv import load_dotenv
 from fastapi import Request
 from nicegui import ui
-from views import render_analyze_request, render_error
+from views import (
+    render_analyze_emotions_request,
+    render_analyze_propaganda_request,
+    render_analyze_request,
+    render_error,
+)
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
@@ -11,7 +16,17 @@ API_BASE_URL = os.getenv('API_BASE_URL')
 
 @ui.page('/')
 def base_page():
-    ui.navigate.to('/analyze')
+    ui.navigate.to('/analyze_propaganda')
+
+
+@ui.page('/analyze_propaganda')
+def analyze_propaganda_request(request: Request):
+    render_analyze_propaganda_request()
+
+
+@ui.page('/analyze_emotions')
+def analyze_emotions_request(request: Request):
+    render_analyze_emotions_request()
 
 
 @ui.page('/analyze')

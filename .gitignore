@@ -208,3 +208,17 @@ __marimo__/
 
 # undefined file
 .DS_Store
+
+# model
+app/models/bert-goemotions/pytorch_model.bin
+
+corpus/
+app/tools/data_parser.py
+
+
+app/datasets/devWarticle_CoCoLoFa.json
+app/datasets/trainWarticle_CoCoLoFa.json
+
+app/datasets/test.py
+app/datasets/labels.json
+
