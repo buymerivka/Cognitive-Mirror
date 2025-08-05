@@ -2,7 +2,6 @@ import io
 import json
 
 from fastapi import APIRouter, Request
-
 from fastapi.responses import StreamingResponse
 
 from app.request.schemas import RequestSchema, ResponseSchema, TotalResponseSchema
@@ -55,15 +54,15 @@ async def analyze(request_data: RequestSchema, top_n_propaganda: int = 1, top_n_
     })
 
 
-@router.post("/download-json")
+@router.post('/download-json')
 async def download_json(request: Request):
     data = await request.json()
 
-    json_bytes = json.dumps(data, indent=4).encode("utf-8")
+    json_bytes = json.dumps(data, indent=4).encode('utf-8')
     file_like = io.BytesIO(json_bytes)
 
     return StreamingResponse(
         file_like,
-        media_type="application/json",
-        headers={"Content-Disposition": "attachment; filename=data.json"}
+        media_type='application/json',
+        headers={'Content-Disposition': 'attachment; filename=data.json'}
     )

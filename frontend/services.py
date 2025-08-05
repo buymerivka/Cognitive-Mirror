@@ -1,7 +1,6 @@
 import json
 import os
 
-import httpx
 import requests
 from dotenv import load_dotenv
 from nicegui import ui
@@ -39,7 +38,7 @@ def create_request(request_text: str, top_n_propaganda: int = 1, top_n_emotions:
 
 
 def download_json(json_data):
-    js_code = f"""
+    js_code = f'''
     const blob = await fetch('{API_BASE_URL}/download-json', {{
         method: 'POST',
         headers: {{
@@ -56,6 +55,6 @@ def download_json(json_data):
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
-    """
+    '''
 
     ui.run_javascript(js_code)
