@@ -1,4 +1,9 @@
-from fastapi import APIRouter
+import io
+import json
+
+from fastapi import APIRouter, Request
+
+from fastapi.responses import StreamingResponse
 
 from app.request.schemas import RequestSchema, ResponseSchema, TotalResponseSchema
 from app.tools import bias_classifier
@@ -48,3 +53,17 @@ async def analyze(request_data: RequestSchema, top_n_propaganda: int = 1, top_n_
         'propaganda_analyzed': analyzed_propaganda,
         'emotions_analyzed': analyzed_emotion,
     })
+
+
+@router.post("/download-json")
+async def download_json(request: Request):
+    data = await request.json()
+
+    json_bytes = json.dumps(data, indent=4).encode("utf-8")
+    file_like = io.BytesIO(json_bytes)
+
+    return StreamingResponse(
+        file_like,
+        media_type="application/json",
+        headers={"Content-Disposition": "attachment; filename=data.json"}
+    )
