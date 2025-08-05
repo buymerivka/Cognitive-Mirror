@@ -144,8 +144,11 @@ def render_analyze_propaganda_request():
                             joined_html = ' '.join(parts)
                             ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                     f'text-align: justify;">{joined_html}</div>')
-                            ui.button('Clear', color='#808080', on_click=lambda: card_container.clear()).classes(
-                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+                            with ui.row().classes('w-[550px] self-end gap-0'):
+                                ui.button('Download as csv', color='green').classes('w-[270px] '
+                                                              'rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
+                                ui.button('Clear', color='#808080', on_click=lambda: card_container.clear()).classes(
+                                    'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
                 top_n = ui.number(value=1).classes('self-center w-[180px]')
