@@ -3,7 +3,7 @@ import os
 from colors_tool import emotion_colors, propaganda_colors
 from dotenv import load_dotenv
 from nicegui import ui
-from services import create_request, create_request_emotions, create_request_propaganda, download_json
+from services import create_request, create_request_emotions, create_request_propaganda
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
@@ -144,18 +144,8 @@ def render_analyze_propaganda_request():
                             joined_html = ' '.join(parts)
                             ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                     f'text-align: justify;">{joined_html}</div>')
-                            with ui.row().classes('w-[430px] self-end gap-0'):
-                                def call_download_json():
-                                    print('Download initiated.')
-                                    download_json(analyzed_data)
-                                    print('Download finished.')
-                                    return
-
-                                ui.button('Download JSON', color='green', on_click=call_download_json).classes(
-                                    'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                ui.button('Clear', color='#808080',
-                                          on_click=lambda: card_container.clear()).classes(
-                                    'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+                            ui.button('Clear', color='#808080', on_click=lambda: card_container.clear()).classes(
+                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
                 top_n = ui.number(value=1).classes('self-center w-[180px]')
@@ -267,19 +257,8 @@ def render_analyze_emotions_request():
                             joined_html = ' '.join(parts)
                             ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                     f'text-align: justify;">{joined_html}</div>')
-                            with ui.row().classes('w-[430px] self-end gap-0'):
-                                def call_download_json():
-                                    print('Download initiated.')
-                                    download_json(analyzed_data)
-                                    print('Download finished.')
-                                    return
-
-                                ui.button('Download JSON', color='green', on_click=call_download_json).classes(
-                                    'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                ui.button('Clear', color='#808080',
-                                          on_click=lambda: card_container.clear()).classes(
-                                    'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
+                            ui.button('Clear', color='#808080', on_click=lambda: card_container.clear()).classes(
+                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
             with ui.column().classes('items-center gap-0 self-end'):
                 top_n = ui.number(value=1).classes('self-center w-[180px]')
                 top_n.min = 1
@@ -437,19 +416,8 @@ def render_analyze_request():
                             joined_html = ' '.join(parts)
                             ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                     f'text-align: justify;">{joined_html}</div>')
-                            with ui.row().classes('w-[430px] self-end gap-0'):
-                                def call_download_json():
-                                    print('Download initiated.')
-                                    download_json(analyzed_data)
-                                    print('Download finished.')
-                                    return
-
-                                ui.button('Download JSON', color='green', on_click=call_download_json).classes(
-                                    'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                ui.button('Clear', color='#808080',
-                                          on_click=lambda: card_container.clear()).classes(
-                                    'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
+                            ui.button('Clear', color='#808080', on_click=lambda: card_container.clear()).classes(
+                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
             with ui.column().classes('items-center gap-0 self-end'):
                 top_n_propaganda = ui.number(value=1).classes('self-center w-[180px]')
                 top_n_propaganda.min = 1
