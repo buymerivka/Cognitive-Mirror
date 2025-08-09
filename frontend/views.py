@@ -212,10 +212,6 @@ def render_analyze_propaganda_request():
                                     'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
-                # top_n = ui.number(value=1).classes('self-center w-[180px]')
-                # top_n.min = 1
-                # top_n.max = len(propaganda_colors)
-                # top_n.label = '# of propaganda techniques'
                 ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
                     'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
                     'self-end')
@@ -412,10 +408,6 @@ def render_analyze_emotions_request():
                                     'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
-                # top_n = ui.number(value=1).classes('self-center w-[180px]')
-                # top_n.min = 1
-                # top_n.max = len(emotion_colors)
-                # top_n.label = '# of emotions'
                 ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
                     'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
                     'self-end')
@@ -544,13 +536,17 @@ def render_analyze_request():
 
                         with ui.column().classes('mt-[20px] w-[1000px]') as card_container:
                             with ui.card():
-                                last_paragraph_id = 0
-                                parts = []
                                 selected_propaganda_techniques = [tech for tech in checkbox_propaganda.keys() if
                                                                   checkbox_propaganda[tech]]
+                                selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
+                                                                checkbox_emotions[tech]]
+
+                                paragraphs = {}
+
                                 for data in analyzed_data['propaganda_analyzed']:
                                     text = data['text']
                                     predictions = data['predictions']
+
                                     if predictions[0]['label'] not in selected_propaganda_techniques and predictions[0][
                                         'label'] != 'none':
                                         bg_color = propaganda_colors.get('none', '#ccc')
@@ -558,16 +554,14 @@ def render_analyze_request():
                                         bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
 
                                     tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += ('<p style="text-align: center; '
-                                                      'font-weight: bold">Most likely propaganda techniques<p>')
+                                    tooltip_table += (
+                                        '<p style="text-align: center; font-weight: bold">Most likely propaganda techniques<p>')
                                     for p in predictions:
                                         if p['label'] in selected_propaganda_techniques:
-                                            score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
+                                            score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             tooltip_table += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{p["label"]}</td>'
+                                                f'<td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{score_to_display}</td></tr>'
                                             )
                                     tooltip_table += '</table>'
 
@@ -579,65 +573,7 @@ def render_analyze_request():
 
                                     if show_tooltip:
                                         span_html = f'''
-                                            <span class="tooltip" style="background-color: {bg_color}; padding: 2px 4px">
-                                                {text}
-                                                <span class="tooltiptext">{tooltip_table}</span>
-                                            </span>
-                                        '''
-                                    else:
-                                        span_html = f'''
-                                            <span style="background-color: {bg_color}; padding: 2px 4px">
-                                                {text}
-                                            </span>
-                                        '''
-                                    if last_paragraph_id != data['paragraphIndex']:
-                                        span_html = '<br>' + span_html
-                                        last_paragraph_id = data['paragraphIndex']
-                                    parts.append(span_html)
-                                paragraph_tooltip = '''
-                                <span class="paragraph-tooltiptext"><table style="font-size: 16px">
-                                    <p style="text-align: center; font-weight: bold">
-                                    Most likely paragraph's emotions</p>'''
-
-                                selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
-                                                                checkbox_emotions[tech]]
-                                for data in analyzed_data['emotions_analyzed']:
-                                    text = data['text']
-                                    predictions = data['predictions']
-                                    if predictions[0]['label'] not in selected_emotions_techniques and predictions[0][
-                                        'label'] != 'neutral':
-                                        bg_color = emotion_colors.get('neutral', '#ccc')
-                                    else:
-                                        bg_color = emotion_colors.get(predictions[0]['label'], '#ccc')
-
-                                    tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += ('<p style="text-align: center; '
-                                                      'font-weight: bold">Most likely emotions<p>')
-
-                                    amount = len(selected_emotions_techniques)
-
-                                    filtered_predictions = [p for p in predictions if
-                                                            p['label'] in selected_emotions_techniques]
-
-                                    for p in filtered_predictions[:min(9, amount)]:
-                                        score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
-                                        tooltip_table += (
-                                            f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
-                                            f'border: 1px solid black;">{p["label"]}</td>'
-                                            f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                            f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                        )
-                                    tooltip_table += '</table>'
-
-                                    show_tooltip = (
-                                            predictions and
-                                            predictions[0].get('label') not in [None, 'neutral'] and
-                                            bg_color.lower() != '#ffffff'
-                                    )
-
-                                    if show_tooltip:
-                                        span_html = f'''
-                                            <span class="tooltip" style="background-color: {bg_color}; padding: 2px 4px">
+                                            <span class="tooltip" style="background-color: {bg_color}; padding: 2px 4px; cursor: pointer;">
                                                 {text}
                                                 <span class="tooltiptext">{tooltip_table}</span>
                                             </span>
@@ -649,86 +585,123 @@ def render_analyze_request():
                                             </span>
                                         '''
 
-                                    if last_paragraph_id != data['paragraphIndex']:
-                                        span_html = '<br>' + span_html
-                                        last_paragraph_id = data['paragraphIndex']
-                                    parts.append(span_html)
+                                    paragraph_index = data['paragraphIndex']
+                                    paragraphs.setdefault(paragraph_index, []).append(span_html)
+
+                                parts = []
+                                for paragraph_index in sorted(paragraphs.keys()):
+                                    emotions_for_paragraph = None
+                                    for emotions_data in analyzed_data['emotions_analyzed']:
+                                        if emotions_data['paragraphIndex'] == paragraph_index:
+                                            emotions_for_paragraph = emotions_data['predictions']
+                                            break
+
+                                    show_emotion_tooltip = True
+                                    if emotions_for_paragraph and len(emotions_for_paragraph) > 0:
+                                        if emotions_for_paragraph[0]['label'].lower() == 'neutral' or \
+                                                emotions_for_paragraph[0]['label'] not in selected_emotions_techniques:
+                                            show_emotion_tooltip = False
+
+                                    if show_emotion_tooltip:
+                                        paragraph_tooltip = '''
+                                            <span class="paragraph-tooltiptext">
+                                            <table style="font-size: 16px">
+                                            <p style="text-align: center; font-weight: bold">Most likely paragraph's emotions</p>
+                                        '''
+                                        filtered_predictions = [p for p in emotions_for_paragraph if p[
+                                            'label'] in selected_emotions_techniques] if emotions_for_paragraph else []
+
+                                        amount = len(selected_emotions_techniques)
+
+                                        for p in filtered_predictions[:min(9, amount)]:
+                                            score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
+                                            paragraph_tooltip += (
+                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{p["label"]}</td>'
+                                                f'<td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{score_to_display}</td></tr>'
+                                            )
+                                        paragraph_tooltip += '</table></span>'
+                                    else:
+                                        paragraph_tooltip = ''
+
+                                    paragraph_html = f'''
+                                        <div class="paragraph-tooltip" style="position: relative; margin-bottom: 20px;">
+                                            {paragraph_tooltip}
+                                            {" ".join(paragraphs[paragraph_index])}
+                                        </div>
+                                    '''
+                                    parts.append(paragraph_html)
 
                                 ui.add_head_html('''
-                                <style>
-                                .tooltip {
-                                    position: relative;
-                                    display: inline;
-                                    cursor: pointer;
-                                    white-space: normal;
-                                }
-                                .tooltip .tooltiptext {
-                                    visibility: hidden;
-                                    background-color: #f9f9f9;
-                                    color: #000;
-                                    text-align: left;
-                                    border-radius: 6px;
-                                    border: 1px solid #ccc;
-                                    padding: 6px;
-                                    position: absolute;
-                                    z-index: 9999;
-                                    top: 1.5em;
-                                    left: 0;
-                                    opacity: 0;
-                                    transition: opacity 0.2s;
-                                    white-space: nowrap;
-                                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                                }
-                                .tooltip:hover .tooltiptext {
-                                    visibility: visible;
-                                    opacity: 1;
-                                }
-                                .paragraph-tooltiptext {
-                                    visibility: hidden;
-                                    background-color: #f9f9f9;
-                                    color: #000;
-                                    border-radius: 6px;
-                                    border: 1px solid #ccc;
-                                    padding: 6px;
-                                    position: absolute;
-                                    z-index: 9999;
-                                    top: 0px;
-                                    width: 290px;
-                                    left: -300px;
-                                    opacity: 0;
-                                    transition: opacity 0.2s;
-                                    white-space: nowrap;
-                                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                                }
-                                .paragraph-tooltip:hover .paragraph-tooltiptext {
-                                    visibility: visible;
-                                    opacity: 1;
-                                }
-                                .tooltip:hover ~ .paragraph-tooltiptext,
-                                .tooltip:hover + .paragraph-tooltiptext,
-                                .tooltip:hover .paragraph-tooltiptext {
-                                    visibility: hidden !important;
-                                    opacity: 0 !important;
-                                }
-                                </style>
+                                    <style>
+                                    .tooltip {
+                                        position: relative;
+                                        display: inline;
+                                        cursor: pointer;
+                                        white-space: normal;
+                                    }
+                                    .tooltip .tooltiptext {
+                                        visibility: hidden;
+                                        background-color: #f9f9f9;
+                                        color: #000;
+                                        text-align: left;
+                                        border-radius: 6px;
+                                        border: 1px solid #ccc;
+                                        padding: 6px;
+                                        position: absolute;
+                                        z-index: 9999;
+                                        top: 1.5em;
+                                        left: 0;
+                                        opacity: 0;
+                                        transition: opacity 0.2s;
+                                        white-space: nowrap;
+                                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                                    }
+                                    .tooltip:hover .tooltiptext {
+                                        visibility: visible;
+                                        opacity: 1;
+                                    }
+                                    .paragraph-tooltiptext {
+                                        visibility: hidden;
+                                        background-color: #f9f9f9;
+                                        color: #000;
+                                        border-radius: 6px;
+                                        border: 1px solid #ccc;
+                                        padding: 6px;
+                                        position: absolute;
+                                        z-index: 9999;
+                                        top: 0;
+                                        width: 290px;
+                                        left: -300px;
+                                        opacity: 0;
+                                        transition: opacity 0.2s;
+                                        white-space: nowrap;
+                                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                                    }
+                                    .paragraph-tooltip:hover .paragraph-tooltiptext {
+                                        visibility: visible;
+                                        opacity: 1;
+                                    }
+                                    .tooltip:hover ~ .paragraph-tooltiptext,
+                                    .tooltip:hover + .paragraph-tooltiptext,
+                                    .tooltip:hover .paragraph-tooltiptext {
+                                        visibility: hidden !important;
+                                        opacity: 0 !important;
+                                    }
+                                    .paragraph-tooltip {
+                                        position: relative;
+                                    }
+                                    </style>
                                 ''')
-                                parts[-1] += '</div>'
+
                                 joined_html = ' '.join(parts)
-                                ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
-                                        f'text-align: justify;">{joined_html}</div>')
+                                ui.html(
+                                    f'<div style="font-size: 18px; line-height: 1.6; text-align: justify;">{joined_html}</div>')
+
                                 ui.button('Clear', color='#808080',
                                           on_click=lambda: (result_container.clear(), clear_action())).classes(
                                     'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
-                # top_n_propaganda = ui.number(value=1).classes('self-center w-[180px]')
-                # top_n_propaganda.min = 1
-                # top_n_propaganda.max = len(propaganda_colors)
-                # top_n_propaganda.label = '# of propaganda techniques'
-                # top_n_emotions = ui.number(value=1).classes('self-center w-[180px]')
-                # top_n_emotions.min = 1
-                # top_n_emotions.max = len(emotion_colors)
-                # top_n_emotions.label = '# of emotions'
                 ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
                     'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
                     'self-end')
