@@ -1,9 +1,8 @@
 import os
 
+from colors_tool import emotion_colors, propaganda_colors
 from dotenv import load_dotenv
 from nicegui import ui
-
-from colors_tool import emotion_colors, propaganda_colors
 from services import create_request, create_request_emotions, create_request_propaganda
 
 load_dotenv()
@@ -103,7 +102,7 @@ def render_analyze_propaganda_request():
                     result_container.clear()
                     with result_container:
                         with ui.column().classes(
-                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md') as filter_container:
+                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
                             ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
 
@@ -117,10 +116,11 @@ def render_analyze_propaganda_request():
                                             on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value)
                                         )
 
-                            ui.button('Apply filters', color='#808080', on_click=lambda: create_on_click()).classes(
+                            ui.button('Apply filters', color='#808080',
+                                      on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-                        with ui.column().classes('mt-[20px] w-[1000px]') as card_container:
+                        with ui.column().classes('mt-[20px] w-[1000px]'):
                             with ui.card():
                                 last_paragraph_id = 0
                                 parts = []
@@ -156,7 +156,8 @@ def render_analyze_propaganda_request():
 
                                     if show_tooltip:
                                         span_html = f'''
-                                            <span class="tooltip" style="background-color: {bg_color}; padding: 2px 4px">
+                                            <span class="tooltip" style="background-color: {bg_color};
+                                            padding: 2px 4px">
                                                 {text}
                                                 <span class="tooltiptext">{tooltip_table}</span>
                                             </span>
@@ -294,7 +295,7 @@ def render_analyze_emotions_request():
                     result_container.clear()
                     with result_container:
                         with ui.column().classes(
-                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md') as filter_container:
+                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
                             ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
 
@@ -308,10 +309,11 @@ def render_analyze_emotions_request():
                                             on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value)
                                         )
 
-                            ui.button('Apply filters', color='#808080', on_click=lambda: create_on_click()).classes(
+                            ui.button('Apply filters', color='#808080',
+                                      on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-                        with ui.column().classes('mt-[20px] w-[1000px]') as card_container:
+                        with ui.column().classes('mt-[20px] w-[1000px]'):
                             with ui.card():
                                 last_paragraph_id = 0
                                 parts = []
@@ -351,7 +353,8 @@ def render_analyze_emotions_request():
 
                                     if show_tooltip:
                                         span_html = f'''
-                                            <span class="tooltip" style="background-color: {bg_color}; padding: 2px 4px">
+                                            <span class="tooltip" style="background-color: {bg_color};
+                                            padding: 2px 4px">
                                                 {text}
                                                 <span class="tooltiptext">{tooltip_table}</span>
                                             </span>
@@ -417,7 +420,7 @@ def render_analyze_emotions_request():
 
 def render_analyze_request():
     render_header()
-    with ui.column().classes('w-full justify-center items-center'):
+    with (ui.column().classes('w-full justify-center items-center')):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
         result_container = ui.row().classes('mt-[20px] w-full')
         with ui.row().classes('w-[1000px] gap-0 justify-center'):
@@ -492,7 +495,8 @@ def render_analyze_request():
                 first_run = True
 
             def create_on_click():
-                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_propaganda, checkbox_emotions_elements, checkbox_propaganda_elements
+                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_propaganda, checkbox_emotions_elements, \
+                    checkbox_propaganda_elements
                 if not description.value:
                     ui.notify('Text is required', color='red')
                     return
@@ -504,7 +508,7 @@ def render_analyze_request():
                     result_container.clear()
                     with result_container:
                         with ui.column().classes(
-                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md') as filter_container:
+                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
 
                             ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
@@ -531,10 +535,11 @@ def render_analyze_request():
                                             on_change=lambda e, t=technique: checkbox_emotions.__setitem__(t, e.value)
                                         )
 
-                            ui.button('Apply filters', color='#808080', on_click=lambda: create_on_click()).classes(
+                            ui.button('Apply filters', color='#808080',
+                                      on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-                        with ui.column().classes('mt-[20px] w-[1000px]') as card_container:
+                        with ui.column().classes('mt-[20px] w-[1000px]'):
                             with ui.card():
                                 selected_propaganda_techniques = [tech for tech in checkbox_propaganda.keys() if
                                                                   checkbox_propaganda[tech]]
@@ -555,13 +560,16 @@ def render_analyze_request():
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += (
-                                        '<p style="text-align: center; font-weight: bold">Most likely propaganda techniques<p>')
+                                        '<p style="text-align: center; font-weight: bold">Most likely propaganda '
+                                        'techniques<p>')
                                     for p in predictions:
                                         if p['label'] in selected_propaganda_techniques:
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             tooltip_table += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{score_to_display}</td></tr>'
+                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                                f'1px solid black;">{p["label"]}</td>'
+                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
                                             )
                                     tooltip_table += '</table>'
 
@@ -573,7 +581,8 @@ def render_analyze_request():
 
                                     if show_tooltip:
                                         span_html = f'''
-                                            <span class="tooltip" style="background-color: {bg_color}; padding: 2px 4px; cursor: pointer;">
+                                            <span class="tooltip" style="background-color: {bg_color};
+                                            padding: 2px 4px; cursor: pointer;">
                                                 {text}
                                                 <span class="tooltiptext">{tooltip_table}</span>
                                             </span>
@@ -606,7 +615,8 @@ def render_analyze_request():
                                         paragraph_tooltip = '''
                                             <span class="paragraph-tooltiptext">
                                             <table style="font-size: 16px">
-                                            <p style="text-align: center; font-weight: bold">Most likely paragraph's emotions</p>
+                                            <p style="text-align: center;
+                                            font-weight: bold">Most likely paragraph's emotions</p>
                                         '''
                                         filtered_predictions = [p for p in emotions_for_paragraph if p[
                                             'label'] in selected_emotions_techniques] if emotions_for_paragraph else []
@@ -616,8 +626,10 @@ def render_analyze_request():
                                         for p in filtered_predictions[:min(9, amount)]:
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             paragraph_tooltip += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; border: 1px solid black;">{score_to_display}</td></tr>'
+                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
+                                                f'border: 1px solid black;">{p["label"]}</td>'
+                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
                                             )
                                         paragraph_tooltip += '</table></span>'
                                     else:
@@ -695,7 +707,8 @@ def render_analyze_request():
 
                                 joined_html = ' '.join(parts)
                                 ui.html(
-                                    f'<div style="font-size: 18px; line-height: 1.6; text-align: justify;">{joined_html}</div>')
+                                    f'<div style="font-size: 18px; line-height: 1.6; '
+                                    f'text-align: justify;">{joined_html}</div>')
 
                                 ui.button('Clear', color='#808080',
                                           on_click=lambda: (result_container.clear(), clear_action())).classes(
