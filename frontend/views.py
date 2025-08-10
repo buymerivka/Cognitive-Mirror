@@ -50,7 +50,7 @@ def render_analyze_propaganda_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
-        result_container = ui.row().classes('mt-[20px] w-full')
+        card_container = ui.row().classes('mt-[20px] w-full')
         with ui.row().classes('w-[1000px] gap-0 justify-center'):
             ui.add_head_html('''
                 <style>
@@ -69,16 +69,8 @@ def render_analyze_propaganda_request():
 
             analyzed_data = None
 
-            checkbox_states = {'none': True,
-                               'false dilemma': True,
-                               'slippery slope': True,
-                               'appeal to nature': True,
-                               'appeal to authority': True,
-                               'appeal to majority': True,
-                               'hasty generalization': True,
-                               'appeal to worse problems': True,
-                               'appeal to tradition': True
-                               }
+            checkbox_states = {p: True for p in propaganda_colors.keys()}
+
             checkbox_elements = {}
             first_run = True
 
@@ -95,12 +87,12 @@ def render_analyze_propaganda_request():
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request_propaganda(description.value, 9)
+                    analyzed_data = create_request_propaganda(description.value, len(propaganda_colors))
                 if analyzed_data is None:
                     ui.notify('An error occurred', color='red')
                 else:
-                    result_container.clear()
-                    with result_container:
+                    card_container.clear()
+                    with card_container:
                         with ui.column().classes(
                                 'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
@@ -208,7 +200,7 @@ def render_analyze_propaganda_request():
                                 joined_html = ' '.join(parts)
                                 ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                         f'text-align: justify;">{joined_html}</div>')
-                                ui.button('Clear', color='#808080', on_click=lambda: (result_container.clear(),
+                                ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
                                                                                       clear_action())).classes(
                                     'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
@@ -224,7 +216,7 @@ def render_analyze_emotions_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
-        result_container = ui.row().classes('mt-[20px] w-full')
+        card_container = ui.row().classes('mt-[20px] w-full')
         with ui.row().classes('w-[1000px] gap-0 justify-center'):
             ui.add_head_html('''
                 <style>
@@ -243,35 +235,8 @@ def render_analyze_emotions_request():
 
             analyzed_data = None
 
-            checkbox_states = {'admiration': True,
-                               'amusement': True,
-                               'anger': True,
-                               'annoyance': True,
-                               'approval': True,
-                               'caring': True,
-                               'confusion': True,
-                               'curiosity': True,
-                               'desire': True,
-                               'disappointment': True,
-                               'disapproval': True,
-                               'disgust': True,
-                               'embarrassment': True,
-                               'excitement': True,
-                               'fear': True,
-                               'gratitude': True,
-                               'grief': True,
-                               'joy': True,
-                               'love': True,
-                               'nervousness': True,
-                               'optimism': True,
-                               'pride': True,
-                               'realization': True,
-                               'relief': True,
-                               'remorse': True,
-                               'sadness': True,
-                               'surprise': True,
-                               'neutral': True
-                               }
+            checkbox_states = {p: True for p in emotion_colors.keys()}
+
             checkbox_elements = {}
             first_run = True
 
@@ -288,12 +253,12 @@ def render_analyze_emotions_request():
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request_emotions(description.value, 28)
+                    analyzed_data = create_request_emotions(description.value, len(emotion_colors))
                 if analyzed_data is None:
                     ui.notify('An error occurred', color='red')
                 else:
-                    result_container.clear()
-                    with result_container:
+                    card_container.clear()
+                    with card_container:
                         with ui.column().classes(
                                 'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
@@ -335,7 +300,7 @@ def render_analyze_emotions_request():
 
                                     filtered_predictions = [p for p in predictions if p['label'] in selected_techniques]
 
-                                    for p in filtered_predictions[:min(9, amount)]:
+                                    for p in filtered_predictions[:min(len(propaganda_colors), amount)]:
                                         score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
                                         tooltip_table += (
                                             f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
@@ -406,7 +371,7 @@ def render_analyze_emotions_request():
                                 joined_html = ' '.join(parts)
                                 ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                         f'text-align: justify;">{joined_html}</div>')
-                                ui.button('Clear', color='#808080', on_click=lambda: (result_container.clear(),
+                                ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
                                                                                       clear_action())).classes(
                                     'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
@@ -422,7 +387,7 @@ def render_analyze_request():
     render_header()
     with (ui.column().classes('w-full justify-center items-center')):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
-        result_container = ui.row().classes('mt-[20px] w-full')
+        card_container = ui.row().classes('mt-[20px] w-full')
         with ui.row().classes('w-[1000px] gap-0 justify-center'):
             ui.add_head_html('''
                 <style>
@@ -441,47 +406,12 @@ def render_analyze_request():
 
             analyzed_data = None
 
-            checkbox_propaganda = {'none': True,
-                                   'false dilemma': True,
-                                   'slippery slope': True,
-                                   'appeal to nature': True,
-                                   'appeal to authority': True,
-                                   'appeal to majority': True,
-                                   'hasty generalization': True,
-                                   'appeal to worse problems': True,
-                                   'appeal to tradition': True
-                                   }
+            checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
+
             checkbox_propaganda_elements = {}
 
-            checkbox_emotions = {'admiration': True,
-                                 'amusement': True,
-                                 'anger': True,
-                                 'annoyance': True,
-                                 'approval': True,
-                                 'caring': True,
-                                 'confusion': True,
-                                 'curiosity': True,
-                                 'desire': True,
-                                 'disappointment': True,
-                                 'disapproval': True,
-                                 'disgust': True,
-                                 'embarrassment': True,
-                                 'excitement': True,
-                                 'fear': True,
-                                 'gratitude': True,
-                                 'grief': True,
-                                 'joy': True,
-                                 'love': True,
-                                 'nervousness': True,
-                                 'optimism': True,
-                                 'pride': True,
-                                 'realization': True,
-                                 'relief': True,
-                                 'remorse': True,
-                                 'sadness': True,
-                                 'surprise': True,
-                                 'neutral': True
-                                 }
+            checkbox_emotions = {p: True for p in emotion_colors.keys()}
+
             checkbox_emotions_elements = {}
             first_run = True
 
@@ -501,12 +431,12 @@ def render_analyze_request():
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request(description.value, 9, 28)
+                    analyzed_data = create_request(description.value, len(propaganda_colors), len(emotion_colors))
                 if not analyzed_data:
                     ui.notify('An error occurred', color='red')
                 else:
-                    result_container.clear()
-                    with result_container:
+                    card_container.clear()
+                    with card_container:
                         with ui.column().classes(
                                 'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
@@ -623,7 +553,7 @@ def render_analyze_request():
 
                                         amount = len(selected_emotions_techniques)
 
-                                        for p in filtered_predictions[:min(9, amount)]:
+                                        for p in filtered_predictions[:min(len(propaganda_colors), amount)]:
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             paragraph_tooltip += (
                                                 f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
@@ -711,7 +641,7 @@ def render_analyze_request():
                                     f'text-align: justify;">{joined_html}</div>')
 
                                 ui.button('Clear', color='#808080',
-                                          on_click=lambda: (result_container.clear(), clear_action())).classes(
+                                          on_click=lambda: (card_container.clear(), clear_action())).classes(
                                     'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
