@@ -6,6 +6,12 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import FeatureUnion
 from sklearn.preprocessing import LabelEncoder
 
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
+
+import evaluate
+import numpy as np
+from transformers import DataCollatorWithPadding
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -15,13 +21,14 @@ class BiasClassifier:
             ('word', TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
             ('char_wb', TfidfVectorizer(ngram_range=(1, 6), analyzer='char', strip_accents='unicode'))
         ])
-        self.model = LogisticRegression(C=10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42,
-                                        verbose=1)
+        self.model = LogisticRegression(solver='saga', max_iter=1000, random_state=42)
         self.label_encoder = LabelEncoder()
 
     def train(self, texts, labels):
         y = self.label_encoder.fit_transform(labels)
         X = self.vectorizer.fit_transform(texts)
+
+
         self.model.fit(X, y)
 
     def predict(self, texts, top_n: int = 1):
