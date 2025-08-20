@@ -1,9 +1,9 @@
 import os
 
-from colors_tool import emotion_colors, propaganda_colors
+from colors_tool import emotion_colors, manipulations_colors
 from dotenv import load_dotenv
 from nicegui import ui
-from services import create_request, create_request_emotions, create_request_propaganda, download_json
+from services import create_request, create_request_emotions, create_request_manipulations, download_json
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
@@ -46,7 +46,7 @@ def render_footer():
             ui.label('Cognitive-Mirror').classes('text-[32px]')
 
 
-def render_analyze_propaganda_request():
+def render_analyze_manipulations_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
@@ -69,7 +69,7 @@ def render_analyze_propaganda_request():
 
             analyzed_data = None
 
-            checkbox_states = {p: True for p in propaganda_colors.keys()}
+            checkbox_states = {p: True for p in manipulations_colors.keys()}
 
             checkbox_elements = {}
             first_run = True
@@ -87,7 +87,7 @@ def render_analyze_propaganda_request():
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request_propaganda(description.value, len(propaganda_colors))
+                    analyzed_data = create_request_manipulations(description.value, len(manipulations_colors))
                 if analyzed_data is None:
                     ui.notify('An error occurred', color='red')
                 else:
@@ -122,13 +122,13 @@ def render_analyze_propaganda_request():
                                     predictions = data['predictions']
                                     if predictions[0]['label'] not in selected_techniques and predictions[0][
                                         'label'] != 'none':
-                                        bg_color = propaganda_colors.get('none', '#ccc')
+                                        bg_color = manipulations_colors.get('none', '#ccc')
                                     else:
-                                        bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
+                                        bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += ('<p style="text-align: center; '
-                                                      'font-weight: bold">Most likely propaganda techniques<p>')
+                                                      'font-weight: bold">Most likely manipulations techniques<p>')
                                     for p in predictions:
                                         if p['label'] in selected_techniques:
                                             score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
@@ -310,7 +310,7 @@ def render_analyze_emotions_request():
 
                                     filtered_predictions = [p for p in predictions if p['label'] in selected_techniques]
 
-                                    for p in filtered_predictions[:min(len(propaganda_colors), amount)]:
+                                    for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
                                         score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
                                         tooltip_table += (
                                             f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
@@ -405,7 +405,7 @@ def render_analyze_emotions_request():
 
 def render_analyze_request():
     render_header()
-    with (ui.column().classes('w-full justify-center items-center')):
+    with ((ui.column().classes('w-full justify-center items-center'))):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
@@ -426,9 +426,9 @@ def render_analyze_request():
 
             analyzed_data = None
 
-            checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
+            checkbox_manipulations = {p: True for p in manipulations_colors.keys()}
 
-            checkbox_propaganda_elements = {}
+            checkbox_manipulations_elements = {}
 
             checkbox_emotions = {p: True for p in emotion_colors.keys()}
 
@@ -436,22 +436,22 @@ def render_analyze_request():
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_propaganda
+                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations
                 for technique in checkbox_emotions:
                     checkbox_emotions[technique] = True
-                for technique in checkbox_propaganda:
-                    checkbox_propaganda[technique] = True
+                for technique in checkbox_manipulations:
+                    checkbox_manipulations[technique] = True
                 analyzed_data = None
                 first_run = True
 
             def create_on_click():
-                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_propaganda, checkbox_emotions_elements, \
-                    checkbox_propaganda_elements
+                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations, \
+                    checkbox_emotions_elements, checkbox_manipulations_elements
                 if not description.value:
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request(description.value, len(propaganda_colors), len(emotion_colors))
+                    analyzed_data = create_request(description.value, len(manipulations_colors), len(emotion_colors))
                 if not analyzed_data:
                     ui.notify('An error occurred', color='red')
                 else:
@@ -464,12 +464,13 @@ def render_analyze_request():
 
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_propaganda.keys():
+                                for technique in checkbox_manipulations.keys():
                                     if technique != 'none':
-                                        checkbox_propaganda_elements[technique] = ui.checkbox(
+                                        checkbox_manipulations_elements[technique] = ui.checkbox(
                                             technique,
-                                            value=checkbox_propaganda[technique],
-                                            on_change=lambda e, t=technique: checkbox_propaganda.__setitem__(t, e.value)
+                                            value=checkbox_manipulations[technique],
+                                            on_change=lambda e,
+                                                             t=technique: checkbox_manipulations.__setitem__(t, e.value)
                                         )
 
                             ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
@@ -490,29 +491,29 @@ def render_analyze_request():
 
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
-                                selected_propaganda_techniques = [tech for tech in checkbox_propaganda.keys() if
-                                                                  checkbox_propaganda[tech]]
+                                selected_manipulations_techniques = [tech for tech in checkbox_manipulations.keys() if
+                                                                  checkbox_manipulations[tech]]
                                 selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
                                                                 checkbox_emotions[tech]]
 
                                 paragraphs = {}
 
-                                for data in analyzed_data['propaganda_analyzed']:
+                                for data in analyzed_data['manipulations_analyzed']:
                                     text = data['text']
                                     predictions = data['predictions']
 
-                                    if predictions[0]['label'] not in selected_propaganda_techniques and predictions[0][
-                                        'label'] != 'none':
-                                        bg_color = propaganda_colors.get('none', '#ccc')
+                                    if (predictions[0]['label'] not in selected_manipulations_techniques and
+                                        predictions[0]['label'] != 'none'):
+                                        bg_color = manipulations_colors.get('none', '#ccc')
                                     else:
-                                        bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
+                                        bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += (
-                                        '<p style="text-align: center; font-weight: bold">Most likely propaganda '
+                                        '<p style="text-align: center; font-weight: bold">Most likely manipulations '
                                         'techniques<p>')
                                     for p in predictions:
-                                        if p['label'] in selected_propaganda_techniques:
+                                        if p['label'] in selected_manipulations_techniques:
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             tooltip_table += (
                                                 f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
@@ -572,7 +573,7 @@ def render_analyze_request():
 
                                         amount = len(selected_emotions_techniques)
 
-                                        for p in filtered_predictions[:min(len(propaganda_colors), amount)]:
+                                        for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             paragraph_tooltip += (
                                                 f'<tr><td style="padding: 2px 8px; white-space: nowrap; '

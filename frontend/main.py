@@ -5,7 +5,7 @@ from fastapi import Request
 from nicegui import ui
 from views import (
     render_analyze_emotions_request,
-    render_analyze_propaganda_request,
+    render_analyze_manipulations_request,
     render_analyze_request,
     render_error,
 )
@@ -16,12 +16,12 @@ API_BASE_URL = os.getenv('API_BASE_URL')
 
 @ui.page('/')
 def base_page():
-    ui.navigate.to('/analyze_propaganda')
+    ui.navigate.to('/analyze')
 
 
-@ui.page('/analyze_propaganda')
-def analyze_propaganda_request(request: Request):
-    render_analyze_propaganda_request()
+@ui.page('/analyze_manipulations')
+def analyze_manipulations_request(request: Request):
+    render_analyze_manipulations_request()
 
 
 @ui.page('/analyze_emotions')

@@ -13,5 +13,5 @@ class ResponseSchema(BaseModel):
 
 
 class TotalResponseSchema(BaseModel):
-    propaganda_analyzed: list[dict]
+    manipulations_analyzed: list[dict]
     emotions_analyzed: list[dict]
