@@ -12,7 +12,7 @@ from app.tools.preprocessor import preprocessing
 router = APIRouter(tags=['analyser'])
 
 
-@router.post('/analyze_propaganda', response_model=ResponseSchema)
+@router.post('/analyze_manipulations', response_model=ResponseSchema)
 async def analyze_propaganda(request_data: RequestSchema, top_n: int = 1):
     clf = bias_classifier.BiasClassifier()
     clf.load()
@@ -49,7 +49,7 @@ async def analyze(request_data: RequestSchema, top_n_propaganda: int = 1, top_n_
 
     analyzed_emotion = text_classify_by_paragraph(request_data.input_data, top_n_emotions)
     return TotalResponseSchema.model_validate({
-        'propaganda_analyzed': analyzed_propaganda,
+        'manipulations_analyzed': analyzed_propaganda,
         'emotions_analyzed': analyzed_emotion,
     })
 

@@ -53,12 +53,12 @@ class BiasClassifier:
             for text, result in zip(texts, results)
         ]
 
-    def save(self, model_path=f'{BASE_DIR}/models/propaganda_model/model.joblib',
-             vectorizer_path=f'{BASE_DIR}/models/propaganda_model/vectorizer.joblib'):
+    def save(self, model_path=f'{BASE_DIR}/models/manipulations_model/model.joblib',
+             vectorizer_path=f'{BASE_DIR}/models/manipulations_model/vectorizer.joblib'):
         joblib.dump(self.model, model_path)
         joblib.dump((self.vectorizer, self.label_encoder), vectorizer_path)
 
-    def load(self, model_path=f'{BASE_DIR}/models/propaganda_model/model.joblib',
-             vectorizer_path=f'{BASE_DIR}/models/propaganda_model/vectorizer.joblib'):
+    def load(self, model_path=f'{BASE_DIR}/models/manipulations_model/model.joblib',
+             vectorizer_path=f'{BASE_DIR}/models/manipulations_model/vectorizer.joblib'):
         self.model = joblib.load(model_path)
         self.vectorizer, self.label_encoder = joblib.load(vectorizer_path)

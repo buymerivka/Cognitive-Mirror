@@ -21,11 +21,11 @@ class TestAPI(unittest.TestCase):
                           'We must be prepared, or we will face terrible consequences. Are you ready to lose '
                           'everything?\n\nSome experts suggest waiting. Others believe action is needed now.\n'
                           'Either you’re with us, or against us.'}
-        response = self.client.post('/analyze_propaganda/', json=payload)
+        response = self.client.post('/analyze_manipulations/', json=payload)
         self.assertEqual(response.status_code, 200)
 
     def test_analyze_validation_error(self):
-        response = self.client.post('/analyze_propaganda/', json={})
+        response = self.client.post('/analyze_manipulations/', json={})
         self.assertEqual(response.status_code, 422)
         self.assertIn('detail', response.json())
 

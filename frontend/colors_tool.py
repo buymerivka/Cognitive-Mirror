@@ -1,4 +1,4 @@
-propaganda_colors = {
+manipulations_colors = {
     'none': '#ffffff',                      # White
     'false dilemma': '#b0c4de',             # Light steel blue
     'slippery slope': '#cdb79e',            # Warm beige
