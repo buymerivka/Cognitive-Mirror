@@ -3,7 +3,7 @@ import os
 from colors_tool import emotion_colors, propaganda_colors
 from dotenv import load_dotenv
 from nicegui import ui
-from services import create_request, create_request_emotions, create_request_propaganda
+from services import create_request, create_request_emotions, create_request_propaganda, download_json
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
@@ -50,8 +50,8 @@ def render_analyze_propaganda_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
-        card_container = ui.row().classes('mt-[20px] w-full')
-        with ui.row().classes('w-[1000px] gap-0 justify-center'):
+        card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
+        with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
                 <style>
                     .create-title {
@@ -94,7 +94,7 @@ def render_analyze_propaganda_request():
                     card_container.clear()
                     with card_container:
                         with ui.column().classes(
-                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
+                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
                             ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
 
@@ -112,8 +112,8 @@ def render_analyze_propaganda_request():
                                       on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-                        with ui.column().classes('mt-[20px] w-[1000px]'):
-                            with ui.card():
+                        with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
+                            with ui.card().classes('w-full'):
                                 last_paragraph_id = 0
                                 parts = []
                                 selected_techniques = [tech for tech in checkbox_states.keys() if checkbox_states[tech]]
@@ -200,9 +200,19 @@ def render_analyze_propaganda_request():
                                 joined_html = ' '.join(parts)
                                 ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                         f'text-align: justify;">{joined_html}</div>')
-                                ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
-                                                                                      clear_action())).classes(
-                                    'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+
+                                def call_download_json():
+                                    print('Download initiated.')
+                                    download_json(analyzed_data)
+                                    print('Download finished.')
+                                    return
+
+                                with ui.row().classes('w-[430px] self-end gap-0'):
+                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                        'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
+                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                                                                          clear_action())).classes(
+                                        'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
                 ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
@@ -216,8 +226,8 @@ def render_analyze_emotions_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
-        card_container = ui.row().classes('mt-[20px] w-full')
-        with ui.row().classes('w-[1000px] gap-0 justify-center'):
+        card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
+        with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
                 <style>
                     .create-title {
@@ -260,7 +270,7 @@ def render_analyze_emotions_request():
                     card_container.clear()
                     with card_container:
                         with ui.column().classes(
-                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
+                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
                             ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
 
@@ -278,8 +288,8 @@ def render_analyze_emotions_request():
                                       on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-                        with ui.column().classes('mt-[20px] w-[1000px]'):
-                            with ui.card():
+                        with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
+                            with ui.card().classes('w-full'):
                                 last_paragraph_id = 0
                                 parts = []
                                 selected_techniques = [tech for tech in checkbox_states.keys() if checkbox_states[tech]]
@@ -371,9 +381,19 @@ def render_analyze_emotions_request():
                                 joined_html = ' '.join(parts)
                                 ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                         f'text-align: justify;">{joined_html}</div>')
-                                ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
-                                                                                      clear_action())).classes(
-                                    'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+
+                                def call_download_json():
+                                    print('Download initiated.')
+                                    download_json(analyzed_data)
+                                    print('Download finished.')
+                                    return
+
+                                with ui.row().classes('w-[430px] self-end gap-0'):
+                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                        'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
+                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                                                                          clear_action())).classes(
+                                        'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
                 ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
@@ -387,8 +407,8 @@ def render_analyze_request():
     render_header()
     with (ui.column().classes('w-full justify-center items-center')):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
-        card_container = ui.row().classes('mt-[20px] w-full')
-        with ui.row().classes('w-[1000px] gap-0 justify-center'):
+        card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
+        with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
                 <style>
                     .create-title {
@@ -438,9 +458,8 @@ def render_analyze_request():
                     card_container.clear()
                     with card_container:
                         with ui.column().classes(
-                                'mt-[20px] w-full max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
+                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
-
                             ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
 
                             with ui.column().classes(
@@ -469,8 +488,8 @@ def render_analyze_request():
                                       on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-                        with ui.column().classes('mt-[20px] w-[1000px]'):
-                            with ui.card():
+                        with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
+                            with ui.card().classes('w-full'):
                                 selected_propaganda_techniques = [tech for tech in checkbox_propaganda.keys() if
                                                                   checkbox_propaganda[tech]]
                                 selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
@@ -640,9 +659,18 @@ def render_analyze_request():
                                     f'<div style="font-size: 18px; line-height: 1.6; '
                                     f'text-align: justify;">{joined_html}</div>')
 
-                                ui.button('Clear', color='#808080',
-                                          on_click=lambda: (card_container.clear(), clear_action())).classes(
-                                    'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+                                def call_download_json():
+                                    print('Download initiated.')
+                                    download_json(analyzed_data)
+                                    print('Download finished.')
+                                    return
+
+                                with ui.row().classes('w-[430px] self-end gap-0'):
+                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                        'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
+                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                                                                          clear_action())).classes(
+                                        'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
             with ui.column().classes('items-center gap-0 self-end'):
                 ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
