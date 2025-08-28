@@ -83,9 +83,10 @@ def main():
 if __name__ == '__main__':
     import multiprocessing
     multiprocessing.freeze_support()
-    usecols = ['strategy']
+    usecols = ['propaganda_category']
     datasetPD = pd.read_csv(f'{BASE_DIR}/corpus/df_tweets_HiQualProp.csv', usecols=usecols)
 
-    data = datasetPD['strategy']
+    data = datasetPD['propaganda_category']
+    dataNotNone = [sample for sample in data if sample != 'none']
 
-    print(set(data))
+    print(len(dataNotNone))
