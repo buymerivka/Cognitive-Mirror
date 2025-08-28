@@ -6,12 +6,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import FeatureUnion
 from sklearn.preprocessing import LabelEncoder
 
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
-
-import evaluate
-import numpy as np
-from transformers import DataCollatorWithPadding
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -27,7 +21,6 @@ class BiasClassifier:
     def train(self, texts, labels):
         y = self.label_encoder.fit_transform(labels)
         X = self.vectorizer.fit_transform(texts)
-
 
         self.model.fit(X, y)
 
