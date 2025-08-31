@@ -1,3 +1,4 @@
+import json
 import os
 
 import numpy as np
@@ -83,10 +84,9 @@ def main():
 if __name__ == '__main__':
     import multiprocessing
     multiprocessing.freeze_support()
-    usecols = ['propaganda_category']
-    datasetPD = pd.read_csv(f'{BASE_DIR}/corpus/df_tweets_HiQualProp.csv', usecols=usecols)
+    with open('../datasets/train_CoCoLoFa.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
 
-    data = datasetPD['propaganda_category']
-    dataNotNone = [sample for sample in data if sample != 'none']
 
-    print(len(dataNotNone))
+    labels = [item['label'] for item in data]
+    print(set(labels))
