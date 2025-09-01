@@ -1,11 +1,15 @@
 import os
 
+from colors_tool import emotion_colors, manipulations_colors, propaganda_colors
 from dotenv import load_dotenv
 from nicegui import ui
-
-from colors_tool import emotion_colors, manipulations_colors, propaganda_colors
-from services import create_request, create_request_emotions, create_request_manipulations, create_request_propaganda, \
-    download_json
+from services import (
+    create_request,
+    create_request_emotions,
+    create_request_manipulations,
+    create_request_propaganda,
+    download_json,
+)
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
@@ -782,7 +786,8 @@ def render_analyze_propaganda_request():
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += (
-                                        '<p style="text-align: center; font-weight: bold">Most likely propaganda strategy: <p>')
+                                        '<p style="text-align: center; '
+                                        'font-weight: bold">Most likely propaganda strategy: <p>')
 
                                     if predictions[0]['label'] in selected_propaganda_techniques:
                                         score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"

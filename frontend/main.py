@@ -6,8 +6,9 @@ from nicegui import ui
 from views import (
     render_analyze_emotions_request,
     render_analyze_manipulations_request,
+    render_analyze_propaganda_request,
     render_analyze_request,
-    render_error, render_analyze_propaganda_request
+    render_error,
 )
 
 load_dotenv()

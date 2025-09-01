@@ -5,7 +5,7 @@ import os
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
-from app.request.schemas import RequestSchema, ResponseSchema, TotalResponseSchema, FullResponseSchema
+from app.request.schemas import FullResponseSchema, RequestSchema, ResponseSchema, TotalResponseSchema
 from app.tools.classifier import text_classify_by_paragraph, text_classify_by_sentence
 
 router = APIRouter(tags=['analyser'])
@@ -44,7 +44,7 @@ async def analyze(request_data: RequestSchema, top_n_manipulations: int = 1, top
 
 
 @router.post('/analyze_propaganda', response_model=FullResponseSchema)
-async def analyze(request_data: RequestSchema, top_n_manipulations: int = 1, top_n_emotions: int = 1,
+async def analyze_propaganda(request_data: RequestSchema, top_n_manipulations: int = 1, top_n_emotions: int = 1,
                   top_n_propaganda: int = 1):
     analyzed_propaganda = text_classify_by_sentence(request_data.input_data,
                                                     f'{BASE_DIR}/models/propaganda_bert_model/checkpoint-2220',

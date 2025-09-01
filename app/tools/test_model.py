@@ -1,13 +1,11 @@
 import os
 
 import torch
-from sklearn.metrics import f1_score
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 if __name__ == '__main__':
-
     device = torch.device('mps')
 
     # usecols = ['strategy', 'text_normalized']
@@ -24,8 +22,7 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path).to(device)
 
-    inputs = tokenizer('President Vladimir Putin sought to justify his contentious war against Ukraine during a huge Victory Day parade on Monday , once again falsely calling Ukrainians “ Nazis ” and insisting without evidence that Kyiv was planning to build nuclear weapons . HTTPURL',
-                       padding='max_length', truncation=True, max_length=128, return_tensors='pt').to(device)
+    inputs = tokenizer('', padding='max_length', truncation=True, max_length=128, return_tensors='pt').to(device)
 
     with torch.no_grad():
         outputs = model(**inputs)
