@@ -1,9 +1,11 @@
 import os
 
-from colors_tool import emotion_colors, manipulations_colors
 from dotenv import load_dotenv
 from nicegui import ui
-from services import create_request, create_request_emotions, create_request_manipulations, download_json
+
+from colors_tool import emotion_colors, manipulations_colors, propaganda_colors
+from services import create_request, create_request_emotions, create_request_manipulations, create_request_propaganda, \
+    download_json
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
@@ -492,7 +494,7 @@ def render_analyze_request():
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
                                 selected_manipulations_techniques = [tech for tech in checkbox_manipulations.keys() if
-                                                                  checkbox_manipulations[tech]]
+                                                                     checkbox_manipulations[tech]]
                                 selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
                                                                 checkbox_emotions[tech]]
 
@@ -503,7 +505,7 @@ def render_analyze_request():
                                     predictions = data['predictions']
 
                                     if (predictions[0]['label'] not in selected_manipulations_techniques and
-                                        predictions[0]['label'] != 'none'):
+                                            predictions[0]['label'] != 'none'):
                                         bg_color = manipulations_colors.get('none', '#ccc')
                                     else:
                                         bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
@@ -659,6 +661,204 @@ def render_analyze_request():
                                 ui.html(
                                     f'<div style="font-size: 18px; line-height: 1.6; '
                                     f'text-align: justify;">{joined_html}</div>')
+
+                                def call_download_json():
+                                    print('Download initiated.')
+                                    download_json(analyzed_data)
+                                    print('Download finished.')
+                                    return
+
+                                with ui.row().classes('w-[430px] self-end gap-0'):
+                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                        'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
+                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                                                                          clear_action())).classes(
+                                        'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+
+            with ui.column().classes('items-center gap-0 self-end'):
+                ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
+                    'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
+                    'self-end')
+
+    render_footer()
+
+
+def render_analyze_propaganda_request():
+    render_header()
+    with (((ui.column().classes('w-full justify-center items-center')))):
+        ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
+        card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
+        with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
+            ui.add_head_html('''
+                <style>
+                    .create-title {
+                        resize: none;
+                    }
+
+                    .create-description {
+                        resize: none;
+                    }
+                </style>
+            ''')
+            with ui.column().classes('gap-0'):
+                ui.label('Provide a text').classes('text-[18px] mt-[20px] justify-center')
+                description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
+
+            analyzed_data = None
+
+            checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
+
+            checkbox_propaganda_elements = {}
+
+            show_manipulations = True
+
+            show_emotions = True
+
+            first_run = True
+
+            def clear_action():
+                nonlocal first_run, analyzed_data, checkbox_propaganda, show_manipulations, show_emotions
+                for technique in checkbox_propaganda:
+                    checkbox_propaganda[technique] = True
+                analyzed_data = None
+                first_run = True
+                show_manipulations = True
+                show_emotions = True
+
+            def create_on_click():
+                nonlocal first_run, analyzed_data, checkbox_propaganda, \
+                    checkbox_propaganda_elements, show_manipulations, show_emotions
+                if not description.value:
+                    ui.notify('Text is required', color='red')
+                    return
+                if first_run:
+                    analyzed_data = create_request_propaganda(description.value, len(manipulations_colors),
+                                                              len(emotion_colors), len(propaganda_colors))
+                if not analyzed_data:
+                    ui.notify('An error occurred', color='red')
+                else:
+                    card_container.clear()
+                    with card_container:
+                        with ui.column().classes(
+                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
+                            ui.label('Filters:').classes('text-xl font-bold mb-4')
+
+                            ui.label('Show propaganda strategies:').classes('text-[16px] mt-[10px] mb-[5px]')
+
+                            with ui.column().classes(
+                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
+                                for technique in checkbox_propaganda.keys():
+                                    if technique != 'none':
+                                        checkbox_propaganda_elements[technique] = ui.checkbox(
+                                            technique,
+                                            value=checkbox_propaganda[technique],
+                                            on_change=lambda e,
+                                                             t=technique: checkbox_propaganda.__setitem__(t, e.value)
+                                        )
+
+                            ui.button('Apply filters', color='#808080',
+                                      on_click=lambda: create_on_click()).classes(
+                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+
+                        with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
+                            with ui.card().classes('w-full'):
+                                selected_propaganda_techniques = [tech for tech in checkbox_propaganda.keys() if
+                                                                  checkbox_propaganda[tech]]
+
+                                paragraphs = {}
+
+                                last_paragraph_id = 0
+                                parts = []
+
+                                for data in analyzed_data['propaganda_analyzed']:
+                                    text = data['text']
+                                    predictions = data['predictions']
+
+                                    if (predictions[0]['label'] not in selected_propaganda_techniques and
+                                            predictions[0]['label'] != 'general discourse'):
+                                        bg_color = propaganda_colors.get('general discourse', '#ccc')
+                                    else:
+                                        bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
+
+                                    tooltip_table = '<table style="font-size: 16px">'
+                                    tooltip_table += (
+                                        '<p style="text-align: center; font-weight: bold">Most likely propaganda strategy: <p>')
+
+                                    if predictions[0]['label'] in selected_propaganda_techniques:
+                                        score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
+                                        tooltip_table += (
+                                            f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                            f'1px solid black;">{predictions[0]["label"]}</td>'
+                                            f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                            f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                        )
+
+                                    tooltip_table += '</table>'
+
+                                    show_tooltip = (
+                                            predictions and
+                                            predictions[0].get('label') not in [None, 'general discourse'] and
+                                            bg_color.lower() != '#ffffff'
+                                    )
+
+                                    if show_tooltip:
+                                        span_html = f'''
+                                            <span class="tooltip" style="background-color: {bg_color};
+                                            padding: 2px 4px; cursor: pointer;">
+                                                {text}
+                                                <span class="tooltiptext">{tooltip_table}</span>
+                                            </span>
+                                        '''
+                                    else:
+                                        span_html = f'''
+                                            <span style="background-color: {bg_color}; padding: 2px 4px">
+                                                {text}
+                                            </span>
+                                        '''
+
+                                    if last_paragraph_id != data['paragraphIndex']:
+                                        span_html = '<br>' + span_html
+                                        last_paragraph_id = data['paragraphIndex']
+                                    parts.append(span_html)
+
+                                    paragraph_index = data['paragraphIndex']
+                                    paragraphs.setdefault(paragraph_index, []).append(span_html)
+
+                                ui.add_head_html('''
+                                    <style>
+                                    .tooltip {
+                                        position: relative;
+                                        display: inline;
+                                        cursor: pointer;
+                                        white-space: normal;
+                                    }
+                                    .tooltip .tooltiptext {
+                                        visibility: hidden;
+                                        background-color: #f9f9f9;
+                                        color: #000;
+                                        text-align: left;
+                                        border-radius: 6px;
+                                        border: 1px solid #ccc;
+                                        padding: 6px;
+                                        position: absolute;
+                                        z-index: 9999;
+                                        top: 1.5em;
+                                        left: 0;
+                                        opacity: 0;
+                                        transition: opacity 0.2s;
+                                        white-space: nowrap;
+                                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                                    }
+                                    .tooltip:hover .tooltiptext {
+                                        visibility: visible;
+                                        opacity: 1;
+                                    }
+                                    </style>
+                                    ''')
+
+                                joined_html = ' '.join(parts)
+                                ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
+                                        f'text-align: justify;">{joined_html}</div>')
 
                                 def call_download_json():
                                     print('Download initiated.')

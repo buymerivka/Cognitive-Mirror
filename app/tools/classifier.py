@@ -21,7 +21,7 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
 
     with torch.no_grad():
         logits = model(**inputs).logits
-    probs = torch.sigmoid(logits)[0]
+    probs = torch.softmax(logits, dim=-1)[0]
 
     id2label = model.config.id2label
 

@@ -84,9 +84,9 @@ def main():
 if __name__ == '__main__':
     import multiprocessing
     multiprocessing.freeze_support()
-    with open('../datasets/train_CoCoLoFa.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    usecols = ['strategy']
+    datasetPD = pd.read_csv(f'{BASE_DIR}/corpus/df_tweets_HiQualProp.csv', usecols=usecols)
 
+    data = datasetPD['strategy']
 
-    labels = [item['label'] for item in data]
-    print(set(labels))
+    print(set(data))

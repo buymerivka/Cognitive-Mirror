@@ -18,13 +18,13 @@ if __name__ == '__main__':
     # data_test = data[:1000].tolist()
     # labels_test = labels[:1000].tolist()
 
-    model_path = '../models/manipulations_bert_model/checkpoint-504'
-    tokenizer_path = '../models/manipulations_bert_model/tokenizer'
+    model_path = '../models/propaganda_bert_model/checkpoint-2220'
+    tokenizer_path = '../models/propaganda_bert_model/tokenizer'
 
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path).to(device)
 
-    inputs = tokenizer('If you’re not with us, then you’re against us — there’s no middle ground.',
+    inputs = tokenizer('President Vladimir Putin sought to justify his contentious war against Ukraine during a huge Victory Day parade on Monday , once again falsely calling Ukrainians “ Nazis ” and insisting without evidence that Kyiv was planning to build nuclear weapons . HTTPURL',
                        padding='max_length', truncation=True, max_length=128, return_tensors='pt').to(device)
 
     with torch.no_grad():
