@@ -1,10 +1,7 @@
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from app.tools.emotion_model_download import ensure_model
 from app.tools.preprocessor import preprocessing
-
-ensure_model()
 
 
 def classify(text: str, paragraph_index: int, sentence_index: int, char_start: int, char_end: int,
@@ -12,12 +9,10 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
     if n > max_n:
         n = max_n
 
-    device = torch.device('mps')
-
     tokenizer = AutoTokenizer.from_pretrained(local_tokenizer_path, local_files_only=True)
-    model = AutoModelForSequenceClassification.from_pretrained(local_model_path, local_files_only=True).to(device)
+    model = AutoModelForSequenceClassification.from_pretrained(local_model_path, local_files_only=True)
 
-    inputs = tokenizer(text, padding='max_length', truncation=True, max_length=128, return_tensors='pt').to(device)
+    inputs = tokenizer(text, padding='max_length', truncation=True, max_length=128, return_tensors='pt')
 
     with torch.no_grad():
         logits = model(**inputs).logits

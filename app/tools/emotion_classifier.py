@@ -3,7 +3,7 @@ import os
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from app.tools.emotion_model_download import ensure_model
+from app.tools.emotions_model_download import ensure_model
 from app.tools.preprocessor import preprocessing
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
