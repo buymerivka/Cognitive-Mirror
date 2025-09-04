@@ -7,8 +7,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
-MODEL_ID = os.getenv('PROPAGANDA_MODEL_ID')
-OPTIMIZER_ID = os.getenv('PROPAGANDA_OPTIMIZER_ID')
+# MODEL_ID = os.getenv('PROPAGANDA_MODEL_ID')
+# OPTIMIZER_ID = os.getenv('PROPAGANDA_OPTIMIZER_ID')
+MODEL_ID = '18Js0aqWjnO0cEdBdVTBToqD2e71WURLT'
+OPTIMIZER_ID = '1ZxkPR7ulUY5QFoVsLd4yOND4rGg9z1Jf'
 
 
 def ensure_model():
@@ -25,6 +27,3 @@ def ensure_model():
         print('Propaganda optimizer downloaded.')
     else:
         print('Propaganda optimizer exists.')
-
-
-ensure_model()

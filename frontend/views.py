@@ -13,6 +13,9 @@ from services import (
 
 load_dotenv()
 API_BASE_URL = os.getenv('API_BASE_URL')
+PROPAGANDA_MAX = 5
+MANIPULATIONS_MAX = 9
+EMOTIONS_MAX = 28
 
 
 def render_header():
@@ -411,7 +414,7 @@ def render_analyze_emotions_request():
 
 def render_analyze_request():
     render_header()
-    with ((ui.column().classes('w-full justify-center items-center'))):
+    with (((ui.column().classes('w-full justify-center items-center')))):
         ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
@@ -431,33 +434,33 @@ def render_analyze_request():
                 description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
-
-            checkbox_manipulations = {p: True for p in manipulations_colors.keys()}
-
+            checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
+            checkbox_propaganda_elements = {}
+            checkbox_manipulations = {m: True for m in manipulations_colors.keys()}
             checkbox_manipulations_elements = {}
-
-            checkbox_emotions = {p: True for p in emotion_colors.keys()}
-
+            checkbox_emotions = {e: True for e in emotion_colors.keys()}
             checkbox_emotions_elements = {}
+
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations
-                for technique in checkbox_emotions:
-                    checkbox_emotions[technique] = True
-                for technique in checkbox_manipulations:
-                    checkbox_manipulations[technique] = True
+                nonlocal first_run, analyzed_data, checkbox_propaganda
+                for technique in checkbox_propaganda:
+                    checkbox_propaganda[technique] = True
                 analyzed_data = None
                 first_run = True
 
             def create_on_click():
-                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations, \
-                    checkbox_emotions_elements, checkbox_manipulations_elements
+                nonlocal first_run, analyzed_data, checkbox_propaganda, checkbox_propaganda_elements, \
+                    checkbox_manipulations, checkbox_manipulations_elements, \
+                    checkbox_emotions, checkbox_emotions_elements
+
                 if not description.value:
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request(description.value, len(manipulations_colors), len(emotion_colors))
+                    analyzed_data = create_request(description.value, len(propaganda_colors), len(manipulations_colors),
+                                                   len(emotion_colors))
                 if not analyzed_data:
                     ui.notify('An error occurred', color='red')
                 else:
@@ -466,7 +469,21 @@ def render_analyze_request():
                         with ui.column().classes(
                                 'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
                             ui.label('Filters:').classes('text-xl font-bold mb-4')
-                            ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
+
+                            ui.label('Show propaganda strategies:').classes('text-[16px] mt-[10px] mb-[5px]')
+
+                            with ui.column().classes(
+                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
+                                for strategy in checkbox_propaganda.keys():
+                                    if strategy != 'none':
+                                        checkbox_propaganda_elements[strategy] = ui.checkbox(
+                                            strategy,
+                                            value=checkbox_propaganda[strategy],
+                                            on_change=lambda e,
+                                                             t=strategy: checkbox_propaganda.__setitem__(t, e.value)
+                                        )
+
+                            ui.label('Show manipulations tehniques:').classes('text-[16px] mt-[10px] mb-[5px]')
 
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
@@ -483,12 +500,13 @@ def render_analyze_request():
 
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_emotions.keys():
-                                    if technique != 'neutral':
-                                        checkbox_emotions_elements[technique] = ui.checkbox(
-                                            technique,
-                                            value=checkbox_emotions[technique],
-                                            on_change=lambda e, t=technique: checkbox_emotions.__setitem__(t, e.value)
+                                for emotion in checkbox_emotions.keys():
+                                    if technique != 'none':
+                                        checkbox_emotions_elements[emotion] = ui.checkbox(
+                                            emotion,
+                                            value=checkbox_emotions[emotion],
+                                            on_change=lambda e,
+                                                             t=emotion: checkbox_emotions.__setitem__(t, e.value)
                                         )
 
                             ui.button('Apply filters', color='#808080',
@@ -497,41 +515,90 @@ def render_analyze_request():
 
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
+                                selected_propaganda_strategies = [strategy for strategy in checkbox_propaganda.keys() if
+                                                                  checkbox_propaganda[strategy]]
+
                                 selected_manipulations_techniques = [tech for tech in checkbox_manipulations.keys() if
                                                                      checkbox_manipulations[tech]]
-                                selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
-                                                                checkbox_emotions[tech]]
+
+                                selected_emotions = [emotion for emotion in checkbox_emotions.keys() if
+                                                     checkbox_emotions[emotion]]
 
                                 paragraphs = {}
 
-                                for data in analyzed_data['manipulations_analyzed']:
+                                last_paragraph_id = 0
+                                parts = []
+
+                                for data in analyzed_data['propaganda_analyzed']:
                                     text = data['text']
                                     predictions = data['predictions']
 
-                                    if (predictions[0]['label'] not in selected_manipulations_techniques and
-                                            predictions[0]['label'] != 'none'):
-                                        bg_color = manipulations_colors.get('none', '#ccc')
+                                    if (predictions[0]['label'] not in selected_propaganda_strategies and
+                                            predictions[0]['label'] != 'general discourse'):
+                                        bg_color = propaganda_colors.get('general discourse', '#ccc')
                                     else:
-                                        bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
+                                        bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += (
-                                        '<p style="text-align: center; font-weight: bold">Most likely manipulations '
-                                        'techniques<p>')
-                                    for p in predictions:
-                                        if p['label'] in selected_manipulations_techniques:
-                                            score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
-                                            tooltip_table += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                                f'1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                            )
+                                        '<p style="text-align: left; '
+                                        'font-weight: bold">Most likely propaganda strategy: <p>')
+
+                                    if predictions[0]['label'] in selected_propaganda_strategies:
+                                        score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
+                                        tooltip_table += (
+                                            f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                            f'1px solid black;">{predictions[0]["label"]}</td>'
+                                            f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                            f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                        )
+
                                     tooltip_table += '</table>'
+
+                                    for manipulations_data in analyzed_data['manipulations_analyzed']:
+                                        if manipulations_data['text'] == text:
+                                            i = 0
+                                            while manipulations_data['predictions'][i][
+                                                'label'] not in selected_manipulations_techniques:
+                                                i += 1
+                                            if i < MANIPULATIONS_MAX:
+                                                tooltip_table += '<table style="font-size: 16px">'
+                                                tooltip_table += (
+                                                    '<p style="text-align: left; '
+                                                    'font-weight: bold">Most likely manipulations techniques: <p>')
+                                                score_to_display = f"{int(float(
+                                                    manipulations_data['predictions'][i]['score']) * 10000) / 100}%"
+                                                tooltip_table += (
+                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                                    f'1px solid black;">{manipulations_data['predictions'][i]["label"]}'
+                                                    f'</td>'
+                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                )
+                                                tooltip_table += '</table>'
+                                    for emotions_data in analyzed_data['emotions_analyzed']:
+                                        if emotions_data['text'] == text:
+                                            i = 0
+                                            while emotions_data['predictions'][i]['label'] not in selected_emotions:
+                                                i += 1
+                                            if i < EMOTIONS_MAX:
+                                                tooltip_table += '<table style="font-size: 16px">'
+                                                tooltip_table += (
+                                                    '<p style="text-align: left; '
+                                                    'font-weight: bold">Most likely emotions: <p>')
+                                                score_to_display = f"{int(float(
+                                                    emotions_data['predictions'][i]['score']) * 10000) / 100}%"
+                                                tooltip_table += (
+                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                                    f'1px solid black;">{emotions_data['predictions'][i]["label"]}</td>'
+                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                )
+                                                tooltip_table += '</table>'
 
                                     show_tooltip = (
                                             predictions and
-                                            predictions[0].get('label') not in [None, 'none'] and
+                                            predictions[0].get('label') not in [None, 'general discourse'] and
                                             bg_color.lower() != '#ffffff'
                                     )
 
@@ -550,54 +617,13 @@ def render_analyze_request():
                                             </span>
                                         '''
 
+                                    if last_paragraph_id != data['paragraphIndex']:
+                                        span_html = '<br>' + span_html
+                                        last_paragraph_id = data['paragraphIndex']
+                                    parts.append(span_html)
+
                                     paragraph_index = data['paragraphIndex']
                                     paragraphs.setdefault(paragraph_index, []).append(span_html)
-
-                                parts = []
-                                for paragraph_index in sorted(paragraphs.keys()):
-                                    emotions_for_paragraph = None
-                                    for emotions_data in analyzed_data['emotions_analyzed']:
-                                        if emotions_data['paragraphIndex'] == paragraph_index:
-                                            emotions_for_paragraph = emotions_data['predictions']
-                                            break
-
-                                    show_emotion_tooltip = True
-                                    if emotions_for_paragraph and len(emotions_for_paragraph) > 0:
-                                        if emotions_for_paragraph[0]['label'].lower() == 'neutral' or \
-                                                emotions_for_paragraph[0]['label'] not in selected_emotions_techniques:
-                                            show_emotion_tooltip = False
-
-                                    if show_emotion_tooltip:
-                                        paragraph_tooltip = '''
-                                            <span class="paragraph-tooltiptext">
-                                            <table style="font-size: 16px">
-                                            <p style="text-align: center;
-                                            font-weight: bold">Most likely paragraph's emotions</p>
-                                        '''
-                                        filtered_predictions = [p for p in emotions_for_paragraph if p[
-                                            'label'] in selected_emotions_techniques] if emotions_for_paragraph else []
-
-                                        amount = len(selected_emotions_techniques)
-
-                                        for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
-                                            score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
-                                            paragraph_tooltip += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                            )
-                                        paragraph_tooltip += '</table></span>'
-                                    else:
-                                        paragraph_tooltip = ''
-
-                                    paragraph_html = f'''
-                                        <div class="paragraph-tooltip" style="position: relative; margin-bottom: 20px;">
-                                            {paragraph_tooltip}
-                                            {" ".join(paragraphs[paragraph_index])}
-                                        </div>
-                                    '''
-                                    parts.append(paragraph_html)
 
                                 ui.add_head_html('''
                                     <style>
@@ -628,43 +654,12 @@ def render_analyze_request():
                                         visibility: visible;
                                         opacity: 1;
                                     }
-                                    .paragraph-tooltiptext {
-                                        visibility: hidden;
-                                        background-color: #f9f9f9;
-                                        color: #000;
-                                        border-radius: 6px;
-                                        border: 1px solid #ccc;
-                                        padding: 6px;
-                                        position: absolute;
-                                        z-index: 9999;
-                                        top: 0;
-                                        width: 290px;
-                                        left: -300px;
-                                        opacity: 0;
-                                        transition: opacity 0.2s;
-                                        white-space: nowrap;
-                                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                                    }
-                                    .paragraph-tooltip:hover .paragraph-tooltiptext {
-                                        visibility: visible;
-                                        opacity: 1;
-                                    }
-                                    .tooltip:hover ~ .paragraph-tooltiptext,
-                                    .tooltip:hover + .paragraph-tooltiptext,
-                                    .tooltip:hover .paragraph-tooltiptext {
-                                        visibility: hidden !important;
-                                        opacity: 0 !important;
-                                    }
-                                    .paragraph-tooltip {
-                                        position: relative;
-                                    }
                                     </style>
-                                ''')
+                                    ''')
 
                                 joined_html = ' '.join(parts)
-                                ui.html(
-                                    f'<div style="font-size: 18px; line-height: 1.6; '
-                                    f'text-align: justify;">{joined_html}</div>')
+                                ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
+                                        f'text-align: justify;">{joined_html}</div>')
 
                                 def call_download_json():
                                     print('Download initiated.')
@@ -714,24 +709,18 @@ def render_analyze_propaganda_request():
 
             checkbox_propaganda_elements = {}
 
-            show_manipulations = True
-
-            show_emotions = True
-
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data, checkbox_propaganda, show_manipulations, show_emotions
+                nonlocal first_run, analyzed_data, checkbox_propaganda
                 for technique in checkbox_propaganda:
                     checkbox_propaganda[technique] = True
                 analyzed_data = None
                 first_run = True
-                show_manipulations = True
-                show_emotions = True
 
             def create_on_click():
                 nonlocal first_run, analyzed_data, checkbox_propaganda, \
-                    checkbox_propaganda_elements, show_manipulations, show_emotions
+                    checkbox_propaganda_elements
                 if not description.value:
                     ui.notify('Text is required', color='red')
                     return

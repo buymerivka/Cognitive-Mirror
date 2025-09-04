@@ -7,7 +7,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
-MODEL_ID = os.getenv('EMOTIONS_MODEL_ID')
+# MODEL_ID = os.getenv('EMOTIONS_MODEL_ID')
+MODEL_ID = '1N2ZTApy4j92siOJBhm9cxpRylfA_EIac'
 
 
 def ensure_model():
@@ -17,6 +18,3 @@ def ensure_model():
         print('Emotions model downloaded.')
     else:
         print('Emotions model exists.')
-
-
-ensure_model()

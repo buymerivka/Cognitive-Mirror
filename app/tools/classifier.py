@@ -5,9 +5,11 @@ from app.tools.preprocessor import preprocessing
 
 
 def classify(text: str, paragraph_index: int, sentence_index: int, char_start: int, char_end: int,
-             local_model_path: str, local_tokenizer_path: str, n: int = 1, max_n = 5):
+             local_model_path: str, local_tokenizer_path: str, n: int, max_n: int):
     if n > max_n:
         n = max_n
+    print(n)
+    print(max_n)
 
     tokenizer = AutoTokenizer.from_pretrained(local_tokenizer_path, local_files_only=True)
     model = AutoModelForSequenceClassification.from_pretrained(local_model_path, local_files_only=True)
@@ -56,7 +58,8 @@ def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_l
             manipulations_analysis = classify(sentence_data.text, sentence_data.paragraphIndex,
                                               sentence_data.sentenceIndex, sentence_data.charStart,
                                               sentence_data.charEnd, manipulations_local_model_path,
-                                              manipulations_local_tokenizer_path, top_n_manipulations, max_manipulations)
+                                              manipulations_local_tokenizer_path,
+                                              top_n_manipulations, max_manipulations)
 
             emotions_analysis = classify(sentence_data.text, sentence_data.paragraphIndex,
                                               sentence_data.sentenceIndex, sentence_data.charStart,
@@ -105,5 +108,6 @@ def text_classify_by_paragraph(text: str, local_model_path: str, local_tokenizer
                                paragraph['char_end'],
                                local_model_path,
                                local_tokenizer_path,
-                               n, max_n))
+                               display_n,
+                               max_n))
     return result

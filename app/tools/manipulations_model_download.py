@@ -7,8 +7,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
-MODEL_ID = os.getenv('MANIPULATIONS_MODEL_ID')
-OPTIMIZER_ID = os.getenv('MANIPULATIONS_OPTIMIZER_ID')
+# MODEL_ID = os.getenv('MANIPULATIONS_MODEL_ID')
+# OPTIMIZER_ID = os.getenv('MANIPULATIONS_OPTIMIZER_ID')
+MODEL_ID = '1IHfjtNfH_lqbDcr0C1pESNuu0qTDm5oG'
+OPTIMIZER_ID = '1iu-C_t_sz1IiURSl4IXsoIpCrtaaMcIS'
 
 
 def ensure_model():
@@ -25,6 +27,3 @@ def ensure_model():
         print('Manipulations optimizer downloaded.')
     else:
         print('Manipulations optimizer exists.')
-
-
-ensure_model()
