@@ -736,8 +736,7 @@ def render_analyze_propaganda_request():
                     ui.notify('Text is required', color='red')
                     return
                 if first_run:
-                    analyzed_data = create_request_propaganda(description.value, len(manipulations_colors),
-                                                              len(emotion_colors), len(propaganda_colors))
+                    analyzed_data = create_request_propaganda(description.value, len(propaganda_colors))
                 if not analyzed_data:
                     ui.notify('An error occurred', color='red')
                 else:
@@ -774,7 +773,7 @@ def render_analyze_propaganda_request():
                                 last_paragraph_id = 0
                                 parts = []
 
-                                for data in analyzed_data['propaganda_analyzed']:
+                                for data in analyzed_data['analyzed_data']:
                                     text = data['text']
                                     predictions = data['predictions']
 

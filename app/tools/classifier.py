@@ -5,7 +5,7 @@ from app.tools.preprocessor import preprocessing
 
 
 def classify(text: str, paragraph_index: int, sentence_index: int, char_start: int, char_end: int,
-             local_model_path: str, local_tokenizer_path: str, n: int = 1, max_n: int = 5):
+             local_model_path: str, local_tokenizer_path: str, n: int = 1, max_n = 5):
     if n > max_n:
         n = max_n
 
@@ -35,18 +35,52 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
     }
 
 
-def text_classify_by_sentence(text: str, local_model_path: str, local_tokenizer_path: str, n: int = 1, max_n: int = 5):
+def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_local_tokenizer_path: str,
+                       manipulations_local_model_path: str, manipulations_local_tokenizer_path: str,
+                       emotions_local_model_path: str, emotions_local_tokenizer_path: str, max_propaganda: int,
+                       max_manipulations: int, max_emotions: int, top_n_propaganda: int, top_n_manipulations: int,
+                       top_n_emotions: int):
+
+    sentences_data = [data for data in preprocessing(text)]
+    result = {
+        'propaganda_analyzed': [],
+        'manipulations_analyzed': [],
+        'emotions_analyzed': []
+    }
+    for sentence_data in sentences_data:
+        propaganda_analysis = classify(sentence_data.text, sentence_data.paragraphIndex, sentence_data.sentenceIndex,
+                                       sentence_data.charStart, sentence_data.charEnd, propaganda_local_model_path,
+                                       propaganda_local_tokenizer_path, top_n_propaganda, max_propaganda)
+
+        if propaganda_analysis['predictions'][0]['label'] != 'general discourse':
+            manipulations_analysis = classify(sentence_data.text, sentence_data.paragraphIndex,
+                                              sentence_data.sentenceIndex, sentence_data.charStart,
+                                              sentence_data.charEnd, manipulations_local_model_path,
+                                              manipulations_local_tokenizer_path, top_n_manipulations, max_manipulations)
+
+            emotions_analysis = classify(sentence_data.text, sentence_data.paragraphIndex,
+                                              sentence_data.sentenceIndex, sentence_data.charStart,
+                                              sentence_data.charEnd, emotions_local_model_path,
+                                              emotions_local_tokenizer_path, top_n_emotions, max_emotions)
+            result['manipulations_analyzed'].append(manipulations_analysis)
+            result['emotions_analyzed'].append(emotions_analysis)
+
+        result['propaganda_analyzed'].append(propaganda_analysis)
+    return result
+
+
+def text_classify_by_sentence(text: str, local_model_path: str, local_tokenizer_path: str, display_n: int, max_n):
     sentences_data = [data for data in preprocessing(text)]
     result = []
     for sentence_data in sentences_data:
         result.append(classify(sentence_data.text, sentence_data.paragraphIndex, sentence_data.sentenceIndex,
                                sentence_data.charStart, sentence_data.charEnd, local_model_path, local_tokenizer_path,
-                               n, max_n))
+                               display_n, max_n))
 
     return result
 
 
-def text_classify_by_paragraph(text: str, local_model_path: str, local_tokenizer_path: str, n: int = 1, max_n: int = 5):
+def text_classify_by_paragraph(text: str, local_model_path: str, local_tokenizer_path: str, display_n: int, max_n: int):
     parsed_data = preprocessing(text)
     paragraphs = []
     current_paragraph_idx = -1

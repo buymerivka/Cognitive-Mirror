@@ -227,3 +227,5 @@ app/models/manipulations_bert_model/model.safetensors
 
 app/models/propaganda_bert_model/optimizer.pt
 app/models/propaganda_bert_model/model.safetensors
+
+local_tests
