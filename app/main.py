@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.tools import emotions_model_download, manipulations_model_download, propaganda_model_download
 
 from app.request.router import router as request_router
+from app.tools import emotions_model_download, manipulations_model_download, propaganda_model_download
 
 propaganda_model_download.ensure_model()
 manipulations_model_download.ensure_model()
