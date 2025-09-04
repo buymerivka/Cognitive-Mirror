@@ -8,8 +8,6 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
              local_model_path: str, local_tokenizer_path: str, n: int, max_n: int):
     if n > max_n:
         n = max_n
-    print(n)
-    print(max_n)
 
     tokenizer = AutoTokenizer.from_pretrained(local_tokenizer_path, local_files_only=True)
     model = AutoModelForSequenceClassification.from_pretrained(local_model_path, local_files_only=True)
@@ -22,7 +20,7 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
 
     id2label = model.config.id2label
 
-    top_indices = torch.topk(probs, n).indices.tolist()
+    top_indices = torch.topk(pobs, n).indices.tolist()
     top_emotions = {id2label[idx]: f'{probs[idx].item():.4f}' for idx in top_indices}
     return {
         'text': text,
