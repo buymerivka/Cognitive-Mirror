@@ -20,7 +20,7 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
 
     id2label = model.config.id2label
 
-    top_indices = torch.topk(pobs, n).indices.tolist()
+    top_indices = torch.topk(probs, n).indices.tolist()
     top_emotions = {id2label[idx]: f'{probs[idx].item():.4f}' for idx in top_indices}
     return {
         'text': text,
