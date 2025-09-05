@@ -15,13 +15,13 @@ class BiasClassifier:
             ('word', TfidfVectorizer(ngram_range=(1, 3), analyzer='word', strip_accents='unicode')),
             ('char_wb', TfidfVectorizer(ngram_range=(1, 6), analyzer='char', strip_accents='unicode'))
         ])
-        self.model = LogisticRegression(C=10, class_weight='balanced', solver='saga', max_iter=10000, random_state=42,
-                                        verbose=1)
+        self.model = LogisticRegression(solver='saga', max_iter=1000, random_state=42)
         self.label_encoder = LabelEncoder()
 
     def train(self, texts, labels):
         y = self.label_encoder.fit_transform(labels)
         X = self.vectorizer.fit_transform(texts)
+
         self.model.fit(X, y)
 
     def predict(self, texts, top_n: int = 1):
@@ -53,12 +53,12 @@ class BiasClassifier:
             for text, result in zip(texts, results)
         ]
 
-    def save(self, model_path=f'{BASE_DIR}/models/propaganda_model/model.joblib',
-             vectorizer_path=f'{BASE_DIR}/models/propaganda_model/vectorizer.joblib'):
+    def save(self, model_path=f'{BASE_DIR}/models/manipulations_model/model.joblib',
+             vectorizer_path=f'{BASE_DIR}/models/manipulations_model/vectorizer.joblib'):
         joblib.dump(self.model, model_path)
         joblib.dump((self.vectorizer, self.label_encoder), vectorizer_path)
 
-    def load(self, model_path=f'{BASE_DIR}/models/propaganda_model/model.joblib',
-             vectorizer_path=f'{BASE_DIR}/models/propaganda_model/vectorizer.joblib'):
+    def load(self, model_path=f'{BASE_DIR}/models/manipulations_model/model.joblib',
+             vectorizer_path=f'{BASE_DIR}/models/manipulations_model/vectorizer.joblib'):
         self.model = joblib.load(model_path)
         self.vectorizer, self.label_encoder = joblib.load(vectorizer_path)

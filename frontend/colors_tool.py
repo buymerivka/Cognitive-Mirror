@@ -1,4 +1,4 @@
-propaganda_colors = {
+manipulations_colors = {
     'none': '#ffffff',                      # White
     'false dilemma': '#b0c4de',             # Light steel blue
     'slippery slope': '#cdb79e',            # Warm beige
@@ -39,4 +39,12 @@ emotion_colors = {
     'sadness': '#000075',           # Dark blue
     'surprise': '#f032e6',          # Pink
     'neutral': '#ffffff',           # White
+}
+
+propaganda_colors = {
+    'general discourse': '#ffffff',           # White
+    'pro Russian government': '#cd5c5c',      # Indian red
+    'against Ukraine': '#cd5c5c',             # Indian red
+    'against Western countries': '#cd5c5c',   # Indian red
+    'aimed at other countries': '#cd5c5c'     # Indian red
 }

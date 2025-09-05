@@ -212,7 +212,7 @@ __marimo__/
 # model
 app/models/bert-goemotions/pytorch_model.bin
 
-corpus/
+app/corpus/
 app/tools/data_parser.py
 
 
@@ -222,3 +222,10 @@ app/datasets/trainWarticle_CoCoLoFa.json
 app/datasets/test.py
 app/datasets/labels.json
 
+app/models/manipulations_bert_model/optimizer.pt
+app/models/manipulations_bert_model/model.safetensors
+
+app/models/propaganda_bert_model/optimizer.pt
+app/models/propaganda_bert_model/model.safetensors
+
+local_tests
