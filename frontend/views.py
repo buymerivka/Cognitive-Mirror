@@ -437,9 +437,9 @@ def render_analyze_request():
             analyzed_data = None
             checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
             checkbox_propaganda_elements = {}
-            checkbox_manipulations = {m: True for m in manipulations_colors.keys()}
+            checkbox_manipulations = {'Show manipulation techniques': True}
             checkbox_manipulations_elements = {}
-            checkbox_emotions = {e: True for e in emotion_colors.keys()}
+            checkbox_emotions = {'Show emotions': True}
             checkbox_emotions_elements = {}
 
             first_run = True
@@ -484,7 +484,7 @@ def render_analyze_request():
                                                              t=strategy: checkbox_propaganda.__setitem__(t, e.value)
                                         )
 
-                            ui.label('Show manipulations tehniques:').classes('text-[16px] mt-[10px] mb-[5px]')
+                            # ui.label('Manipulations:').classes('text-[16px] mt-[10px] mb-[5px]')
 
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
@@ -497,7 +497,7 @@ def render_analyze_request():
                                                              t=technique: checkbox_manipulations.__setitem__(t, e.value)
                                         )
 
-                            ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
+                            # ui.label('Emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
 
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
@@ -556,42 +556,36 @@ def render_analyze_request():
 
                                     tooltip_table += '</table>'
 
-                                    for manipulations_data in analyzed_data['manipulations_analyzed']:
-                                        if manipulations_data['text'] == text:
-                                            i = 0
-                                            while manipulations_data['predictions'][i][
-                                                'label'] not in selected_manipulations_techniques:
-                                                i += 1
-                                            if i < MANIPULATIONS_MAX:
+                                    if selected_manipulations_techniques:
+                                        for manipulations_data in analyzed_data['manipulations_analyzed']:
+                                            if manipulations_data['text'] == text:
                                                 tooltip_table += '<table style="font-size: 16px">'
                                                 tooltip_table += (
                                                     '<p style="text-align: left; '
                                                     'font-weight: bold">Most likely manipulations techniques: <p>')
                                                 score_to_display = f"{int(float(
-                                                    manipulations_data['predictions'][i]['score']) * 10000) / 100}%"
+                                                    manipulations_data['predictions'][0]['score']) * 10000) / 100}%"
                                                 tooltip_table += (
                                                     f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                                    f'1px solid black;">{manipulations_data['predictions'][i]["label"]}'
+                                                    f'1px solid black;">{manipulations_data['predictions'][0]["label"]}'
                                                     f'</td>'
                                                     f'<td style="padding: 2px 8px; white-space: nowrap; '
                                                     f'border: 1px solid black;">{score_to_display}</td></tr>'
                                                 )
                                                 tooltip_table += '</table>'
-                                    for emotions_data in analyzed_data['emotions_analyzed']:
-                                        if emotions_data['text'] == text:
-                                            i = 0
-                                            while emotions_data['predictions'][i]['label'] not in selected_emotions:
-                                                i += 1
-                                            if i < EMOTIONS_MAX:
+
+                                    if selected_emotions:
+                                        for emotions_data in analyzed_data['emotions_analyzed']:
+                                            if emotions_data['text'] == text:
                                                 tooltip_table += '<table style="font-size: 16px">'
                                                 tooltip_table += (
                                                     '<p style="text-align: left; '
                                                     'font-weight: bold">Most likely emotions: <p>')
                                                 score_to_display = f"{int(float(
-                                                    emotions_data['predictions'][i]['score']) * 10000) / 100}%"
+                                                    emotions_data['predictions'][0]['score']) * 10000) / 100}%"
                                                 tooltip_table += (
                                                     f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                                    f'1px solid black;">{emotions_data['predictions'][i]["label"]}</td>'
+                                                    f'1px solid black;">{emotions_data['predictions'][0]["label"]}</td>'
                                                     f'<td style="padding: 2px 8px; white-space: nowrap; '
                                                     f'border: 1px solid black;">{score_to_display}</td></tr>'
                                                 )
