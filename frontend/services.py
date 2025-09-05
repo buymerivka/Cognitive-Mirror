@@ -27,8 +27,19 @@ def create_request_emotions(request_text: str, top_n: int = 1):
     return None
 
 
-def create_request(request_text: str, top_n_manipulations: int = 1, top_n_emotions: int = 1):
+def create_request(request_text: str, top_n_manipulations: int = 1, top_n_emotions: int = 1,
+                              top_n_propaganda: int = 1):
     api_response = requests.post(f'{API_BASE_URL}/analyze?'
+                                 f'top_n_manipulations={top_n_manipulations}&top_n_emotions={top_n_emotions}'
+                                 f'&top_n_propaganda={top_n_propaganda}',
+                                 json={'input_data': request_text})
+    if api_response.status_code == 200:
+        return api_response.json()
+    return None
+
+
+def create_manipulations_and_emotions_request(request_text: str, top_n_manipulations: int = 1, top_n_emotions: int = 1):
+    api_response = requests.post(f'{API_BASE_URL}/analyze_manipulations_and_emotions?'
                                  f'top_n_manipulations={top_n_manipulations}&top_n_emotions={top_n_emotions}',
                                  json={'input_data': request_text})
 
@@ -37,10 +48,8 @@ def create_request(request_text: str, top_n_manipulations: int = 1, top_n_emotio
     return None
 
 
-def create_request_propaganda(request_text: str, top_n_manipulations: int = 1, top_n_emotions: int = 1,
-                              top_n_propaganda: int = 1):
+def create_request_propaganda(request_text: str, top_n_propaganda: int = 1):
     api_response = requests.post(f'{API_BASE_URL}/analyze_propaganda?'
-                                 f'top_n_manipulations={top_n_manipulations}&top_n_emotions={top_n_emotions}'
                                  f'&top_n_propaganda={top_n_propaganda}',
                                  json={'input_data': request_text})
 

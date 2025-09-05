@@ -20,3 +20,4 @@ torch==2.7.1
 transformers==4.53.3
 uvloop==0.21.0
 websockets==15.0.1
+emoji==0.6.0
