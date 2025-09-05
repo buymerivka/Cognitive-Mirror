@@ -314,7 +314,7 @@ def render_analyze_emotions_request():
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += ('<p style="text-align: center; '
-                                                      'font-weight: bold">Most likely emotions<p>')
+                                                      'font-weight: bold">Most likely emotion expressed<p>')
 
                                     amount = len(selected_techniques)
 
@@ -469,22 +469,7 @@ def render_analyze_request():
                     with card_container:
                         with ui.column().classes(
                                 'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
-                            ui.label('Filters:').classes('text-xl font-bold mb-4')
-
-                            ui.label('Show propaganda strategies:').classes('text-[16px] mt-[10px] mb-[5px]')
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for strategy in checkbox_propaganda.keys():
-                                    if strategy != 'none':
-                                        checkbox_propaganda_elements[strategy] = ui.checkbox(
-                                            strategy,
-                                            value=checkbox_propaganda[strategy],
-                                            on_change=lambda e,
-                                                             t=strategy: checkbox_propaganda.__setitem__(t, e.value)
-                                        )
-
-                            # ui.label('Manipulations:').classes('text-[16px] mt-[10px] mb-[5px]')
+                            ui.label('Filters:').classes('text-xl font-bold mb-4')\
 
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
@@ -497,8 +482,6 @@ def render_analyze_request():
                                                              t=technique: checkbox_manipulations.__setitem__(t, e.value)
                                         )
 
-                            # ui.label('Emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
-
                             with ui.column().classes(
                                     'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
                                 for emotion in checkbox_emotions.keys():
@@ -508,6 +491,19 @@ def render_analyze_request():
                                             value=checkbox_emotions[emotion],
                                             on_change=lambda e,
                                                              t=emotion: checkbox_emotions.__setitem__(t, e.value)
+                                        )
+
+                            ui.label('Show propaganda strategies:').classes('text-[16px] mt-[10px] mb-[5px]')
+
+                            with ui.column().classes(
+                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
+                                for strategy in checkbox_propaganda.keys():
+                                    if strategy != 'none':
+                                        checkbox_propaganda_elements[strategy] = ui.checkbox(
+                                            strategy,
+                                            value=checkbox_propaganda[strategy],
+                                            on_change=lambda e,
+                                                             t=strategy: checkbox_propaganda.__setitem__(t, e.value)
                                         )
 
                             ui.button('Apply filters', color='#808080',
@@ -580,7 +576,7 @@ def render_analyze_request():
                                                 tooltip_table += '<table style="font-size: 16px">'
                                                 tooltip_table += (
                                                     '<p style="text-align: left; '
-                                                    'font-weight: bold">Most likely emotions: <p>')
+                                                    'font-weight: bold">Most likely emotion expressed: <p>')
                                                 score_to_display = f"{int(float(
                                                     emotions_data['predictions'][0]['score']) * 10000) / 100}%"
                                                 tooltip_table += (
