@@ -5,8 +5,8 @@ import os
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
-from app.request.schemas import FullResponseSchema, RequestSchema, ResponseSchema
-from app.tools.classifier import text_classify_by_sentence, text_full_classify
+from app.request.schemas import FullResponseSchema, RequestSchema, ResponseSchema, TotalResponseSchema
+from app.tools.classifier import text_classify_by_paragraph, text_classify_by_sentence, text_full_classify
 
 router = APIRouter(tags=['analyser'])
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,6 +55,26 @@ async def analyze(request_data: RequestSchema, top_n_propaganda: int = 1, top_n_
                                        top_n_emotions)
 
     return FullResponseSchema.model_validate(full_analysis)
+
+
+@router.post('/analyze_manipulations_and_emotions', response_model=TotalResponseSchema)
+async def analyze_manipulations_and_emotions(request_data: RequestSchema, top_n_manipulations: int = 1,
+                                             top_n_emotions: int = 1):
+    analyzed_manipulations = text_classify_by_sentence(request_data.input_data,
+                                                       f'{BASE_DIR}/models/manipulations_bert_model',
+                                                       f'{BASE_DIR}/models/manipulations_bert_model/tokenizer',
+                                                       top_n_manipulations,
+                                                       MANIPULATIONS_MAX)
+
+    analyzed_emotion = text_classify_by_paragraph(request_data.input_data,
+                                                  f'{BASE_DIR}/models/bert-goemotions',
+                                                  f'{BASE_DIR}/models/bert-goemotions',
+                                                  top_n_emotions,
+                                                  EMOTIONS_MAX)
+    return TotalResponseSchema.model_validate({
+        'manipulations_analyzed': analyzed_manipulations,
+        'emotions_analyzed': analyzed_emotion,
+    })
 
 
 @router.post('/analyze_propaganda', response_model=ResponseSchema)

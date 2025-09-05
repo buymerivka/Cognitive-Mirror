@@ -4,6 +4,7 @@ from colors_tool import emotion_colors, manipulations_colors, propaganda_colors
 from dotenv import load_dotenv
 from nicegui import ui
 from services import (
+    create_manipulations_and_emotions_request,
     create_request,
     create_request_emotions,
     create_request_manipulations,
@@ -852,6 +853,286 @@ def render_analyze_propaganda_request():
                                 joined_html = ' '.join(parts)
                                 ui.html(f'<div style="font-size: 18px; line-height: 1.6; '
                                         f'text-align: justify;">{joined_html}</div>')
+
+                                def call_download_json():
+                                    print('Download initiated.')
+                                    download_json(analyzed_data)
+                                    print('Download finished.')
+                                    return
+
+                                with ui.row().classes('w-[430px] self-end gap-0'):
+                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                        'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
+                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                                                                          clear_action())).classes(
+                                        'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+
+            with ui.column().classes('items-center gap-0 self-end'):
+                ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
+                    'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
+                    'self-end')
+
+    render_footer()
+
+
+def render_analyze_manipulations_and_emotions_request():
+    render_header()
+    with ((ui.column().classes('w-full justify-center items-center'))):
+        ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
+        card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
+        with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
+            ui.add_head_html('''
+                <style>
+                    .create-title {
+                        resize: none;
+                    }
+
+                    .create-description {
+                        resize: none;
+                    }
+                </style>
+            ''')
+            with ui.column().classes('gap-0'):
+                ui.label('Provide a text').classes('text-[18px] mt-[20px] justify-center')
+                description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
+
+            analyzed_data = None
+
+            checkbox_manipulations = {p: True for p in manipulations_colors.keys()}
+
+            checkbox_manipulations_elements = {}
+
+            checkbox_emotions = {p: True for p in emotion_colors.keys()}
+
+            checkbox_emotions_elements = {}
+            first_run = True
+
+            def clear_action():
+                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations
+                for technique in checkbox_emotions:
+                    checkbox_emotions[technique] = True
+                for technique in checkbox_manipulations:
+                    checkbox_manipulations[technique] = True
+                analyzed_data = None
+                first_run = True
+
+            def create_on_click():
+                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations, \
+                    checkbox_emotions_elements, checkbox_manipulations_elements
+                if not description.value:
+                    ui.notify('Text is required', color='red')
+                    return
+                if first_run:
+                    analyzed_data = create_manipulations_and_emotions_request(description.value,
+                                                                              len(manipulations_colors),
+                                                                              len(emotion_colors))
+                if not analyzed_data:
+                    ui.notify('An error occurred', color='red')
+                else:
+                    card_container.clear()
+                    with card_container:
+                        with ui.column().classes(
+                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
+                            ui.label('Filters:').classes('text-xl font-bold mb-4')
+                            ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
+
+                            with ui.column().classes(
+                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
+                                for technique in checkbox_manipulations.keys():
+                                    if technique != 'none':
+                                        checkbox_manipulations_elements[technique] = ui.checkbox(
+                                            technique,
+                                            value=checkbox_manipulations[technique],
+                                            on_change=lambda e,
+                                                             t=technique: checkbox_manipulations.__setitem__(t, e.value)
+                                        )
+
+                            ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
+
+                            with ui.column().classes(
+                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
+                                for technique in checkbox_emotions.keys():
+                                    if technique != 'neutral':
+                                        checkbox_emotions_elements[technique] = ui.checkbox(
+                                            technique,
+                                            value=checkbox_emotions[technique],
+                                            on_change=lambda e, t=technique: checkbox_emotions.__setitem__(t, e.value)
+                                        )
+
+                            ui.button('Apply filters', color='#808080',
+                                      on_click=lambda: create_on_click()).classes(
+                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+
+                        with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
+                            with ui.card().classes('w-full'):
+                                selected_manipulations_techniques = [tech for tech in checkbox_manipulations.keys() if
+                                                                     checkbox_manipulations[tech]]
+                                selected_emotions_techniques = [tech for tech in checkbox_emotions.keys() if
+                                                                checkbox_emotions[tech]]
+
+                                paragraphs = {}
+
+                                for data in analyzed_data['manipulations_analyzed']:
+                                    text = data['text']
+                                    predictions = data['predictions']
+
+                                    if (predictions[0]['label'] not in selected_manipulations_techniques and
+                                            predictions[0]['label'] != 'none'):
+                                        bg_color = manipulations_colors.get('none', '#ccc')
+                                    else:
+                                        bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
+
+                                    tooltip_table = '<table style="font-size: 16px">'
+                                    tooltip_table += (
+                                        '<p style="text-align: center; font-weight: bold">Most likely manipulations '
+                                        'techniques<p>')
+                                    for p in predictions:
+                                        if p['label'] in selected_manipulations_techniques:
+                                            score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
+                                            tooltip_table += (
+                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                                f'1px solid black;">{p["label"]}</td>'
+                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                            )
+                                    tooltip_table += '</table>'
+
+                                    show_tooltip = (
+                                            predictions and
+                                            predictions[0].get('label') not in [None, 'none'] and
+                                            bg_color.lower() != '#ffffff'
+                                    )
+
+                                    if show_tooltip:
+                                        span_html = f'''
+                                            <span class="tooltip" style="background-color: {bg_color};
+                                            padding: 2px 4px; cursor: pointer;">
+                                                {text}
+                                                <span class="tooltiptext">{tooltip_table}</span>
+                                            </span>
+                                        '''
+                                    else:
+                                        span_html = f'''
+                                            <span style="background-color: {bg_color}; padding: 2px 4px">
+                                                {text}
+                                            </span>
+                                        '''
+
+                                    paragraph_index = data['paragraphIndex']
+                                    paragraphs.setdefault(paragraph_index, []).append(span_html)
+
+                                parts = []
+                                for paragraph_index in sorted(paragraphs.keys()):
+                                    emotions_for_paragraph = None
+                                    for emotions_data in analyzed_data['emotions_analyzed']:
+                                        if emotions_data['paragraphIndex'] == paragraph_index:
+                                            emotions_for_paragraph = emotions_data['predictions']
+                                            break
+
+                                    show_emotion_tooltip = True
+                                    if emotions_for_paragraph and len(emotions_for_paragraph) > 0:
+                                        if emotions_for_paragraph[0]['label'].lower() == 'neutral' or \
+                                                emotions_for_paragraph[0]['label'] not in selected_emotions_techniques:
+                                            show_emotion_tooltip = False
+
+                                    if show_emotion_tooltip:
+                                        paragraph_tooltip = '''
+                                            <span class="paragraph-tooltiptext">
+                                            <table style="font-size: 16px">
+                                            <p style="text-align: center;
+                                            font-weight: bold">Most likely paragraph's emotions</p>
+                                        '''
+                                        filtered_predictions = [p for p in emotions_for_paragraph if p[
+                                            'label'] in selected_emotions_techniques] if emotions_for_paragraph else []
+
+                                        amount = len(selected_emotions_techniques)
+
+                                        for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
+                                            score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
+                                            paragraph_tooltip += (
+                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
+                                                f'border: 1px solid black;">{p["label"]}</td>'
+                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                            )
+                                        paragraph_tooltip += '</table></span>'
+                                    else:
+                                        paragraph_tooltip = ''
+
+                                    paragraph_html = f'''
+                                        <div class="paragraph-tooltip" style="position: relative; margin-bottom: 20px;">
+                                            {paragraph_tooltip}
+                                            {" ".join(paragraphs[paragraph_index])}
+                                        </div>
+                                    '''
+                                    parts.append(paragraph_html)
+
+                                ui.add_head_html('''
+                                    <style>
+                                    .tooltip {
+                                        position: relative;
+                                        display: inline;
+                                        cursor: pointer;
+                                        white-space: normal;
+                                    }
+                                    .tooltip .tooltiptext {
+                                        visibility: hidden;
+                                        background-color: #f9f9f9;
+                                        color: #000;
+                                        text-align: left;
+                                        border-radius: 6px;
+                                        border: 1px solid #ccc;
+                                        padding: 6px;
+                                        position: absolute;
+                                        z-index: 9999;
+                                        top: 1.5em;
+                                        left: 0;
+                                        opacity: 0;
+                                        transition: opacity 0.2s;
+                                        white-space: nowrap;
+                                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                                    }
+                                    .tooltip:hover .tooltiptext {
+                                        visibility: visible;
+                                        opacity: 1;
+                                    }
+                                    .paragraph-tooltiptext {
+                                        visibility: hidden;
+                                        background-color: #f9f9f9;
+                                        color: #000;
+                                        border-radius: 6px;
+                                        border: 1px solid #ccc;
+                                        padding: 6px;
+                                        position: absolute;
+                                        z-index: 9999;
+                                        top: 0;
+                                        width: 290px;
+                                        left: -300px;
+                                        opacity: 0;
+                                        transition: opacity 0.2s;
+                                        white-space: nowrap;
+                                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                                    }
+                                    .paragraph-tooltip:hover .paragraph-tooltiptext {
+                                        visibility: visible;
+                                        opacity: 1;
+                                    }
+                                    .tooltip:hover ~ .paragraph-tooltiptext,
+                                    .tooltip:hover + .paragraph-tooltiptext,
+                                    .tooltip:hover .paragraph-tooltiptext {
+                                        visibility: hidden !important;
+                                        opacity: 0 !important;
+                                    }
+                                    .paragraph-tooltip {
+                                        position: relative;
+                                    }
+                                    </style>
+                                ''')
+
+                                joined_html = ' '.join(parts)
+                                ui.html(
+                                    f'<div style="font-size: 18px; line-height: 1.6; '
+                                    f'text-align: justify;">{joined_html}</div>')
 
                                 def call_download_json():
                                     print('Download initiated.')

@@ -70,7 +70,7 @@ def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_l
     return result
 
 
-def text_classify_by_sentence(text: str, local_model_path: str, local_tokenizer_path: str, display_n: int, max_n):
+def text_classify_by_sentence(text: str, local_model_path: str, local_tokenizer_path: str, display_n: int, max_n: int):
     sentences_data = [data for data in preprocessing(text)]
     result = []
     for sentence_data in sentences_data:
