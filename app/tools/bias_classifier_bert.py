@@ -9,22 +9,27 @@ import torch.nn.functional as F
 from datasets import Dataset, load_from_disk
 from sklearn.metrics import f1_score, matthews_corrcoef
 from torch.utils.data import DataLoader
-from transformers import AutoModelForSequenceClassification, Trainer, TrainingArguments, BertweetTokenizer, \
-    DataCollatorWithPadding
+from transformers import (
+    AutoModelForSequenceClassification,
+    BertweetTokenizer,
+    DataCollatorWithPadding,
+    Trainer,
+    TrainingArguments,
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 def clean_tweet_for_bert(text):
     text = text.lower()
-    text = re.sub(r"http\S+|www\S+|https\S+", "", text)
-    text = re.sub(r"@\w+", "<USER>", text)
-    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r'http\S+|www\S+|https\S+', '', text)
+    text = re.sub(r'@\w+', '<USER>', text)
+    text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 
 def add_clean_versions(batch):
-    batch["text_bert"] = clean_tweet_for_bert(batch["text"])
+    batch['text_bert'] = clean_tweet_for_bert(batch['text'])
     return batch
 
 
@@ -113,8 +118,8 @@ def predicted_by_teacher(tokenized_train):
         '../models/propaganda_bert_model_teacher/checkpoint-2214',
         local_files_only=True).to(device)
 
-    tokenizer = BertweetTokenizer.from_pretrained("vinai/bertweet-base", use_fast=False)
-    data_collator = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors="pt")
+    tokenizer = BertweetTokenizer.from_pretrained('vinai/bertweet-base', use_fast=False)
+    data_collator = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors='pt')
 
     train_loader = DataLoader(tokenized_train, batch_size=32, collate_fn=data_collator)
 
@@ -127,9 +132,9 @@ def predicted_by_teacher(tokenized_train):
         teacher_logits.append(logits)
         teacher_predictions.append(probs)
         if i % 50 == 0:
-            print(f"Batch {i}")
-            print("Logits:", logits[:2])
-            print("Probabilities:", probs[:2])
+            print(f'Batch {i}')
+            print('Logits:', logits[:2])
+            print('Probabilities:', probs[:2])
 
     teacher_logits = torch.cat(teacher_logits, dim=0)
     teacher_predictions = torch.cat(teacher_predictions, dim=0)
@@ -165,7 +170,7 @@ class DistillationTrainer(Trainer):
 
         assert outputs_student.logits.size() == outputs_teacher.logits.size()
 
-        loss_function = nn.KLDivLoss(reduction="batchmean")
+        loss_function = nn.KLDivLoss(reduction='batchmean')
         loss_logits = (loss_function(
             F.log_softmax(outputs_student.logits / self.args.temperature, dim=-1),
             F.softmax(outputs_teacher.logits / self.args.temperature, dim=-1)) * (self.args.temperature ** 2))
@@ -214,8 +219,8 @@ def train_student(tokenized_train, tokenized_val):
     )
 
     trainer = DistillationTrainer(
-        model = student_model,
-        args = training_args,
+        model=student_model,
+        args=training_args,
         teacher_model=teacher_model,
         train_dataset=tokenized_train,
         eval_dataset=tokenized_val,
@@ -230,17 +235,19 @@ if __name__ == '__main__':
 
     multiprocessing.freeze_support()
 
-    dataset_dict = load_from_disk("tokenized_dataset")
-    tokenized_val = dataset_dict["val"]
-    tokenized_test = dataset_dict["test"]
-    tokenized_train = load_from_disk("tokenized_train_with_teacher")
+    dataset_dict = load_from_disk('tokenized_dataset')
+    tokenized_val = dataset_dict['val']
+    tokenized_test = dataset_dict['test']
+    tokenized_train = load_from_disk('tokenized_train_with_teacher')
 
-    student_model = AutoModelForSequenceClassification.from_pretrained('../models/propaganda_bert_model_3.0/checkpoint-2499', local_files_only=True)
-    teacher_model = AutoModelForSequenceClassification.from_pretrained('../models/propaganda_bert_model_teacher/checkpoint-2214', local_files_only=True)
+    student_model = AutoModelForSequenceClassification.from_pretrained(
+        '../models/propaganda_bert_model_3.0/checkpoint-2499', local_files_only=True)
+    teacher_model = AutoModelForSequenceClassification.from_pretrained(
+        '../models/propaganda_bert_model_teacher/checkpoint-2214', local_files_only=True)
 
     tokenizer = BertweetTokenizer.from_pretrained('vinai/bertweet-base', use_fast=False)
 
-    data_collator = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors="pt")
+    data_collator = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors='pt')
 
     def compute_metrics(eval_pred):
         predictions, expected_labels = eval_pred
@@ -250,7 +257,6 @@ if __name__ == '__main__':
         return {'f1_weighted': float(score_weighted) if score_weighted == 1 else score_weighted,
                 'f1_binary': float(score_binary) if score_binary == 1 else score_binary,
                 'matthews correlation coefficient': matthews_corrcoef(expected_labels, predictions)}
-
 
     trainer = Trainer(
         model=student_model,
