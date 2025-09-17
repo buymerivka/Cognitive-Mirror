@@ -222,6 +222,7 @@ app/datasets/trainWarticle_CoCoLoFa.json
 app/datasets/test.py
 app/datasets/labels.json
 app/models/
+app/tools/test_model.py
 
 
 app/models/manipulations_bert_model/optimizer.pt
