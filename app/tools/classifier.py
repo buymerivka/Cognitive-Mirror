@@ -12,7 +12,7 @@ def classify(text: str, paragraph_index: int, sentence_index: int, char_start: i
     tokenizer = AutoTokenizer.from_pretrained(local_tokenizer_path, local_files_only=True)
     model = AutoModelForSequenceClassification.from_pretrained(local_model_path, local_files_only=True)
 
-    inputs = tokenizer(text, padding='max_length', truncation=True, max_length=128, return_tensors='pt')
+    inputs = tokenizer(text.lower(), padding='max_length', truncation=True, max_length=128, return_tensors='pt')
 
     with torch.no_grad():
         logits = model(**inputs).logits
@@ -52,7 +52,7 @@ def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_l
                                        sentence_data.charStart, sentence_data.charEnd, propaganda_local_model_path,
                                        propaganda_local_tokenizer_path, top_n_propaganda, max_propaganda)
 
-        if propaganda_analysis['predictions'][0]['label'] != 'general discourse':
+        if propaganda_analysis['predictions'][0]['label'] != 'LABEL_0':
             manipulations_analysis = classify(sentence_data.text, sentence_data.paragraphIndex,
                                               sentence_data.sentenceIndex, sentence_data.charStart,
                                               sentence_data.charEnd, manipulations_local_model_path,
@@ -72,6 +72,7 @@ def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_l
 
 def text_classify_by_sentence(text: str, local_model_path: str, local_tokenizer_path: str, display_n: int, max_n: int):
     sentences_data = [data for data in preprocessing(text)]
+
     result = []
     for sentence_data in sentences_data:
         result.append(classify(sentence_data.text, sentence_data.paragraphIndex, sentence_data.sentenceIndex,

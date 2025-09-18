@@ -435,8 +435,6 @@ def render_analyze_request():
                 description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
-            checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
-            checkbox_propaganda_elements = {}
             checkbox_manipulations = {'Show manipulation techniques': True}
             checkbox_manipulations_elements = {}
             checkbox_emotions = {'Show emotions': True}
@@ -445,14 +443,12 @@ def render_analyze_request():
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data, checkbox_propaganda
-                for technique in checkbox_propaganda:
-                    checkbox_propaganda[technique] = True
+                nonlocal first_run, analyzed_data
                 analyzed_data = None
                 first_run = True
 
             def create_on_click():
-                nonlocal first_run, analyzed_data, checkbox_propaganda, checkbox_propaganda_elements, \
+                nonlocal first_run, analyzed_data, \
                     checkbox_manipulations, checkbox_manipulations_elements, \
                     checkbox_emotions, checkbox_emotions_elements
 
@@ -493,27 +489,12 @@ def render_analyze_request():
                                                              t=emotion: checkbox_emotions.__setitem__(t, e.value)
                                         )
 
-                            ui.label('Show propaganda strategies:').classes('text-[16px] mt-[10px] mb-[5px]')
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for strategy in checkbox_propaganda.keys():
-                                    if strategy != 'none':
-                                        checkbox_propaganda_elements[strategy] = ui.checkbox(
-                                            strategy,
-                                            value=checkbox_propaganda[strategy],
-                                            on_change=lambda e,
-                                                             t=strategy: checkbox_propaganda.__setitem__(t, e.value)
-                                        )
-
                             ui.button('Apply filters', color='#808080',
                                       on_click=lambda: create_on_click()).classes(
                                 'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
-                                selected_propaganda_strategies = [strategy for strategy in checkbox_propaganda.keys() if
-                                                                  checkbox_propaganda[strategy]]
 
                                 selected_manipulations_techniques = [tech for tech in checkbox_manipulations.keys() if
                                                                      checkbox_manipulations[tech]]
@@ -530,25 +511,19 @@ def render_analyze_request():
                                     text = data['text']
                                     predictions = data['predictions']
 
-                                    if (predictions[0]['label'] not in selected_propaganda_strategies and
-                                            predictions[0]['label'] != 'general discourse'):
-                                        bg_color = propaganda_colors.get('general discourse', '#ccc')
-                                    else:
-                                        bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
+                                    bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += (
                                         '<p style="text-align: left; '
-                                        'font-weight: bold">Most likely propaganda strategy: <p>')
+                                        'font-weight: bold">This is most likely a propagandistic sentence,'
+                                        ' with probability: <p>')
 
-                                    if predictions[0]['label'] in selected_propaganda_strategies:
-                                        score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
-                                        tooltip_table += (
-                                            f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                            f'1px solid black;">{predictions[0]["label"]}</td>'
-                                            f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                            f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                        )
+                                    score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
+                                    tooltip_table += (
+                                        f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                        f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                    )
 
                                     tooltip_table += '</table>'
 
@@ -589,7 +564,7 @@ def render_analyze_request():
 
                                     show_tooltip = (
                                             predictions and
-                                            predictions[0].get('label') not in [None, 'general discourse'] and
+                                            predictions[0].get('label') not in [None, 'LABEL_0'] and
                                             bg_color.lower() != '#ffffff'
                                     )
 
@@ -696,22 +671,15 @@ def render_analyze_propaganda_request():
 
             analyzed_data = None
 
-            checkbox_propaganda = {p: True for p in propaganda_colors.keys()}
-
-            checkbox_propaganda_elements = {}
-
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data, checkbox_propaganda
-                for technique in checkbox_propaganda:
-                    checkbox_propaganda[technique] = True
+                nonlocal first_run, analyzed_data
                 analyzed_data = None
                 first_run = True
 
             def create_on_click():
-                nonlocal first_run, analyzed_data, checkbox_propaganda, \
-                    checkbox_propaganda_elements
+                nonlocal first_run, analyzed_data
                 if not description.value:
                     ui.notify('Text is required', color='red')
                     return
@@ -722,32 +690,8 @@ def render_analyze_propaganda_request():
                 else:
                     card_container.clear()
                     with card_container:
-                        with ui.column().classes(
-                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
-                            ui.label('Filters:').classes('text-xl font-bold mb-4')
-
-                            ui.label('Show propaganda strategies:').classes('text-[16px] mt-[10px] mb-[5px]')
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_propaganda.keys():
-                                    if technique != 'none':
-                                        checkbox_propaganda_elements[technique] = ui.checkbox(
-                                            technique,
-                                            value=checkbox_propaganda[technique],
-                                            on_change=lambda e,
-                                                             t=technique: checkbox_propaganda.__setitem__(t, e.value)
-                                        )
-
-                            ui.button('Apply filters', color='#808080',
-                                      on_click=lambda: create_on_click()).classes(
-                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
-                                selected_propaganda_techniques = [tech for tech in checkbox_propaganda.keys() if
-                                                                  checkbox_propaganda[tech]]
-
                                 paragraphs = {}
 
                                 last_paragraph_id = 0
@@ -757,31 +701,25 @@ def render_analyze_propaganda_request():
                                     text = data['text']
                                     predictions = data['predictions']
 
-                                    if (predictions[0]['label'] not in selected_propaganda_techniques and
-                                            predictions[0]['label'] != 'general discourse'):
-                                        bg_color = propaganda_colors.get('general discourse', '#ccc')
-                                    else:
-                                        bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
+                                    bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
 
                                     tooltip_table = '<table style="font-size: 16px">'
                                     tooltip_table += (
                                         '<p style="text-align: center; '
-                                        'font-weight: bold">Most likely propaganda strategy: <p>')
+                                        'font-weight: bold">This is most likely a propagandistic sentence,'
+                                        ' with probability: <p>')
 
-                                    if predictions[0]['label'] in selected_propaganda_techniques:
-                                        score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
-                                        tooltip_table += (
-                                            f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                            f'1px solid black;">{predictions[0]["label"]}</td>'
-                                            f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                            f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                        )
+                                    score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
+                                    tooltip_table += (
+                                        f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                        f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                    )
 
                                     tooltip_table += '</table>'
 
                                     show_tooltip = (
                                             predictions and
-                                            predictions[0].get('label') not in [None, 'general discourse'] and
+                                            predictions[0].get('label') not in [None, 'LABEL_0'] and
                                             bg_color.lower() != '#ffffff'
                                     )
 
