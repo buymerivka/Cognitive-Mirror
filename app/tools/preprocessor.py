@@ -37,6 +37,9 @@ def preprocessing(text: str) -> List[ParsedSentence]:
         for s_idx, sent in enumerate(doc.sents):
             abs_start = text.find(sent.text.split()[0], offset)
             item = sent.text
+            item = re.sub(r'http\S+|www\S+|https\S+', '', item)
+            item = re.sub(r'@\w+', '<USER>', item)
+            item = re.sub(r'\s+', ' ', item)
             item = item.strip()
             abs_end = abs_start + len(item)
             item = re.sub(r'[ \t]+', ' ', item)
@@ -69,3 +72,11 @@ def clean_text(text):
 
     # Strip leading/trailing whitespace
     return text.strip()
+
+
+def clean_tweet_for_bert(text):
+    text = text.lower()
+    text = re.sub(r'http\S+|www\S+|https\S+', '', text)
+    text = re.sub(r'@\w+', '<USER>', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text

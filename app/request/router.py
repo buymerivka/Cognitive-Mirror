@@ -41,8 +41,8 @@ async def analyze_emotions(request_data: RequestSchema, top_n_emotions: int = 1)
 async def analyze(request_data: RequestSchema, top_n_propaganda: int = 1, top_n_manipulations: int = 1,
                   top_n_emotions: int = 1):
     full_analysis = text_full_classify(request_data.input_data,
-                                       f'{BASE_DIR}/models/propaganda_bert_model',
-                                       f'{BASE_DIR}/models/propaganda_bert_model/tokenizer',
+                                       f'{BASE_DIR}/models/propaganda_bert_model_3.0',
+                                       f'{BASE_DIR}/models/propaganda_bert_model_3.0/tokenizer',
                                        f'{BASE_DIR}/models/manipulations_bert_model',
                                        f'{BASE_DIR}/models/manipulations_bert_model/tokenizer',
                                        f'{BASE_DIR}/models/bert-goemotions',
