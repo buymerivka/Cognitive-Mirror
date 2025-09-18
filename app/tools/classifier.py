@@ -2,6 +2,7 @@ import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from app.tools.preprocessor import preprocessing
+from app.tools.bias_classifier_bert import clean_tweet_for_bert
 
 
 def classify(text: str, paragraph_index: int, sentence_index: int, char_start: int, char_end: int,
@@ -72,6 +73,10 @@ def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_l
 
 def text_classify_by_sentence(text: str, local_model_path: str, local_tokenizer_path: str, display_n: int, max_n: int):
     sentences_data = [data for data in preprocessing(text)]
+
+    for sentence_data in sentences_data:
+        sentence_data.text = clean_tweet_for_bert(sentence_data.text)
+
     result = []
     for sentence_data in sentences_data:
         result.append(classify(sentence_data.text, sentence_data.paragraphIndex, sentence_data.sentenceIndex,
