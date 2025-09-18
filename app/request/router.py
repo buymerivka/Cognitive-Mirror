@@ -11,7 +11,7 @@ from app.tools.classifier import text_classify_by_paragraph, text_classify_by_se
 router = APIRouter(tags=['analyser'])
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-PROPAGANDA_MAX = 5
+PROPAGANDA_MAX = 2
 MANIPULATIONS_MAX = 9
 EMOTIONS_MAX = 28
 
@@ -80,8 +80,8 @@ async def analyze_manipulations_and_emotions(request_data: RequestSchema, top_n_
 @router.post('/analyze_propaganda', response_model=ResponseSchema)
 async def analyze_propaganda(request_data: RequestSchema, top_n_propaganda: int = 1):
     analyzed_propaganda = text_classify_by_sentence(request_data.input_data,
-                                                    f'{BASE_DIR}/models/propaganda_bert_model',
-                                                    f'{BASE_DIR}/models/propaganda_bert_model/tokenizer',
+                                                    f'{BASE_DIR}/models/propaganda_bert_model_3.0',
+                                                    f'{BASE_DIR}/models/propaganda_bert_model_3.0/tokenizer',
                                                     top_n_propaganda,
                                                     PROPAGANDA_MAX)
     return ResponseSchema.model_validate({

@@ -42,9 +42,6 @@ emotion_colors = {
 }
 
 propaganda_colors = {
-    'general discourse': '#ffffff',           # White
-    'pro Russian government': '#cd5c5c',      # Indian red
-    'against Ukraine': '#cd5c5c',             # Indian red
-    'against Western countries': '#cd5c5c',   # Indian red
-    'aimed at other countries': '#cd5c5c'     # Indian red
+    'LABEL_0': '#ffffff',           # White
+    'LABEL_1': '#cd5c5c',      # Indian red
 }
