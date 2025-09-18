@@ -52,7 +52,7 @@ def text_full_classify(text: str, propaganda_local_model_path: str, propaganda_l
                                        sentence_data.charStart, sentence_data.charEnd, propaganda_local_model_path,
                                        propaganda_local_tokenizer_path, top_n_propaganda, max_propaganda)
 
-        if propaganda_analysis['predictions'][0]['label'] != 'general discourse':
+        if propaganda_analysis['predictions'][0]['label'] != 'LABEL_0':
             manipulations_analysis = classify(sentence_data.text, sentence_data.paragraphIndex,
                                               sentence_data.sentenceIndex, sentence_data.charStart,
                                               sentence_data.charEnd, manipulations_local_model_path,

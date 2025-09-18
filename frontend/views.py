@@ -564,7 +564,7 @@ def render_analyze_request():
 
                                     show_tooltip = (
                                             predictions and
-                                            predictions[0].get('label') not in [None, 'general discourse'] and
+                                            predictions[0].get('label') not in [None, 'LABEL_0'] and
                                             bg_color.lower() != '#ffffff'
                                     )
 
