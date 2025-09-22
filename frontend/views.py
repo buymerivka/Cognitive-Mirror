@@ -20,9 +20,9 @@ EMOTIONS_MAX = 28
 
 
 def render_header():
-    with ui.header().classes(
+    with (ui.header().classes(
             'w-full border-b-2 border-black py-0 px-0 items-center justify-center fixed-top bg-white').props(
-        'id="header_log_in"'):
+        'id="header_log_in"')):
         with ui.column().classes('items-center '):
             ui.label('Cognitive-Mirror').classes('text-[40px] text-black')
 
@@ -47,6 +47,23 @@ def render_header():
                     }
                 </style>
             ''')
+            with ui.button(icon='menu', color='#2c2c2c'):
+                with ui.menu().classes('w-[270px] rounded-[4px] border border-black bg-white '
+                                       ).style('transform-origin: top left;'):
+                    ui.menu_item('Analyze',
+                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze'))
+                    ui.separator()
+                    ui.menu_item('Analyze Manipulations',
+                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_manipulations'))
+                    ui.separator()
+                    ui.menu_item('Analyze Emotions',
+                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_emotions'))
+                    ui.separator()
+                    ui.menu_item('Analyze Manipulations And Emotions',
+                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_manipulations_and_emotions'))
+                    ui.separator()
+                    ui.menu_item('Analyze Propaganda',
+                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_propaganda'))
 
 
 def render_footer():
@@ -59,7 +76,6 @@ def render_footer():
 def render_analyze_manipulations_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
-        # ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
@@ -70,6 +86,9 @@ def render_analyze_manipulations_request():
 
                     .create-description {
                         resize: none;
+                    }
+                    .q-checkbox__inner {
+                        color: black !important;
                     }
                 </style>
             ''')
@@ -107,25 +126,6 @@ def render_analyze_manipulations_request():
                 else:
                     card_container.clear()
                     with card_container:
-                        # with ui.column().classes(
-                        #         'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
-                        #     ui.label('Filters:').classes('text-xl font-bold mb-4')
-                        #     ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
-                        #
-                        #     with ui.column().classes(
-                        #             'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                        #         for technique in checkbox_states.keys():
-                        #             if technique != 'none':
-                        #                 checkbox_elements[technique] = ui.checkbox(
-                        #                     technique,
-                        #                     value=checkbox_states[technique],
-                        #                     on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value)
-                        #                 )
-                        #
-                        #     ui.button('Apply filters', color='#808080',
-                        #               on_click=lambda: create_on_click()).classes(
-                        #         'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
                                 last_paragraph_id = 0
@@ -222,7 +222,8 @@ def render_analyze_manipulations_request():
                                     return
 
                                 with ui.row().classes('w-[430px] self-end gap-0'):
-                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                    ui.button('Download JSON', color='green',
+                                              on_click=call_download_json, icon='download').classes(
                                         'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
                                     ui.button('Clear', color='#2c2c2c', on_click=lambda: (card_container.clear(),
                                                                                           clear_action())).classes(
@@ -232,19 +233,22 @@ def render_analyze_manipulations_request():
 
             with start_column:
                 with ui.row().classes('w-full mt-[10px] justify-between items-center'):
-                    with ui.dropdown_button('Filters',  color='#2c2c2c').classes(
-                            'w-[270px]  rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
-                    ):
-                        ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
-                        with ui.column().classes(
-                                'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                            for technique in checkbox_states.keys():
-                                if technique != 'none':
-                                    checkbox_elements[technique] = ui.checkbox(
-                                        technique,
-                                        value=checkbox_states[technique],
-                                        on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value)
-                                    )
+                    with ui.dropdown_button('Filters', color='#2c2c2c').classes(
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                    ).style('transform-origin: top left;'):
+                        with ui.column().classes('w-[270px] rounded-[4px] border border-black bg-white '):
+                            ui.label('Show manipulation techniques:').classes(
+                                'w-full text-[16px] font-bold flex justify-center items-center h-[20px] mt-[10px] ')
+                            ui.separator().classes('border-black')
+                            with ui.column().classes(
+                                    'h-[320px]  w-full overflow-y-auto rounded-[4px]  px-[20px] pb-[10px] shadow-md'):
+                                for technique in checkbox_states.keys():
+                                    if technique != 'none':
+                                        checkbox_elements[technique] = ui.checkbox(
+                                            technique,
+                                            value=checkbox_states[technique],
+                                            on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value),
+                                        ).classes(' capitalize')
 
                     ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
                         'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
@@ -256,7 +260,6 @@ def render_analyze_manipulations_request():
 def render_analyze_emotions_request():
     render_header()
     with ui.column().classes('w-full justify-center items-center'):
-        ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
@@ -268,11 +271,15 @@ def render_analyze_emotions_request():
                     .create-description {
                         resize: none;
                     }
+                    .q-checkbox__inner {
+                        color: black !important;
+                    }
                 </style>
             ''')
-            with ui.column().classes('gap-0'):
-                ui.label('Provide a text').classes('text-[18px] mt-[20px] justify-center')
-                description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
+            start_column = ui.column().classes('gap-0')
+            with start_column:
+                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
 
@@ -285,8 +292,11 @@ def render_analyze_emotions_request():
                 nonlocal first_run, analyzed_data, checkbox_states
                 for technique in checkbox_states:
                     checkbox_states[technique] = True
+                    if technique in checkbox_elements:
+                        checkbox_elements[technique].value = True
                 analyzed_data = None
                 first_run = True
+                description.value = ''
 
             def create_on_click():
                 nonlocal analyzed_data, checkbox_states, first_run, checkbox_elements
@@ -300,25 +310,6 @@ def render_analyze_emotions_request():
                 else:
                     card_container.clear()
                     with card_container:
-                        with ui.column().classes(
-                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
-                            ui.label('Filters:').classes('text-xl font-bold mb-4')
-                            ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_states.keys():
-                                    if technique != 'neutral':
-                                        checkbox_elements[technique] = ui.checkbox(
-                                            technique,
-                                            value=checkbox_states[technique],
-                                            on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value)
-                                        )
-
-                            ui.button('Apply filters', color='#808080',
-                                      on_click=lambda: create_on_click()).classes(
-                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
                                 last_paragraph_id = 0
@@ -420,24 +411,44 @@ def render_analyze_emotions_request():
                                     return
 
                                 with ui.row().classes('w-[430px] self-end gap-0'):
-                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                    ui.button('Download JSON', color='green',
+                                              on_click=call_download_json, icon='download').classes(
                                         'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                    ui.button('Clear', color='#2c2c2c', on_click=lambda: (card_container.clear(),
                                                                                           clear_action())).classes(
                                         'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-            with ui.column().classes('items-center gap-0 self-end'):
-                ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                    'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
-                    'self-end')
+                    ui.run_javascript('window.scrollTo({ top: 0, behavior: "smooth" });')
+
+            with start_column:
+                with ui.row().classes('w-full mt-[10px] justify-between items-center'):
+                    with ui.dropdown_button('Filters', color='#2c2c2c').classes(
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                    ):
+                        with ui.column().classes('w-[270px] rounded-[4px] border border-black bg-white '):
+                            ui.label('Show emotions expressed:').classes(
+                                'w-full text-[16px] font-bold flex justify-center items-center h-[20px] mt-[10px]')
+                            ui.separator().classes('border-black')
+                            with ui.column().classes(
+                                    'max-h-[320px] w-full overflow-y-auto rounded-[4px] px-[20px] pb-[10px] shadow-md'):
+                                for technique in checkbox_states.keys():
+                                    if technique != 'neutral':
+                                        checkbox_elements[technique] = ui.checkbox(
+                                            technique,
+                                            value=checkbox_states[technique],
+                                            on_change=lambda e, t=technique: checkbox_states.__setitem__(t, e.value),
+                                        ).classes(' capitalize')
+
+                    ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
+                    )
 
     render_footer()
 
 
 def render_analyze_request():
     render_header()
-    with (((ui.column().classes('w-full justify-center items-center')))):
-        ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
+    with (ui.column().classes('w-full justify-center items-center')):
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
@@ -449,24 +460,39 @@ def render_analyze_request():
                     .create-description {
                         resize: none;
                     }
+                    .q-checkbox__inner {
+                        color: black !important;
+                    }
                 </style>
             ''')
-            with ui.column().classes('gap-0'):
-                ui.label('Provide a text').classes('text-[18px] mt-[20px] justify-center')
-                description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
+            start_column = ui.column().classes('gap-0')
+            with start_column:
+                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
             checkbox_manipulations = {'Show manipulation techniques': True}
             checkbox_manipulations_elements = {}
-            checkbox_emotions = {'Show emotions': True}
+            checkbox_emotions = {'Show emotions expressed': True}
             checkbox_emotions_elements = {}
 
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data
+                nonlocal first_run, analyzed_data, checkbox_emotions_elements, checkbox_emotions, \
+                checkbox_manipulations_elements, checkbox_manipulations
+                for technique in checkbox_manipulations:
+                    checkbox_manipulations[technique] = True
+                    if technique in checkbox_manipulations_elements:
+                        checkbox_manipulations_elements[technique].value = True
+
+                for technique in checkbox_emotions:
+                    checkbox_emotions[technique] = True
+                    if technique in checkbox_emotions_elements:
+                        checkbox_emotions_elements[technique].value = True
                 analyzed_data = None
                 first_run = True
+                description.value = ''
 
             def create_on_click():
                 nonlocal first_run, analyzed_data, \
@@ -484,36 +510,6 @@ def render_analyze_request():
                 else:
                     card_container.clear()
                     with card_container:
-                        with ui.column().classes(
-                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
-                            ui.label('Filters:').classes('text-xl font-bold mb-4')\
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_manipulations.keys():
-                                    if technique != 'none':
-                                        checkbox_manipulations_elements[technique] = ui.checkbox(
-                                            technique,
-                                            value=checkbox_manipulations[technique],
-                                            on_change=lambda e,
-                                                             t=technique: checkbox_manipulations.__setitem__(t, e.value)
-                                        )
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for emotion in checkbox_emotions.keys():
-                                    if technique != 'none':
-                                        checkbox_emotions_elements[emotion] = ui.checkbox(
-                                            emotion,
-                                            value=checkbox_emotions[emotion],
-                                            on_change=lambda e,
-                                                             t=emotion: checkbox_emotions.__setitem__(t, e.value)
-                                        )
-
-                            ui.button('Apply filters', color='#808080',
-                                      on_click=lambda: create_on_click()).classes(
-                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
 
@@ -655,24 +651,52 @@ def render_analyze_request():
                                     return
 
                                 with ui.row().classes('w-[430px] self-end gap-0'):
-                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                    ui.button('Download JSON', color='green',
+                                              on_click=call_download_json, icon='download').classes(
                                         'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                    ui.button('Clear', color='#2c2c2c', on_click=lambda: (card_container.clear(),
                                                                                           clear_action())).classes(
                                         'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-            with ui.column().classes('items-center gap-0 self-end'):
-                ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                    'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
-                    'self-end')
+                    ui.run_javascript('window.scrollTo({ top: 0, behavior: "smooth" });')
+
+            with start_column:
+                with ui.row().classes('w-full mt-[10px] justify-between items-center'):
+                    with ui.dropdown_button('Filters', color='#2c2c2c').classes(
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                    ):
+                        with ui.column().classes('w-[270px] rounded-[4px] border border-black bg-white gap-0'):
+                            with ui.column().classes(
+                                    'max-h-[320px] w-full overflow-y-auto rounded-[4px] pt-[10px] px-[10px] pb-[10px]'):
+                                for technique in checkbox_manipulations.keys():
+                                    if technique != 'none':
+                                        checkbox_manipulations_elements[technique] = ui.checkbox(
+                                            technique,
+                                            value=checkbox_manipulations[technique],
+                                            on_change=lambda e,
+                                                             t=technique: checkbox_manipulations.__setitem__(t, e.value)
+                                        )
+                            ui.separator().classes('border-black')
+                            with ui.column().classes(
+                                    'max-h-[320px] w-full overflow-y-auto rounded-[4px] pt-[10px] px-[10px] pb-[10px]'):
+                                for emotion in checkbox_emotions.keys():
+                                    if emotion != 'neutral':
+                                        checkbox_emotions_elements[emotion] = ui.checkbox(
+                                            emotion,
+                                            value=checkbox_emotions[emotion],
+                                            on_change=lambda e,
+                                                             t=emotion: checkbox_emotions.__setitem__(t, e.value)
+                                        )
+                    ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
+                    )
 
     render_footer()
 
 
 def render_analyze_propaganda_request():
     render_header()
-    with (((ui.column().classes('w-full justify-center items-center')))):
-        ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
+    with ui.column().classes('w-full justify-center items-center'):
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
@@ -684,11 +708,15 @@ def render_analyze_propaganda_request():
                     .create-description {
                         resize: none;
                     }
+                    .q-checkbox__inner {
+                        color: black !important;
+                    }
                 </style>
             ''')
-            with ui.column().classes('gap-0'):
-                ui.label('Provide a text').classes('text-[18px] mt-[20px] justify-center')
-                description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
+            start_column = ui.column().classes('gap-0')
+            with start_column:
+                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
 
@@ -698,6 +726,7 @@ def render_analyze_propaganda_request():
                 nonlocal first_run, analyzed_data
                 analyzed_data = None
                 first_run = True
+                description.value = ''
 
             def create_on_click():
                 nonlocal first_run, analyzed_data
@@ -810,60 +839,69 @@ def render_analyze_propaganda_request():
                                     return
 
                                 with ui.row().classes('w-[430px] self-end gap-0'):
-                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                    ui.button('Download JSON', color='green',
+                                              on_click=call_download_json, icon='download').classes(
                                         'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                    ui.button('Clear', color='#2c2c2c', on_click=lambda: (card_container.clear(),
                                                                                           clear_action())).classes(
                                         'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
+                    ui.run_javascript('window.scrollTo({ top: 0, behavior: "smooth" });')
 
-            with ui.column().classes('items-center gap-0 self-end'):
-                ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                    'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
-                    'self-end')
+            with start_column:
+                with ui.row().classes('w-full mt-[10px] justify-end items-center'):
+                    ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] '
+                        'self-end')
 
     render_footer()
 
 
 def render_analyze_manipulations_and_emotions_request():
     render_header()
-    with ((ui.column().classes('w-full justify-center items-center'))):
-        ui.label('Create a request').classes('text-[17px] mb-[10px] text-[24px] font-bold justify-center')
+    with (ui.column().classes('w-full justify-center items-center')):
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
-                <style>
-                    .create-title {
-                        resize: none;
-                    }
+                        <style>
+                            .create-title {
+                                resize: none;
+                            }
 
-                    .create-description {
-                        resize: none;
-                    }
-                </style>
-            ''')
-            with ui.column().classes('gap-0'):
-                ui.label('Provide a text').classes('text-[18px] mt-[20px] justify-center')
-                description = ui.textarea().classes('w-[600px]').props('id=create-request outlined dense autogrow')
+                            .create-description {
+                                resize: none;
+                            }
+                            .q-checkbox__inner {
+                                color: black !important;
+                            }
+                        </style>
+                    ''')
+            start_column = ui.column().classes('gap-0')
+            with start_column:
+                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
-
             checkbox_manipulations = {p: True for p in manipulations_colors.keys()}
-
             checkbox_manipulations_elements = {}
-
             checkbox_emotions = {p: True for p in emotion_colors.keys()}
-
             checkbox_emotions_elements = {}
             first_run = True
 
             def clear_action():
-                nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations
-                for technique in checkbox_emotions:
-                    checkbox_emotions[technique] = True
+                nonlocal first_run, analyzed_data, checkbox_emotions_elements, checkbox_emotions, \
+                checkbox_manipulations_elements, checkbox_manipulations
                 for technique in checkbox_manipulations:
                     checkbox_manipulations[technique] = True
+                    if technique in checkbox_manipulations_elements:
+                        checkbox_manipulations_elements[technique].value = True
+
+                for technique in checkbox_emotions:
+                    checkbox_emotions[technique] = True
+                    if technique in checkbox_emotions_elements:
+                        checkbox_emotions_elements[technique].value = True
                 analyzed_data = None
                 first_run = True
+                description.value = ''
 
             def create_on_click():
                 nonlocal first_run, analyzed_data, checkbox_emotions, checkbox_manipulations, \
@@ -880,38 +918,6 @@ def render_analyze_manipulations_and_emotions_request():
                 else:
                     card_container.clear()
                     with card_container:
-                        with ui.column().classes(
-                                'mt-[20px] max-w-[300px] rounded-[12px] p-[20px] shadow-md'):
-                            ui.label('Filters:').classes('text-xl font-bold mb-4')
-                            ui.label('Show manipulation techniques:').classes('text-[16px] mt-[10px] mb-[5px]')
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_manipulations.keys():
-                                    if technique != 'none':
-                                        checkbox_manipulations_elements[technique] = ui.checkbox(
-                                            technique,
-                                            value=checkbox_manipulations[technique],
-                                            on_change=lambda e,
-                                                             t=technique: checkbox_manipulations.__setitem__(t, e.value)
-                                        )
-
-                            ui.label('Show emotions:').classes('text-[16px] mt-[10px] mb-[5px]')
-
-                            with ui.column().classes(
-                                    'max-h-[300px] w-[200px] overflow-y-auto rounded-[12px] p-[20px] shadow-md'):
-                                for technique in checkbox_emotions.keys():
-                                    if technique != 'neutral':
-                                        checkbox_emotions_elements[technique] = ui.checkbox(
-                                            technique,
-                                            value=checkbox_emotions[technique],
-                                            on_change=lambda e, t=technique: checkbox_emotions.__setitem__(t, e.value)
-                                        )
-
-                            ui.button('Apply filters', color='#808080',
-                                      on_click=lambda: create_on_click()).classes(
-                                'w-[270px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
-
                         with ui.column().classes('mt-[20px] w-[1000px] w-max-[1300px]'):
                             with ui.card().classes('w-full'):
                                 selected_manipulations_techniques = [tech for tech in checkbox_manipulations.keys() if
@@ -1090,16 +1096,57 @@ def render_analyze_manipulations_and_emotions_request():
                                     return
 
                                 with ui.row().classes('w-[430px] self-end gap-0'):
-                                    ui.button('Download JSON', color='green', on_click=call_download_json).classes(
+                                    ui.button('Download JSON', color='green',
+                                              on_click=call_download_json, icon='download').classes(
                                         'w-[210px] rounded-[8px] h-[30px] m-0 mr-[10px] self-end')
-                                    ui.button('Clear', color='#808080', on_click=lambda: (card_container.clear(),
+                                    ui.button('Clear', color='#2c2c2c', on_click=lambda: (card_container.clear(),
                                                                                           clear_action())).classes(
                                         'w-[210px] h-[30px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] self-end')
 
-            with ui.column().classes('items-center gap-0 self-end'):
-                ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                    'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] mt-[10px] mt-[46px] '
-                    'self-end')
+                    ui.run_javascript('window.scrollTo({ top: 0, behavior: "smooth" });')
+
+            with start_column:
+                with ui.row().classes('w-full mt-[10px] justify-between items-center'):
+                    with ui.dropdown_button('Filters', color='#2c2c2c').classes(
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                    ):
+                        with ui.row().classes(
+                                'rounded-[4px] border border-black '
+                                'bg-white items-start flex-nowrap overflow-hidden gap-0'):
+                            with ui.column().classes('w-[270px] rounded-none bg-white'):
+                                ui.label('Show manipulation techniques:').classes(
+                                    'w-full text-[16px] font-bold flex justify-center items-center h-[20px] mt-[10px]')
+                                ui.separator().classes('border-black')
+                                with ui.column().classes(
+                                        'max-h-[320px] w-full overflow-y-auto rounded-[4px] px-[20px] pb-[10px] '):
+                                    for technique in checkbox_manipulations.keys():
+                                        if technique != 'none':
+                                            checkbox_manipulations_elements[technique] = ui.checkbox(
+                                                technique,
+                                                value=checkbox_manipulations[technique],
+                                                on_change=lambda e, t=technique: checkbox_manipulations.__setitem__(t,
+                                                                                                                    e.value)
+                                            ).classes('capitalize')
+
+                            ui.separator().props('vertical').classes('border-black w-px mx-0')
+
+                            with ui.column().classes('w-[270px] rounded-none bg-white'):
+                                ui.label('Show emotions expressed:').classes(
+                                    'w-full text-[16px] font-bold flex justify-center items-center  h-[20px] mt-[10px]')
+                                ui.separator().classes('border-black')
+                                with ui.column().classes(
+                                        'max-h-[320px] w-full overflow-y-auto rounded-[4px] px-[20px] pb-[10px] '):
+                                    for emotion in checkbox_emotions.keys():
+                                        if emotion != 'neutral':
+                                            checkbox_emotions_elements[emotion] = ui.checkbox(
+                                                emotion,
+                                                value=checkbox_emotions[emotion],
+                                                on_change=lambda e, t=emotion: checkbox_emotions.__setitem__(t, e.value)
+                                            ).classes('capitalize')
+
+                    ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
+                    )
 
     render_footer()
 
