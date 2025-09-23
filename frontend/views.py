@@ -1064,9 +1064,9 @@ def render_analyze_manipulations_and_emotions_request():
                                         if len(filtered_predictions) == 1:
                                             p = filtered_predictions[0]
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
-                                            paragraph_tooltip += (f'<p style="text-align: center;">'
-                                                                  f"Most likely paragraph's emotion - "
-                                                                  f'<b>{p['label']}</b>, with probability: '
+                                            paragraph_tooltip += (f'<p>'
+                                                                  f'Most likely paragraph\'s emotion - '
+                                                                  f'<b>{p['label']}</b>,</p><p>with probability: '
                                                                   f'<b>{score_to_display}</b>.</p></span>')
                                         else:
                                             paragraph_tooltip = '''
@@ -1133,8 +1133,8 @@ def render_analyze_manipulations_and_emotions_request():
                                         position: absolute;
                                         z-index: 9999;
                                         top: 0;
-                                        width: 610px;
-                                        left: -620px;
+                                        width: 390px;
+                                        left: -400px;
                                         opacity: 0;
                                         transition: opacity 0.2s;
                                         white-space: nowrap;
@@ -1255,10 +1255,16 @@ def render_index_page():
         ]
 
         for title, description, link in endpoints:
-            with ui.card().classes('w-[600px] p-6 hover:shadow-xl transition-all cursor-pointer') \
-                    .on('click', lambda e, link_to=link: ui.navigate.to(link_to)):
-                ui.label(title).classes('text-2xl font-semibold cursor-pointer')
-                ui.label(description).classes('text-gray-600 mt-2')
+            if title != 'Analyze Propaganda':
+                with ui.card().classes('w-[600px] p-6 hover:shadow-xl transition-all cursor-pointer') \
+                        .on('click', lambda e, link_to=link: ui.navigate.to(link_to)):
+                    ui.label(title).classes('text-2xl font-semibold cursor-pointer')
+                    ui.label(description).classes('text-gray-600 mt-2')
+            else:
+                with ui.card().classes('w-[600px] mb-[200px] p-6 hover:shadow-xl transition-all cursor-pointer') \
+                        .on('click', lambda e, link_to=link: ui.navigate.to(link_to)):
+                    ui.label(title).classes('text-2xl font-semibold cursor-pointer')
+                    ui.label(description).classes('text-gray-600 mt-2')
     render_footer()
 
 
