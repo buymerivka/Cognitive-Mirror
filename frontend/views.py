@@ -1065,7 +1065,7 @@ def render_analyze_manipulations_and_emotions_request():
                                             p = filtered_predictions[0]
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
                                             paragraph_tooltip += (f'<p>'
-                                                                  f'Most likely paragraph\'s emotion - '
+                                                                  f"Most likely paragraph's emotion - "
                                                                   f'<b>{p['label']}</b>,</p><p>with probability: '
                                                                   f'<b>{score_to_display}</b>.</p></span>')
                                         else:
