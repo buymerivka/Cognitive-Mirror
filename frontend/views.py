@@ -133,7 +133,7 @@ def render_footer():
                     ui.label('GitHub').classes('text-gray-400 text-sm cursor-pointer hover:text-green-400') \
                         .on('click', lambda: ui.navigate.to('https://github.com/yehor-kuzmych'))
                     ui.label('LinkedIn').classes('text-gray-400 text-sm cursor-pointer hover:text-green-400') \
-                        .on('click', lambda: ui.navigate.to('https://www.linkedin.com/in/arsenii-galaida'))
+                        .on('click', lambda: ui.navigate.to('https://www.linkedin.com/in/yehor-kuzmych-b78453353'))
 
         ui.add_css('''
         .hover-green:hover {
