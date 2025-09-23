@@ -23,8 +23,21 @@ def render_header():
     with (ui.header().classes(
             'w-full border-b-2 border-black py-0 px-0 items-center justify-center fixed-top bg-white').props(
         'id="header_log_in"')):
-        with ui.column().classes('items-center '):
-            ui.label('Cognitive-Mirror').classes('text-[40px] text-black')
+        with ui.column().classes('items-center'):
+            ui.label('Cognitive Mirror') \
+                .classes('index_label text-[40px] cursor-pointer') \
+                .on('click', lambda: ui.navigate.to('/'))
+
+        ui.add_css('''
+        .index_label {
+          font-weight: bold;
+          color: #2c2c2c;
+        }
+
+        .index_label:hover {
+          text-decoration: underline;
+        }
+        ''')
 
         with ui.row().classes('absolute right-[15px] flex items-center'):
             ui.add_head_html('''
@@ -51,26 +64,83 @@ def render_header():
                 with ui.menu().classes('w-[270px] rounded-[4px] border border-black bg-white '
                                        ).style('transform-origin: top left;'):
                     ui.menu_item('Analyze',
-                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze'))
+                                 on_click=lambda: ui.navigate.to('/analyze'))
                     ui.separator()
                     ui.menu_item('Analyze Manipulations',
-                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_manipulations'))
+                                 on_click=lambda: ui.navigate.to('/analyze_manipulations'))
                     ui.separator()
                     ui.menu_item('Analyze Emotions',
-                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_emotions'))
+                                 on_click=lambda: ui.navigate.to('/analyze_emotions'))
                     ui.separator()
                     ui.menu_item('Analyze Manipulations And Emotions',
-                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_manipulations_and_emotions'))
+                                 on_click=lambda: ui.navigate.to('/analyze_manipulations_and_emotions'))
                     ui.separator()
                     ui.menu_item('Analyze Propaganda',
-                                 on_click=lambda: ui.navigate.to('http://127.0.0.1:8080/analyze_propaganda'))
+                                 on_click=lambda: ui.navigate.to('/analyze_propaganda'))
+
+
+ui.add_css('''
+html, body, #page {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#page > .column:first-child {
+    flex: 1 0 auto !important;  /* Основний контент займає весь доступний простір */
+}
+
+footer {
+    margin-top: auto !important; /* футер завжди опускається вниз */
+}
+''')
 
 
 def render_footer():
-    with ui.footer().classes(
-            'w-full border-t-2 border-gray-300 justify-between items-start flex-wrap bg-white text-black absolute'):
-        with ui.column().classes('gap-4 min-w-[250px]'):
-            ui.label('Cognitive-Mirror').classes('text-[32px]')
+    # with ui.footer().classes(
+    #         'w-full border-t-2 border-gray-300 bg-[#2c2c2c] text-white flex flex-col items-center'
+    # ).style('position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px 60px; z-index: 1000;'):
+    with ui.column().classes(
+            'w-full border-t-2 border-gray-300 flex flex-col justify-center items-center bg-[#2c2c2c] text-white'
+    ).style('position: absolute; left: 0px; right: 0px; bottom: 0px; height: 200px'):
+
+        with ui.column().classes('gap-2 items-center mt-6 mb-6'):
+            ui.label('Cognitive Mirror').classes('text-[28px] font-bold')
+            ui.label('AI tool for analyzing text propaganda, manipulations and emotions') \
+                .classes('text-gray-300 text-[16px]')
+            ui.label('Feel free to contact us:').classes('text-gray-300 text-[16px]')
+
+            def copy_email():
+                ui.run_javascript("navigator.clipboard.writeText('buymerivka@gmail.com');")
+                ui.notify('Email copied to clipboard!', color='green')
+
+            ui.label('buymerivka@gmail.com') \
+                .classes('text-gray-300 text-sm cursor-pointer hover:text-green-400') \
+                .on('click', copy_email)
+
+        with ui.row().classes('gap-24 justify-center'):
+            with ui.column().classes('gap-2 items-center'):
+                ui.label('Arsenii Galaida').classes('text-gray-300 font-semibold')
+                with ui.row().classes('gap-4'):
+                    ui.label('GitHub').classes('text-gray-400 text-sm cursor-pointer hover:text-green-400') \
+                        .on('click', lambda: ui.navigate.to('https://github.com/ArseniiGalaida'))
+                    ui.label('LinkedIn').classes('text-gray-400 text-sm cursor-pointer hover:text-green-400') \
+                        .on('click', lambda: ui.navigate.to('https://www.linkedin.com/in/arsenii-galaida'))
+
+            with ui.column().classes('gap-2 items-center'):
+                ui.label('Yehor Kuzmych').classes('text-gray-300 font-semibold')
+                with ui.row().classes('gap-4'):
+                    ui.label('GitHub').classes('text-gray-400 text-sm cursor-pointer hover:text-green-400') \
+                        .on('click', lambda: ui.navigate.to('https://github.com/yehor-kuzmych'))
+                    ui.label('LinkedIn').classes('text-gray-400 text-sm cursor-pointer hover:text-green-400') \
+                        .on('click', lambda: ui.navigate.to('https://www.linkedin.com/in/arsenii-galaida'))
+
+        ui.add_css('''
+        .hover-green:hover {
+            color: #4CAF50 !important;
+            text-decoration: underline;
+        }
+        ''')
 
 
 def render_analyze_manipulations_request():
@@ -140,19 +210,29 @@ def render_analyze_manipulations_request():
                                     else:
                                         bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
 
-                                    tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += ('<p style="text-align: center; '
-                                                      'font-weight: bold">Most likely manipulations techniques<p>')
-                                    for p in predictions:
+                                    tooltip_table = ''
+                                    if len(predictions) == 1:
+                                        p = predictions[0]
                                         if p['label'] in selected_techniques:
                                             score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
-                                            tooltip_table += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                            )
-                                    tooltip_table += '</table>'
+                                            tooltip_table += (f'<p style="text-align: center;">'
+                                                              f'Most likely manipulation technique - '
+                                                              f'<b>{p['label']}</b>, with probability: '
+                                                              f'<b>{score_to_display}</b>.</p>')
+                                    else:
+                                        tooltip_table = '<table style="font-size: 16px">'
+                                        tooltip_table += ('<p style="text-align: center; '
+                                                      'font-weight: bold">Most likely manipulations techniques<p>')
+                                        for p in predictions:
+                                            if p['label'] in selected_techniques:
+                                                score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
+                                                tooltip_table += (
+                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{p["label"]}</td>'
+                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                )
+                                        tooltip_table += '</table>'
 
                                     show_tooltip = (
                                             predictions and
@@ -234,7 +314,7 @@ def render_analyze_manipulations_request():
             with start_column:
                 with ui.row().classes('w-full mt-[10px] justify-between items-center'):
                     with ui.dropdown_button('Filters', color='#2c2c2c').classes(
-                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] mb-[200px]'
                     ).style('transform-origin: top left;'):
                         with ui.column().classes('w-[270px] rounded-[4px] border border-black bg-white '):
                             ui.label('Show manipulation techniques:').classes(
@@ -251,8 +331,7 @@ def render_analyze_manipulations_request():
                                         ).classes(' capitalize')
 
                     ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
-                    )
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)] mb-[200px]')
 
     render_footer()
 
@@ -324,23 +403,29 @@ def render_analyze_emotions_request():
                                     else:
                                         bg_color = emotion_colors.get(predictions[0]['label'], '#ccc')
 
-                                    tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += ('<p style="text-align: center; '
-                                                      'font-weight: bold">Most likely emotion expressed<p>')
-
-                                    amount = len(selected_techniques)
-
-                                    filtered_predictions = [p for p in predictions if p['label'] in selected_techniques]
-
-                                    for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
-                                        score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
-                                        tooltip_table += (
-                                            f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
-                                            f'border: 1px solid black;">{p["label"]}</td>'
-                                            f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                            f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                        )
-                                    tooltip_table += '</table>'
+                                    tooltip_table = ''
+                                    if len(predictions) == 1:
+                                        p = predictions[0]
+                                        if p['label'] in selected_techniques:
+                                            score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
+                                            tooltip_table += (f'<p style="text-align: center;">'
+                                                              f'Most likely manipulation technique - '
+                                                              f'<b>{p['label']}</b>, with probability: '
+                                                              f'<b>{score_to_display}</b>.</p>')
+                                    else:
+                                        tooltip_table = '<table style="font-size: 16px">'
+                                        tooltip_table += ('<p style="text-align: center; '
+                                                          'font-weight: bold">Most likely manipulations techniques<p>')
+                                        for p in predictions:
+                                            if p['label'] in selected_techniques:
+                                                score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
+                                                tooltip_table += (
+                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{p["label"]}</td>'
+                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                )
+                                        tooltip_table += '</table>'
 
                                     show_tooltip = (
                                             predictions and
@@ -423,7 +508,7 @@ def render_analyze_emotions_request():
             with start_column:
                 with ui.row().classes('w-full mt-[10px] justify-between items-center'):
                     with ui.dropdown_button('Filters', color='#2c2c2c').classes(
-                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] mb-[200px]'
                     ):
                         with ui.column().classes('w-[270px] rounded-[4px] border border-black bg-white '):
                             ui.label('Show emotions expressed:').classes(
@@ -440,8 +525,7 @@ def render_analyze_emotions_request():
                                         ).classes(' capitalize')
 
                     ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
-                    )
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)] mb-[200px]')
 
     render_footer()
 
@@ -530,54 +614,35 @@ def render_analyze_request():
 
                                     bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
 
-                                    tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += (
-                                        '<p style="text-align: left; '
-                                        'font-weight: bold">This is most likely a propagandistic sentence,'
-                                        ' with probability: <p>')
-
+                                    # tooltip_table = '<table style="font-size: 16px">'
                                     score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
-                                    tooltip_table += (
-                                        f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                        f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                    )
+                                    tooltip_table = (
+                                        f'<p style="text-align: left;">This is most likely a '
+                                        f'<b>propagandistic</b> sentence,'
+                                        f' with probability: <b>{score_to_display}</b>.<p>')
 
-                                    tooltip_table += '</table>'
+                                    # tooltip_table += '</table>'
 
                                     if selected_manipulations_techniques:
                                         for manipulations_data in analyzed_data['manipulations_analyzed']:
                                             if manipulations_data['text'] == text:
-                                                tooltip_table += '<table style="font-size: 16px">'
-                                                tooltip_table += (
-                                                    '<p style="text-align: left; '
-                                                    'font-weight: bold">Most likely manipulations techniques: <p>')
                                                 score_to_display = f"{int(float(
                                                     manipulations_data['predictions'][0]['score']) * 10000) / 100}%"
                                                 tooltip_table += (
-                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                                    f'1px solid black;">{manipulations_data['predictions'][0]["label"]}'
-                                                    f'</td>'
-                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                                )
-                                                tooltip_table += '</table>'
+                                                    f'<p style="text-align: left;">'
+                                                    f'Most likely manipulation technique - '
+                                                    f'<b>{manipulations_data['predictions'][0]["label"]}</b>,'
+                                                    f' with probability: <b>{score_to_display}</b>.</p>')
 
                                     if selected_emotions:
                                         for emotions_data in analyzed_data['emotions_analyzed']:
                                             if emotions_data['text'] == text:
-                                                tooltip_table += '<table style="font-size: 16px">'
-                                                tooltip_table += (
-                                                    '<p style="text-align: left; '
-                                                    'font-weight: bold">Most likely emotion expressed: <p>')
                                                 score_to_display = f"{int(float(
                                                     emotions_data['predictions'][0]['score']) * 10000) / 100}%"
                                                 tooltip_table += (
-                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                                    f'1px solid black;">{emotions_data['predictions'][0]["label"]}</td>'
-                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                                )
-                                                tooltip_table += '</table>'
+                                                    f'<p style="text-align: left;">Most likely emotion expressed - '
+                                                    f'<b>{emotions_data['predictions'][0]["label"]}</b>,'
+                                                    f' with probability: <b>{score_to_display}</b>.</p>')
 
                                     show_tooltip = (
                                             predictions and
@@ -663,7 +728,7 @@ def render_analyze_request():
             with start_column:
                 with ui.row().classes('w-full mt-[10px] justify-between items-center'):
                     with ui.dropdown_button('Filters', color='#2c2c2c').classes(
-                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] mb-[200px]'
                     ):
                         with ui.column().classes('w-[270px] rounded-[4px] border border-black bg-white gap-0'):
                             with ui.column().classes(
@@ -688,8 +753,7 @@ def render_analyze_request():
                                                              t=emotion: checkbox_emotions.__setitem__(t, e.value)
                                         )
                     ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
-                    )
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)] mb-[200px]')
 
     render_footer()
 
@@ -753,19 +817,11 @@ def render_analyze_propaganda_request():
 
                                     bg_color = propaganda_colors.get(predictions[0]['label'], '#ccc')
 
-                                    tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += (
-                                        '<p style="text-align: center; '
-                                        'font-weight: bold">This is most likely a propagandistic sentence,'
-                                        ' with probability: <p>')
-
                                     score_to_display = f"{int(float(predictions[0]['score']) * 10000) / 100}%"
-                                    tooltip_table += (
-                                        f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                        f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                    )
-
-                                    tooltip_table += '</table>'
+                                    tooltip_table = (
+                                        f'<p style="text-align: center;">'
+                                        f'This is most likely a <b>propagandistic</b> sentence,'
+                                        f' with probability: <b>{score_to_display}</b>.</p>')
 
                                     show_tooltip = (
                                             predictions and
@@ -851,7 +907,7 @@ def render_analyze_propaganda_request():
                 with ui.row().classes('w-full mt-[10px] justify-end items-center'):
                     ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
                         'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44, 44, 44)] ml-[20px] '
-                        'self-end')
+                        'self-end mb-[200px]')
 
     render_footer()
 
@@ -911,8 +967,8 @@ def render_analyze_manipulations_and_emotions_request():
                     return
                 if first_run:
                     analyzed_data = create_manipulations_and_emotions_request(description.value,
-                                                                              len(manipulations_colors),
-                                                                              len(emotion_colors))
+                                                                              1,
+                                                                              1)
                 if not analyzed_data:
                     ui.notify('An error occurred', color='red')
                 else:
@@ -937,20 +993,30 @@ def render_analyze_manipulations_and_emotions_request():
                                     else:
                                         bg_color = manipulations_colors.get(predictions[0]['label'], '#ccc')
 
-                                    tooltip_table = '<table style="font-size: 16px">'
-                                    tooltip_table += (
-                                        '<p style="text-align: center; font-weight: bold">Most likely manipulations '
-                                        'techniques<p>')
-                                    for p in predictions:
+                                    tooltip_table = ''
+                                    if len(predictions) == 1:
+                                        p = predictions[0]
                                         if p['label'] in selected_manipulations_techniques:
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
-                                            tooltip_table += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
-                                                f'1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                            )
-                                    tooltip_table += '</table>'
+                                            tooltip_table += (f'<p style="text-align: center;">Most likely manipulation'
+                                                              f' technique - <b>{p['label']}</b>, with probability: '
+                                                              f'<b>{score_to_display}</b>.</p>')
+                                    else:
+                                        tooltip_table = '<table style="font-size: 16px">'
+                                        tooltip_table += (
+                                            '<p style="text-align: center; '
+                                            'font-weight: bold">Most likely manipulations '
+                                            'techniques<p>')
+                                        for p in predictions:
+                                            if p['label'] in selected_manipulations_techniques:
+                                                score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
+                                                tooltip_table += (
+                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; border: '
+                                                    f'1px solid black;">{p["label"]}</td>'
+                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                )
+                                        tooltip_table += '</table>'
 
                                     show_tooltip = (
                                             predictions and
@@ -986,31 +1052,37 @@ def render_analyze_manipulations_and_emotions_request():
 
                                     show_emotion_tooltip = True
                                     if emotions_for_paragraph and len(emotions_for_paragraph) > 0:
-                                        if emotions_for_paragraph[0]['label'].lower() == 'neutral' or \
-                                                emotions_for_paragraph[0]['label'] not in selected_emotions_techniques:
+                                        if emotions_for_paragraph[0]['label'] not in selected_emotions_techniques:
                                             show_emotion_tooltip = False
 
                                     if show_emotion_tooltip:
-                                        paragraph_tooltip = '''
-                                            <span class="paragraph-tooltiptext">
-                                            <table style="font-size: 16px">
-                                            <p style="text-align: center;
-                                            font-weight: bold">Most likely paragraph's emotions</p>
-                                        '''
+                                        paragraph_tooltip = '<span class="paragraph-tooltiptext">'
                                         filtered_predictions = [p for p in emotions_for_paragraph if p[
                                             'label'] in selected_emotions_techniques] if emotions_for_paragraph else []
 
                                         amount = len(selected_emotions_techniques)
-
-                                        for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
+                                        if len(filtered_predictions) == 1:
+                                            p = filtered_predictions[0]
                                             score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
-                                            paragraph_tooltip += (
-                                                f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{p["label"]}</td>'
-                                                f'<td style="padding: 2px 8px; white-space: nowrap; '
-                                                f'border: 1px solid black;">{score_to_display}</td></tr>'
-                                            )
-                                        paragraph_tooltip += '</table></span>'
+                                            paragraph_tooltip += (f'<p style="text-align: center;">'
+                                                                  f"Most likely paragraph's emotion - "
+                                                                  f'<b>{p['label']}</b>, with probability: '
+                                                                  f'<b>{score_to_display}</b>.</p></span>')
+                                        else:
+                                            paragraph_tooltip = '''
+                                                <table style="font-size: 16px">
+                                                <p style="text-align: center;
+                                                font-weight: bold">Most likely paragraph's emotions</p>
+                                            '''
+                                            for p in filtered_predictions[:min(len(manipulations_colors), amount)]:
+                                                score_to_display = f"{int(float(p['score']) * 10000) / 100}%"
+                                                paragraph_tooltip += (
+                                                    f'<tr><td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{p["label"]}</td>'
+                                                    f'<td style="padding: 2px 8px; white-space: nowrap; '
+                                                    f'border: 1px solid black;">{score_to_display}</td></tr>'
+                                                )
+                                            paragraph_tooltip += '</table></span>'
                                     else:
                                         paragraph_tooltip = ''
 
@@ -1061,8 +1133,8 @@ def render_analyze_manipulations_and_emotions_request():
                                         position: absolute;
                                         z-index: 9999;
                                         top: 0;
-                                        width: 290px;
-                                        left: -300px;
+                                        width: 610px;
+                                        left: -620px;
                                         opacity: 0;
                                         transition: opacity 0.2s;
                                         white-space: nowrap;
@@ -1108,7 +1180,7 @@ def render_analyze_manipulations_and_emotions_request():
             with start_column:
                 with ui.row().classes('w-full mt-[10px] justify-between items-center'):
                     with ui.dropdown_button('Filters', color='#2c2c2c').classes(
-                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] '
+                            'w-[270px] rounded-[8px] text-white bg-[rgb(44,44,44)] h-[40px] mb-[200px]'
                     ):
                         with ui.row().classes(
                                 'rounded-[4px] border border-black '
@@ -1145,9 +1217,48 @@ def render_analyze_manipulations_and_emotions_request():
                                             ).classes('capitalize')
 
                     ui.button('Send a request', color='#2c2c2c', on_click=create_on_click).classes(
-                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)]'
-                    )
+                        'w-[270px] h-[40px] rounded-[8px] text-white bg-[rgb(44,44,44)] mb-[200px]')
 
+    render_footer()
+
+
+def render_index_page():
+    render_header()
+    with ui.column().classes('w-full justify-center items-center'):
+        ui.label('Please check out our tools:') \
+            .classes('text-3xl font-bold mb-6 text-gray-800')
+
+        endpoints = [
+            ('Analyze',
+             'Runs the full pipeline: finds sentences with propaganda, '
+             'and inside those sentences looks for emotions and manipulative techniques.',
+             '/analyze'),
+
+            ('Analyze Manipulations',
+             'Detects specific manipulation strategies in each sentence, like false dilemmas, '
+             'slippery slopes, appeals to authority, majority, tradition, and more.',
+             '/analyze_manipulations'),
+
+            ('Analyze Emotions',
+             'Identifies emotions sentence by sentence, such as anger, joy, fear, sadness, '
+             'love, surprise, admiration, and others.',
+             '/analyze_emotions'),
+
+            ('Analyze Manipulations and Emotions',
+             'Checks for manipulative techniques at the sentence level, '
+             'while analyzing emotions at the paragraph level for a broader context.',
+             '/analyze_manipulations_and_emotions'),
+
+            ('Analyze Propaganda',
+             'Highlights sentences that contain propaganda, distinguishing them from neutral ones.',
+             '/analyze_propaganda')
+        ]
+
+        for title, description, link in endpoints:
+            with ui.card().classes('w-[600px] p-6 hover:shadow-xl transition-all cursor-pointer') \
+                    .on('click', lambda e, link_to=link: ui.navigate.to(link_to)):
+                ui.label(title).classes('text-2xl font-semibold cursor-pointer')
+                ui.label(description).classes('text-gray-600 mt-2')
     render_footer()
 
 

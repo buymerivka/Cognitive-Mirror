@@ -253,3 +253,8 @@ app/tools/test_model.py
 
 app/models/propaganda_bert_model_3.0/model.safetensors
 app/models/propaganda_bert_model_3.0/optimizer.pt
+
+app/tools/results/
+app/tools/test.py
+app/tools/emotions_local_training.py
+app/models/new_emotions_models/
