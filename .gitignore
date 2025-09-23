@@ -221,6 +221,8 @@ app/datasets/trainWarticle_CoCoLoFa.json
 
 app/datasets/test.py
 app/datasets/labels.json
+app/tools/test_model.py
+
 
 app/models/manipulations_bert_model/optimizer.pt
 app/models/manipulations_bert_model/model.safetensors
@@ -229,3 +231,30 @@ app/models/propaganda_bert_model/optimizer.pt
 app/models/propaganda_bert_model/model.safetensors
 
 local_tests
+
+app/tools/bias_classifier.py
+app/tools/bias_classifier_bert.py
+
+app/datasets/
+
+app/models/bert_emotions/
+app/models/manipulations_model/
+app/models/propaganda_bert_model/
+app/models/propaganda_bert_model_2.0/
+app/models/propaganda_bert_model_student/
+app/models/propaganda_bert_model_teacher/
+
+app/models/manipulations_bert_model/checkpoint-336/
+app/models/manipulations_bert_model/checkpoint-504/
+
+app/models/propaganda_bert_model_3.0/checkpoint-1666/
+
+app/tools/test_model.py
+
+app/models/propaganda_bert_model_3.0/model.safetensors
+app/models/propaganda_bert_model_3.0/optimizer.pt
+
+app/tools/results/
+app/tools/test.py
+app/tools/emotions_local_training.py
+app/models/new_emotions_models/

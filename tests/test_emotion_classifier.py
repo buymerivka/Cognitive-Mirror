@@ -1,12 +1,19 @@
+import os
 import unittest
 
-from app.tools.emotion_classifier import emotion_classify
+from app.tools.classifier import classify
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
+MODEL_DIR = os.path.join(BASE_DIR, 'app', 'models', 'bert-goemotions')
 
 
 class TestEmotionClassifier(unittest.TestCase):
 
     def test_single_emotion(self):
-        result = emotion_classify("I'm so proud of myself today!", 0, 0, 0, 0, n=1)
+        result = classify("I'm so proud of myself today!", 0, 0, 0,
+                          0,
+                          MODEL_DIR,
+                          MODEL_DIR, n=1, max_n=28)
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 6)
         self.assertEqual(len(result['predictions']), 1)
@@ -16,7 +23,10 @@ class TestEmotionClassifier(unittest.TestCase):
         self.assertTrue(0 <= float(confidence) <= 1)
 
     def test_top_n_emotions(self):
-        result = emotion_classify('I am happy, excited and a little nervous', 0, 0, 0, 0, n=3)
+        result = classify("I'm so proud of myself today!", 0, 0, 0,
+                          0,
+                          MODEL_DIR,
+                          MODEL_DIR, n=3, max_n=28)
         self.assertEqual(len(result), 6)
         self.assertEqual(len(result['predictions']), 3)
 
@@ -27,17 +37,26 @@ class TestEmotionClassifier(unittest.TestCase):
             self.assertTrue(0 <= float(score) <= 1)
 
     def test_empty_input(self):
-        result = emotion_classify('', 0, 0, 0, 0, n=3)
+        result = classify('', 0, 0, 0,
+                          0,
+                          MODEL_DIR,
+                          MODEL_DIR, n=3, max_n=28)
         self.assertIsInstance(result, dict)
         self.assertGreaterEqual(len(result), 0)
 
     def test_unicode_input(self):
-        result = emotion_classify("I'm so happy!", 0, 0, 0, 0, n=2)
+        result = classify("I'm so happy!", 0, 0, 0,
+                          0,
+                          MODEL_DIR,
+                          MODEL_DIR, n=2, max_n=28)
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 6)
 
     def test_large_n(self):
-        result = emotion_classify('Everything is fine', 0, 0, 0, 0, n=50)
+        result = classify('Everything is fine', 0, 0, 0,
+                          0,
+                          MODEL_DIR,
+                          MODEL_DIR, n=50, max_n=28)
         self.assertLessEqual(len(result), 28)
 
 
