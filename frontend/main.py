@@ -10,6 +10,7 @@ from views import (
     render_analyze_propaganda_request,
     render_analyze_request,
     render_error,
+    render_index_page,
 )
 
 load_dotenv()
@@ -18,7 +19,7 @@ API_BASE_URL = os.getenv('API_BASE_URL')
 
 @ui.page('/')
 def base_page():
-    ui.navigate.to('/analyze')
+    render_index_page()
 
 
 @ui.page('/analyze_manipulations')
