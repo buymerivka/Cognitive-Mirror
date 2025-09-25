@@ -258,3 +258,5 @@ app/tools/results/
 app/tools/test.py
 app/tools/emotions_local_training.py
 app/models/new_emotions_models/
+
+assets/
