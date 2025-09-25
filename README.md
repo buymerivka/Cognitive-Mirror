@@ -18,11 +18,11 @@ The project is stable and freely accessible via the website:
 
 Screenshots highlighting the features of our website:
 
-![Screenshot placeholder](assets/Cognitive Mirror Screenshot 3.png)  
+![Screenshot placeholder](assets/Cognitive%20Mirror%20Screenshot%203.png)  
 
-![Screenshot placeholder](assets/Cognitive Mirror Screenshot 2.png)  
+![Screenshot placeholder](assets/Cognitive%20Mirror%20Screenshot%202.png)  
 
-![Screenshot placeholder](assets/Cognitive Mirror Screenshot 1.png)
+![Screenshot placeholder](assets/Cognitive%20Mirror%20Screenshot%201.png)
 
 ---
 
