@@ -1,0 +1,80 @@
+.footer {
+    width: 100%;
+    border-top: 2px solid #d1d5db;
+    background-color: #2c2c2c;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 200px;
+    z-index: 2;
+}
+
+
+.footerLeft {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.footerLeft h1 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.footerLeft p {
+    font-size: 16px;
+    color: #d1d5db; /* gray-300 */
+    margin: 4px;
+}
+
+.email {
+    font-size: 14px !important; /* text-sm */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.email:hover {
+    color: #4caf50;
+}
+
+.footerColumns {
+    display: flex;
+    gap: 6rem;
+    justify-content: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.column span.title {
+    font-size: 14px;
+    color: #d1d5db;
+    font-weight: 600;
+}
+
+.column div.links {
+    width: 120px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.link {
+    font-size: 14px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.link:hover {
+    color: #4caf50;
+}
