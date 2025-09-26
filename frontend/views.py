@@ -18,12 +18,17 @@ PROPAGANDA_MAX = 5
 MANIPULATIONS_MAX = 9
 EMOTIONS_MAX = 28
 
+ui.add_head_html('''
+<link rel="icon" type="image/png" href="/assets/Cognitive_Mirror_Logo.png">
+''')
+
 
 def render_header():
-    with (ui.header().classes(
-            'w-full border-b-2 border-black py-0 px-0 items-center justify-center fixed-top bg-white').props(
-        'id="header_log_in"')):
-        with ui.column().classes('items-center'):
+    with ui.header().classes(
+            'w-full border-b-2 border-black py-0 px-0 items-center justify-center fixed-top bg-white'
+    ).props('id="header_log_in"'):
+        with ui.row().classes('items-center gap-0'):
+            ui.image('assets/Cognitive_Mirror_Logo.png').classes('w-[40px] h-[40px]')  # adjust size
             ui.label('Cognitive Mirror') \
                 .classes('index_label text-[40px] cursor-pointer') \
                 .on('click', lambda: ui.navigate.to('/'))
@@ -60,23 +65,43 @@ def render_header():
                     }
                 </style>
             ''')
-            with ui.button(icon='menu', color='#2c2c2c'):
-                with ui.menu().classes('w-[270px] rounded-[4px] border border-black bg-white '
-                                       ).style('transform-origin: top left;'):
-                    ui.menu_item('Analyze',
-                                 on_click=lambda: ui.navigate.to('/analyze'))
-                    ui.separator()
-                    ui.menu_item('Analyze Manipulations',
-                                 on_click=lambda: ui.navigate.to('/analyze_manipulations'))
-                    ui.separator()
-                    ui.menu_item('Analyze Emotions',
-                                 on_click=lambda: ui.navigate.to('/analyze_emotions'))
-                    ui.separator()
-                    ui.menu_item('Analyze Manipulations And Emotions',
-                                 on_click=lambda: ui.navigate.to('/analyze_manipulations_and_emotions'))
-                    ui.separator()
-                    ui.menu_item('Analyze Propaganda',
-                                 on_click=lambda: ui.navigate.to('/analyze_propaganda'))
+
+            def menu_button():
+                expanded = {'value': False}
+
+                def toggle(state: bool):
+                    expanded['value'] = state
+                    if state:
+                        button.set_text('Available Tools')
+                        button.classes(
+                            replace='transition-all duration-300 w-[270px] rounded-[8px] bg-[rgb(44,44,44)] '
+                                    'text-white h-[40px] flex items-center justify-start pl-2')
+                    else:
+                        button.set_text('')
+                        button.classes(
+                            replace='transition-all duration-300 w-[40px] rounded-[8px] bg-[rgb(44,44,44)] '
+                                    'text-white h-[40px] flex items-center justify-center')
+
+                with ui.button(icon='menu', color='#2c2c2c').classes('w-[40px] rounded-[8px] bg-[rgb(44,44,44)] '
+                                                                     'h-[40px]') as button:
+                    with ui.menu().classes(
+                            'w-[270px] rounded-[4px] border border-black bg-white'
+                    ).style('transform-origin: top left;').on('show', lambda e: toggle(True)).on('hide',
+                                                                                                 lambda e: toggle(
+                                                                                                     False)):
+                        ui.menu_item('Full Analysis', on_click=lambda: ui.navigate.to('/analyze'))
+                        ui.separator()
+                        ui.menu_item('Manipulation & Emotion Analysis',
+                                     on_click=lambda: ui.navigate.to('/analyze_manipulations_and_emotions'))
+                        ui.separator()
+                        ui.menu_item('Propaganda Analysis', on_click=lambda: ui.navigate.to('/analyze_propaganda'))
+                        ui.separator()
+                        ui.menu_item('Manipulation Analysis',
+                                     on_click=lambda: ui.navigate.to('/analyze_manipulations'))
+                        ui.separator()
+                        ui.menu_item('Emotion Analysis', on_click=lambda: ui.navigate.to('/analyze_emotions'))
+
+            menu_button()
 
 
 ui.add_css('''
@@ -97,9 +122,6 @@ footer {
 
 
 def render_footer():
-    # with ui.footer().classes(
-    #         'w-full border-t-2 border-gray-300 bg-[#2c2c2c] text-white flex flex-col items-center'
-    # ).style('position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px 60px; z-index: 1000;'):
     with ui.column().classes(
             'w-full border-t-2 border-gray-300 flex flex-col justify-center items-center bg-[#2c2c2c] text-white'
     ).style('position: absolute; left: 0px; right: 0px; bottom: 0px; height: 200px'):
@@ -164,7 +186,10 @@ def render_analyze_manipulations_request():
             ''')
             start_column = ui.column().classes('gap-0')
             with start_column:
-                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                ui.html(
+                    'Provide a text for <span class="font-bold">Manipulation Analysis</span>:'
+                ).classes('text-[18px] mt-[200px] justify-center')
+
                 description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
@@ -357,7 +382,10 @@ def render_analyze_emotions_request():
             ''')
             start_column = ui.column().classes('gap-0')
             with start_column:
-                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                ui.html(
+                    'Provide a text for <span class="font-bold">Emotion Analysis</span>:'
+                ).classes('text-[18px] mt-[200px] justify-center')
+
                 description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
@@ -551,7 +579,10 @@ def render_analyze_request():
             ''')
             start_column = ui.column().classes('gap-0')
             with start_column:
-                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                ui.html(
+                    'Provide a text for <span class="font-bold">Full Analysis</span>:'
+                ).classes('text-[18px] mt-[200px] justify-center')
+
                 description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
@@ -787,7 +818,10 @@ def render_analyze_propaganda_request():
             ''')
             start_column = ui.column().classes('gap-0')
             with start_column:
-                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                ui.html(
+                    'Provide a text for <span class="font-bold">Propaganda Analysis</span>:'
+                ).classes('text-[18px] mt-[200px] justify-center')
+
                 description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
@@ -941,7 +975,10 @@ def render_analyze_manipulations_and_emotions_request():
                     ''')
             start_column = ui.column().classes('gap-0')
             with start_column:
-                ui.label('Provide a text for analysis:').classes('text-[18px] mt-[200px] justify-center font-bold')
+                ui.html(
+                    'Provide a text for <span class="font-bold">Manipulation & Emotion Analysis</span>:'
+                ).classes('text-[18px] mt-[200px] justify-center')
+
                 description = ui.textarea().classes('w-[1000px]').props('id=create-request outlined dense autogrow')
 
             analyzed_data = None
@@ -1237,33 +1274,34 @@ def render_index_page():
             .classes('text-3xl font-bold mb-6 text-gray-800')
 
         endpoints = [
-            ('Analyze',
-             'Runs the full pipeline: finds sentences with propaganda, '
-             'and inside those sentences looks for emotions and manipulative techniques.',
+            ('Full Analysis',
+             'Runs the full pipeline: identifies sentences with Russian propaganda (Russo-Ukrainian war context) and, '
+             'within those sentences, detects expressed emotions and logical fallacies.',
              '/analyze'),
 
-            ('Analyze Manipulations',
-             'Detects specific manipulation strategies in each sentence, like false dilemmas, '
+            ('Manipulation & Emotion Analysis',
+             'Checks for manipulative techniques at the sentence level and analyzes emotions '
+             'at the paragraph level for broader context.',
+             '/analyze_manipulations_and_emotions'),
+
+            ('Propaganda Analysis',
+             'Highlights sentences containing Russian propaganda (Russo-Ukrainian war context) and '
+             'distinguishes them from neutral ones.',
+             '/analyze_propaganda'),
+
+            ('Manipulation Analysis',
+             'Detects specific manipulation techniques in each sentence, including false dilemmas, '
              'slippery slopes, appeals to authority, majority, tradition, and more.',
              '/analyze_manipulations'),
 
-            ('Analyze Emotions',
-             'Identifies emotions sentence by sentence, such as anger, joy, fear, sadness, '
-             'love, surprise, admiration, and others.',
-             '/analyze_emotions'),
-
-            ('Analyze Manipulations and Emotions',
-             'Checks for manipulative techniques at the sentence level, '
-             'while analyzing emotions at the paragraph level for a broader context.',
-             '/analyze_manipulations_and_emotions'),
-
-            ('Analyze Propaganda',
-             'Highlights sentences that contain propaganda, distinguishing them from neutral ones.',
-             '/analyze_propaganda')
+            ('Emotion Analysis',
+             'Analyzes each sentence for emotions such as anger, joy, fear, sadness, love, surprise, '
+             'admiration, and others.',
+             '/analyze_emotions')
         ]
 
         for title, description, link in endpoints:
-            if title != 'Analyze Propaganda':
+            if title != 'Emotion Analysis':
                 with ui.card().classes('w-[600px] p-6 hover:shadow-xl transition-all cursor-pointer') \
                         .on('click', lambda e, link_to=link: ui.navigate.to(link_to)):
                     ui.label(title).classes('text-2xl font-semibold cursor-pointer')
