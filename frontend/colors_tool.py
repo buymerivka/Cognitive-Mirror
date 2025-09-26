@@ -11,33 +11,33 @@ manipulations_colors = {
 }
 
 emotion_colors = {
-    'admiration': '#ffb3ba',        # Light red-pink
-    'amusement': '#ffffba',         # Pale yellow
-    'anger': '#e6194b',             # Bold red
-    'annoyance': '#ff7f50',         # Coral
-    'approval': '#aaffc3',          # Mint green
-    'caring': '#ffd8b1',            # Peach
-    'confusion': '#c9c9ff',         # Pale lavender
-    'curiosity': '#a6e6ff',         # Light sky blue
-    'desire': '#ff69b4',            # Hot pink
-    'disappointment': '#c8a2c8',    # Lilac
-    'disapproval': '#800000',       # Maroon
-    'disgust': '#9a6324',           # Brown
-    'embarrassment': '#fabebe',     # Light pink
-    'excitement': '#ffe119',        # Bright yellow
-    'fear': '#911eb4',              # Dark purple
-    'gratitude': '#baffc9',         # Light mint
-    'grief': '#2b2b2b',             # Near black
-    'joy': '#ffd700',               # Gold
-    'love': '#ff1493',              # Deep pink
-    'nervousness': '#ffb347',       # Light orange
-    'optimism': '#c0ffb3',          # Pastel green
-    'pride': '#4363d8',             # Royal blue
-    'realization': '#aaffff',       # Aqua
-    'relief': '#d0f0c0',            # Tea green
-    'remorse': '#8b0000',           # Dark red
-    'sadness': '#000075',           # Dark blue
-    'surprise': '#f032e6',          # Pink
+    'admiration': '#ffd6d6',        # Soft light red
+    'amusement': '#ffffd1',         # Very pale yellow
+    'anger': '#ffb3ba',             # Pastel red
+    'annoyance': '#ffccb8',         # Light coral
+    'approval': '#d6ffe0',          # Pale mint
+    'caring': '#ffe6cc',            # Light peach
+    'confusion': '#e6e6ff',         # Very pale lavender
+    'curiosity': '#d6f5ff',         # Pale sky blue
+    'desire': '#ffcce6',            # Pastel pink
+    'disappointment': '#e6cfe6',    # Light lilac
+    'disapproval': '#d9a6a6',       # Muted maroon
+    'disgust': '#d9bda6',           # Soft brown
+    'embarrassment': '#ffe0e0',     # Pale pink
+    'excitement': '#fff5b3',        # Soft yellow
+    'fear': '#d6b3e6',              # Light purple
+    'gratitude': '#e0ffe6',         # Very pale mint
+    'grief': '#cccccc',             # Medium gray
+    'joy': '#ffecb3',               # Soft gold
+    'love': '#ffb3d9',              # Pastel pink
+    'nervousness': '#ffd9b3',       # Soft orange
+    'optimism': '#e6ffd6',          # Pastel green
+    'pride': '#b3c6ff',             # Light blue
+    'realization': '#ccffff',       # Pale aqua
+    'relief': '#e6ffe0',            # Very pale green
+    'remorse': '#e6b3b3',           # Soft red
+    'sadness': '#b3b3ff',           # Light blue
+    'surprise': '#f5b3ff',          # Soft pink
     'neutral': '#ffffff',           # White
 }
 

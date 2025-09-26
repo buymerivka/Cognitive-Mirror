@@ -409,13 +409,13 @@ def render_analyze_emotions_request():
                                         if p['label'] in selected_techniques:
                                             score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
                                             tooltip_table += (f'<p style="text-align: center;">'
-                                                              f'Most likely manipulation technique - '
+                                                              f'Most likely emotion expressed - '
                                                               f'<b>{p['label']}</b>, with probability: '
                                                               f'<b>{score_to_display}</b>.</p>')
                                     else:
                                         tooltip_table = '<table style="font-size: 16px">'
                                         tooltip_table += ('<p style="text-align: center; '
-                                                          'font-weight: bold">Most likely manipulations techniques<p>')
+                                                          'font-weight: bold">Most likely emotions expressed<p>')
                                         for p in predictions:
                                             if p['label'] in selected_techniques:
                                                 score_to_display = str(int(float(p['score']) * 10000) / 100) + '%'
@@ -532,7 +532,7 @@ def render_analyze_emotions_request():
 
 def render_analyze_request():
     render_header()
-    with (ui.column().classes('w-full justify-center items-center')):
+    with ((ui.column().classes('w-full justify-center items-center'))):
         card_container = ui.row().classes('card_container mt-[20px] w-full justify-center')
         with ui.row().classes('w-[1000px] max-w-[1000px] gap-0 justify-center self-center'):
             ui.add_head_html('''
@@ -608,6 +608,7 @@ def render_analyze_request():
                                 last_paragraph_id = 0
                                 parts = []
 
+                                idx = 0
                                 for data in analyzed_data['propaganda_analyzed']:
                                     text = data['text']
                                     predictions = data['predictions']
@@ -624,25 +625,32 @@ def render_analyze_request():
                                     # tooltip_table += '</table>'
 
                                     if selected_manipulations_techniques:
-                                        for manipulations_data in analyzed_data['manipulations_analyzed']:
-                                            if manipulations_data['text'] == text:
-                                                score_to_display = f"{int(float(
-                                                    manipulations_data['predictions'][0]['score']) * 10000) / 100}%"
-                                                tooltip_table += (
-                                                    f'<p style="text-align: left;">'
-                                                    f'Most likely manipulation technique - '
-                                                    f'<b>{manipulations_data['predictions'][0]["label"]}</b>,'
-                                                    f' with probability: <b>{score_to_display}</b>.</p>')
+                                        if idx < len(analyzed_data['manipulations_analyzed']) and \
+                                            analyzed_data['manipulations_analyzed'][idx]['text'] == text:
+                                            score_to_display = f"{int(float(
+                                                analyzed_data['manipulations_analyzed'][idx]
+                                                ['predictions'][0]['score']) * 10000) / 100}%"
+                                            tooltip_table += (
+                                                f'<p style="text-align: left;">'
+                                                f'Most likely manipulation technique - '
+                                                f'<b>{analyzed_data['manipulations_analyzed'][idx]
+                                                ['predictions'][0]['label']}</b>,'
+                                                f' with probability: <b>{score_to_display}</b>.</p>')
+                                            if not selected_emotions:
+                                                idx += 1
 
                                     if selected_emotions:
-                                        for emotions_data in analyzed_data['emotions_analyzed']:
-                                            if emotions_data['text'] == text:
-                                                score_to_display = f"{int(float(
-                                                    emotions_data['predictions'][0]['score']) * 10000) / 100}%"
-                                                tooltip_table += (
-                                                    f'<p style="text-align: left;">Most likely emotion expressed - '
-                                                    f'<b>{emotions_data['predictions'][0]["label"]}</b>,'
-                                                    f' with probability: <b>{score_to_display}</b>.</p>')
+                                        if idx < len(analyzed_data['emotions_analyzed']) and \
+                                                analyzed_data['emotions_analyzed'][idx]['text'] == text:
+                                            score_to_display = f"{int(float(
+                                                analyzed_data['emotions_analyzed'][idx]
+                                                ['predictions'][0]['score']) * 10000) / 100}%"
+                                            tooltip_table += (
+                                                f'<p style="text-align: left;">Most likely emotion expressed - '
+                                                f'<b>{analyzed_data['emotions_analyzed'][idx]
+                                                ['predictions'][0]["label"]}</b>,'
+                                                f' with probability: <b>{score_to_display}</b>.</p>')
+                                            idx += 1
 
                                     show_tooltip = (
                                             predictions and
