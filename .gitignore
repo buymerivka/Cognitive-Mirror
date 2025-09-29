@@ -258,3 +258,10 @@ app/tools/results/
 app/tools/test.py
 app/tools/emotions_local_training.py
 app/models/new_emotions_models/
+
+old_frontend/
+package-lock.json
+frontend/.idea
+frontend/node_modules
+frontend/README.md
+frontend/package-lock.json
