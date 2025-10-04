@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import Index from "./pages/index";
+import AnalyzeEmotions from "./pages/analyze_emotions";
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
             </nav>
             <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/analyze_emotions" element={<AnalyzeEmotions />} />
             </Routes>
         </BrowserRouter>
     )
