@@ -89,11 +89,6 @@ const Analyze: React.FC = () => {
         URL.revokeObjectURL(url);
     };
 
-    const PropagandaColors: Record<string, string> = {
-        LABEL_0: '#ffffff', // White
-        LABEL_1: '#cd5c5c', // Indian red
-    };
-
     const renderText = () => {
         if (!analyzedData) return null;
 
