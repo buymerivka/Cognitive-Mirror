@@ -245,7 +245,7 @@ const AnalyzeManipulations: React.FC = () => {
                 )}
 
                 <p className={styles.title}>
-                    Provide a text for <b>Manipulation Analysis</b>:
+                    Provide a text for <b>Manipulation and Emotion Analysis</b>:
                 </p>
 
                 <TextareaAutosize
