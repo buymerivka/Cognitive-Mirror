@@ -1,50 +1,31 @@
 import React, { useState, useRef } from "react";
-import { fetchAnalyzeEmotions } from "../api/client.ts";
+import { fetchAnalyzeManipulations } from "../api/client.ts";
 import type { SubmitRequest, SingleAnalyze } from "../api/client.ts";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import styles from "./analyze_emotions.module.css";
+import styles from "./analyze_manipulations.module.css";
 import TextareaAutosize from 'react-textarea-autosize';
 
 const MAX_CHAR = 2048;
 
-const emotionColors: Record<string, string> = {
-    'admiration': '#ffd6d6',        // Soft light red
-    'amusement': '#ffffd1',         // Very pale yellow
-    'anger': '#ffb3ba',             // Pastel red
-    'annoyance': '#ffccb8',         // Light coral
-    'approval': '#d6ffe0',          // Pale mint
-    'caring': '#ffe6cc',            // Light peach
-    'confusion': '#e6e6ff',         // Very pale lavender
-    'curiosity': '#d6f5ff',         // Pale sky blue
-    'desire': '#ffcce6',            // Pastel pink
-    'disappointment': '#e6cfe6',    // Light lilac
-    'disapproval': '#d9a6a6',       // Muted maroon
-    'disgust': '#d9bda6',           // Soft brown
-    'embarrassment': '#ffe0e0',     // Pale pink
-    'excitement': '#fff5b3',        // Soft yellow
-    'fear': '#d6b3e6',              // Light purple
-    'gratitude': '#e0ffe6',         // Very pale mint
-    'grief': '#cccccc',             // Medium gray
-    'joy': '#ffecb3',               // Soft gold
-    'love': '#ffb3d9',              // Pastel pink
-    'nervousness': '#ffd9b3',       // Soft orange
-    'optimism': '#e6ffd6',          // Pastel green
-    'pride': '#b3c6ff',             // Light blue
-    'realization': '#ccffff',       // Pale aqua
-    'relief': '#e6ffe0',            // Very pale green
-    'remorse': '#e6b3b3',           // Soft red
-    'sadness': '#b3b3ff',           // Light blue
-    'surprise': '#f5b3ff',          // Soft pink
-    'neutral': '#ffffff',           // White
+const manipulationsColors: Record<string, string> = {
+    'none': '#ffffff',                      // White
+    'false dilemma': '#b0c4de',             // Light steel blue
+    'slippery slope': '#cdb79e',            // Warm beige
+    'appeal to nature': '#b2d8b2',          // Soft green
+    'appeal to authority': '#c0b7dd',       // Light lavender
+    'appeal to majority': '#f0d9b5',        // Pale almond
+    'hasty generalization': '#e6ccb2',      // Muted peach
+    'appeal to worse problems': '#c2d6d6',  // Desaturated teal
+    'appeal to tradition': '#deb887',       // Burlywood
 };
 
-const AnalyzeEmotions: React.FC = () => {
+const AnalyzeManipulations: React.FC = () => {
     const [input_data, setText] = useState("");
     const [analyzedData, setAnalyzedData] = useState<SingleAnalyze["analyzed_data"] | null>(null);
     const [loading, setLoading] = useState(false);
-    const [selectedEmotions, setSelectedEmotions] = useState<Record<string, boolean>>(
-        Object.fromEntries(Object.keys(emotionColors).map((e) => [e, true]))
+    const [selectedManipulations, setSelectedManipulations] = useState<Record<string, boolean>>(
+        Object.fromEntries(Object.keys(manipulationsColors).map((e) => [e, true]))
     );
 
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -61,13 +42,13 @@ const AnalyzeEmotions: React.FC = () => {
 
     const handleAnalyze = async () => {
         if (!input_data.trim()) {
-            alert("Please provide a text for emotion analysis.");
+            alert("Please provide a text for manipulation analysis.");
             return;
         }
         setLoading(true);
         try {
             const payload: SubmitRequest = { input_data };
-            const response: SingleAnalyze = await fetchAnalyzeEmotions(payload);
+            const response: SingleAnalyze = await fetchAnalyzeManipulations(payload);
             setAnalyzedData(response.analyzed_data);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
@@ -81,16 +62,16 @@ const AnalyzeEmotions: React.FC = () => {
     const handleClear = () => {
         setText("");
         setAnalyzedData(null);
-        setSelectedEmotions(
-            Object.fromEntries(Object.keys(emotionColors).map((e) => [e, true]))
+        setSelectedManipulations(
+            Object.fromEntries(Object.keys(manipulationsColors).map((e) => [e, true]))
         );
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto";
         }
     };
 
-    const toggleEmotion = (emotion: string) => {
-        setSelectedEmotions((prev) => ({ ...prev, [emotion]: !prev[emotion] }));
+    const toggleManipulation = (manipulation: string) => {
+        setSelectedManipulations((prev) => ({ ...prev, [manipulation]: !prev[manipulation] }));
     };
 
     const handleDownloadJson = () => {
@@ -101,7 +82,7 @@ const AnalyzeEmotions: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "emotion_analysis.json";
+        a.download = "manipulation_analysis.json";
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -115,29 +96,29 @@ const AnalyzeEmotions: React.FC = () => {
                 isLastInParagraph = true;
             }
             const predictions = data.predictions;
-            const label = predictions?.[0]?.label || "neutral";
+            const label = predictions?.[0]?.label || "none";
             const color =
-                selectedEmotions[label] && label !== "neutral"
-                    ? emotionColors[label] || "#ccc"
-                    : emotionColors["neutral"];
+                selectedManipulations[label] && label !== "none"
+                    ? manipulationsColors[label] || "#ccc"
+                    : manipulationsColors["none"];
 
-            if (label !== "neutral" && selectedEmotions[label]) {
+            if (label !== "none" && selectedManipulations[label]) {
                 const tooltip = (
                     <div className={styles.tooltiptext}>
                         {predictions?.length === 1 ? (
                             <p>
-                                Most likely emotion expressed - <b>{label}</b>, with probability:
+                                Most likely manipulation expressed - <b>{label}</b>, with probability:
                                 <b> {Math.round(predictions[0].score * 10000) / 100}%</b>.
                             </p>
                         ) : (
                             <>
                                 <p>
-                                    <b>Most likely emotions:</b>
+                                    <b>Most likely manipulations:</b>
                                 </p>
                                 <table>
                                     <tbody>
                                     {predictions
-                                        ?.filter((p) => selectedEmotions[p.label])
+                                        ?.filter((p) => selectedManipulations[p.label])
                                         .map((p) => (
                                             <tr key={p.label}>
                                                 <td>{p.label}</td>
@@ -157,10 +138,10 @@ const AnalyzeEmotions: React.FC = () => {
                             style={{ backgroundColor: color }}
                         >
                         {data.text}
-                        {tooltip}
-                        {isLastInParagraph && <br/>}
+                            {tooltip}
+                            {isLastInParagraph && <br/>}
                     </span>{" "}
-                        </React.Fragment>
+                    </React.Fragment>
                 );
             } else {
                 return (
@@ -170,7 +151,7 @@ const AnalyzeEmotions: React.FC = () => {
                             // style={{ backgroundColor: color }}
                         >
                         {data.text}
-                        {isLastInParagraph && <br/>}
+                            {isLastInParagraph && <br/>}
                 </span>{" "}
                     </React.Fragment>
                 );
@@ -196,7 +177,7 @@ const AnalyzeEmotions: React.FC = () => {
                 )}
 
                 <p className={styles.title}>
-                    Provide a text for <b>Emotion Analysis</b>:
+                    Provide a text for <b>Manipulation Analysis</b>:
                 </p>
 
                 <TextareaAutosize
@@ -220,20 +201,20 @@ const AnalyzeEmotions: React.FC = () => {
                         </button>
 
                         <ul className={`${ styles.dropdownMenu } dropdown-menu p-3`} style={{ minWidth: "200px" }}>
-                            <p style={{textAlign: "center", marginTop: "16px"}}><b>Show emotions expressed:</b></p>
+                            <p style={{textAlign: "center", marginTop: "16px"}}><b>Show manipulation techniques:</b></p>
                             <hr />
-                            {Object.keys(selectedEmotions)
-                                .filter((e) => e !== "neutral")
-                                .map((emotion) => (
-                                    <li key={emotion} className="dropdown-item">
+                            {Object.keys(selectedManipulations)
+                                .filter((e) => e !== "none")
+                                .map((manipulation) => (
+                                    <li key={manipulation} className="dropdown-ite">
                                         <label className={styles.checkboxLabel}>
                                             <input
                                                 type="checkbox"
-                                                checked={selectedEmotions[emotion]}
-                                                onChange={() => toggleEmotion(emotion)}
+                                                checked={selectedManipulations[manipulation]}
+                                                onChange={() => toggleManipulation(manipulation)}
                                                 className={ `${ styles.formCheckInput } form-check-input me-2` }
                                             />
-                                            {emotion}
+                                            {manipulation}
                                         </label>
                                     </li>
                                 ))}
@@ -254,4 +235,4 @@ const AnalyzeEmotions: React.FC = () => {
     );
 };
 
-export default AnalyzeEmotions;
+export default AnalyzeManipulations;

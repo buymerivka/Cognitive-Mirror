@@ -1,51 +1,23 @@
 import React, { useState, useRef } from "react";
-import { fetchAnalyzeEmotions } from "../api/client.ts";
+import { fetchAnalyzePropaganda } from "../api/client.ts";
 import type { SubmitRequest, SingleAnalyze } from "../api/client.ts";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import styles from "./analyze_emotions.module.css";
+import styles from "./analyze_propaganda.module.css";
 import TextareaAutosize from 'react-textarea-autosize';
+
 
 const MAX_CHAR = 2048;
 
-const emotionColors: Record<string, string> = {
-    'admiration': '#ffd6d6',        // Soft light red
-    'amusement': '#ffffd1',         // Very pale yellow
-    'anger': '#ffb3ba',             // Pastel red
-    'annoyance': '#ffccb8',         // Light coral
-    'approval': '#d6ffe0',          // Pale mint
-    'caring': '#ffe6cc',            // Light peach
-    'confusion': '#e6e6ff',         // Very pale lavender
-    'curiosity': '#d6f5ff',         // Pale sky blue
-    'desire': '#ffcce6',            // Pastel pink
-    'disappointment': '#e6cfe6',    // Light lilac
-    'disapproval': '#d9a6a6',       // Muted maroon
-    'disgust': '#d9bda6',           // Soft brown
-    'embarrassment': '#ffe0e0',     // Pale pink
-    'excitement': '#fff5b3',        // Soft yellow
-    'fear': '#d6b3e6',              // Light purple
-    'gratitude': '#e0ffe6',         // Very pale mint
-    'grief': '#cccccc',             // Medium gray
-    'joy': '#ffecb3',               // Soft gold
-    'love': '#ffb3d9',              // Pastel pink
-    'nervousness': '#ffd9b3',       // Soft orange
-    'optimism': '#e6ffd6',          // Pastel green
-    'pride': '#b3c6ff',             // Light blue
-    'realization': '#ccffff',       // Pale aqua
-    'relief': '#e6ffe0',            // Very pale green
-    'remorse': '#e6b3b3',           // Soft red
-    'sadness': '#b3b3ff',           // Light blue
-    'surprise': '#f5b3ff',          // Soft pink
-    'neutral': '#ffffff',           // White
+const PropagandaColors: Record<string, string> = {
+    'LABEL_0': '#ffffff',      // White
+    'LABEL_1': '#cd5c5c',      // Indian red
 };
 
-const AnalyzeEmotions: React.FC = () => {
+const AnalyzePropaganda: React.FC = () => {
     const [input_data, setText] = useState("");
     const [analyzedData, setAnalyzedData] = useState<SingleAnalyze["analyzed_data"] | null>(null);
     const [loading, setLoading] = useState(false);
-    const [selectedEmotions, setSelectedEmotions] = useState<Record<string, boolean>>(
-        Object.fromEntries(Object.keys(emotionColors).map((e) => [e, true]))
-    );
 
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -61,13 +33,13 @@ const AnalyzeEmotions: React.FC = () => {
 
     const handleAnalyze = async () => {
         if (!input_data.trim()) {
-            alert("Please provide a text for emotion analysis.");
+            alert("Please provide a text for manipulation analysis.");
             return;
         }
         setLoading(true);
         try {
             const payload: SubmitRequest = { input_data };
-            const response: SingleAnalyze = await fetchAnalyzeEmotions(payload);
+            const response: SingleAnalyze = await fetchAnalyzePropaganda(payload);
             setAnalyzedData(response.analyzed_data);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
@@ -81,16 +53,9 @@ const AnalyzeEmotions: React.FC = () => {
     const handleClear = () => {
         setText("");
         setAnalyzedData(null);
-        setSelectedEmotions(
-            Object.fromEntries(Object.keys(emotionColors).map((e) => [e, true]))
-        );
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto";
         }
-    };
-
-    const toggleEmotion = (emotion: string) => {
-        setSelectedEmotions((prev) => ({ ...prev, [emotion]: !prev[emotion] }));
     };
 
     const handleDownloadJson = () => {
@@ -101,7 +66,7 @@ const AnalyzeEmotions: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "emotion_analysis.json";
+        a.download = "propaganda_analysis.json";
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -115,30 +80,28 @@ const AnalyzeEmotions: React.FC = () => {
                 isLastInParagraph = true;
             }
             const predictions = data.predictions;
-            const label = predictions?.[0]?.label || "neutral";
+            const label = predictions?.[0]?.label || "none";
             const color =
-                selectedEmotions[label] && label !== "neutral"
-                    ? emotionColors[label] || "#ccc"
-                    : emotionColors["neutral"];
+                label !== "none"
+                    ? PropagandaColors[label] || "#ccc"
+                    : PropagandaColors["none"];
 
-            if (label !== "neutral" && selectedEmotions[label]) {
+            if (label !== "none") {
                 const tooltip = (
                     <div className={styles.tooltiptext}>
                         {predictions?.length === 1 ? (
                             <p>
-                                Most likely emotion expressed - <b>{label}</b>, with probability:
+                                This is most likely a <b>propagandistic</b> sentence, with probability:
                                 <b> {Math.round(predictions[0].score * 10000) / 100}%</b>.
                             </p>
                         ) : (
                             <>
                                 <p>
-                                    <b>Most likely emotions:</b>
+                                    <b>Most likely propaganda:</b>
                                 </p>
                                 <table>
                                     <tbody>
-                                    {predictions
-                                        ?.filter((p) => selectedEmotions[p.label])
-                                        .map((p) => (
+                                    {predictions.map((p) => (
                                             <tr key={p.label}>
                                                 <td>{p.label}</td>
                                                 <td>{Math.round(p.score * 100)}%</td>
@@ -157,10 +120,10 @@ const AnalyzeEmotions: React.FC = () => {
                             style={{ backgroundColor: color }}
                         >
                         {data.text}
-                        {tooltip}
-                        {isLastInParagraph && <br/>}
+                            {tooltip}
+                            {isLastInParagraph && <br/>}
                     </span>{" "}
-                        </React.Fragment>
+                    </React.Fragment>
                 );
             } else {
                 return (
@@ -170,7 +133,7 @@ const AnalyzeEmotions: React.FC = () => {
                             // style={{ backgroundColor: color }}
                         >
                         {data.text}
-                        {isLastInParagraph && <br/>}
+                            {isLastInParagraph && <br/>}
                 </span>{" "}
                     </React.Fragment>
                 );
@@ -196,7 +159,7 @@ const AnalyzeEmotions: React.FC = () => {
                 )}
 
                 <p className={styles.title}>
-                    Provide a text for <b>Emotion Analysis</b>:
+                    Provide a text for <b>Propaganda Analysis</b>:
                 </p>
 
                 <TextareaAutosize
@@ -208,38 +171,6 @@ const AnalyzeEmotions: React.FC = () => {
                 />
 
                 <div className={styles.actions}>
-                    <div className="dropdown">
-                        <button
-                            className={`${styles.filtersButton} btn btn-secondary dropdown-toggle`}
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside"
-                            aria-expanded="false"
-                        >
-                            Filters
-                        </button>
-
-                        <ul className={`${ styles.dropdownMenu } dropdown-menu p-3`} style={{ minWidth: "200px" }}>
-                            <p style={{textAlign: "center", marginTop: "16px"}}><b>Show emotions expressed:</b></p>
-                            <hr />
-                            {Object.keys(selectedEmotions)
-                                .filter((e) => e !== "neutral")
-                                .map((emotion) => (
-                                    <li key={emotion} className="dropdown-item">
-                                        <label className={styles.checkboxLabel}>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedEmotions[emotion]}
-                                                onChange={() => toggleEmotion(emotion)}
-                                                className={ `${ styles.formCheckInput } form-check-input me-2` }
-                                            />
-                                            {emotion}
-                                        </label>
-                                    </li>
-                                ))}
-                        </ul>
-                    </div>
-
                     <div className={styles.charCounter}>
                         {input_data.length} / {MAX_CHAR} characters
                     </div>
@@ -254,4 +185,4 @@ const AnalyzeEmotions: React.FC = () => {
     );
 };
 
-export default AnalyzeEmotions;
+export default AnalyzePropaganda;

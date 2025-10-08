@@ -16,6 +16,7 @@
     justify-content: center;
 }
 
+
 .title {
     font-size: 20px;
     margin-bottom: 6px;
@@ -140,15 +141,55 @@
 }
 
 .dropdownMenu {
+    width: 500px !important;
+    height: 240px !important;
+    padding: 0 !important;
+    scrollbar-width: none;
+}
+
+.dropdownSubMenu {
     width: 270px !important;
     max-height: 240px !important;
     overflow-y: auto !important;
     padding: 0 !important;
+    margin: 0 !important;
 }
 
 .formCheckInput:checked {
     background-color: #2c2c2c !important;
 }
+
+.form-check {
+    margin: 10px 10px !important;
+}
+
+.paragraphTooltip {
+    position: relative; /* Make child absolute tooltip relative to this */
+    cursor: pointer;    /* optional, to show hover */
+}
+
+.paragraphTooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+    position: absolute;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px;
+    z-index: 9999;
+    top: -60px; /* adjust to appear above text */
+    left: 0;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.paragraphTooltip:hover .paragraphTooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+
 
 .formCheckInput {
     background-color: #ffffff !important;
