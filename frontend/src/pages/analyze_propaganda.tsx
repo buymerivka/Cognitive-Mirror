@@ -91,7 +91,7 @@ const AnalyzePropaganda: React.FC = () => {
                     <div className={styles.tooltiptext}>
                         {predictions?.length === 1 ? (
                             <p>
-                                This is most likely a <b>propagandistic</b> sentence, with probability:
+                                This is most likely a <b>propagandistic</b> sentence, with a probability of
                                 <b> {Math.round(predictions[0].score * 10000) / 100}%</b>.
                             </p>
                         ) : (

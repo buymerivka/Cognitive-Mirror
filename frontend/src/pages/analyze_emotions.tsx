@@ -126,7 +126,7 @@ const AnalyzeEmotions: React.FC = () => {
                     <div className={styles.tooltiptext}>
                         {predictions?.length === 1 ? (
                             <p>
-                                Most likely emotion expressed - <b>{label}</b>, with probability:
+                                The most likely emotion expressed - <b>{label}</b>, with a probability of
                                 <b> {Math.round(predictions[0].score * 10000) / 100}%</b>.
                             </p>
                         ) : (
@@ -220,20 +220,20 @@ const AnalyzeEmotions: React.FC = () => {
                         </button>
 
                         <ul className={`${ styles.dropdownMenu } dropdown-menu p-3`} style={{ minWidth: "200px" }}>
-                            <p style={{textAlign: "center", marginTop: "16px"}}><b>Show emotions expressed:</b></p>
+                            <p style={{textAlign: "center", marginTop: "16px", fontSize: "18px"}}><b>Show emotions expressed:</b></p>
                             <hr />
                             {Object.keys(selectedEmotions)
                                 .filter((e) => e !== "neutral")
                                 .map((emotion) => (
                                     <li key={emotion} className="dropdown-item">
                                         <label className={styles.checkboxLabel}>
-                                            <input
+                                            <input style={{borderColor: "#2c2c2c"}}
                                                 type="checkbox"
                                                 checked={selectedEmotions[emotion]}
                                                 onChange={() => toggleEmotion(emotion)}
                                                 className={ `${ styles.formCheckInput } form-check-input me-2` }
                                             />
-                                            {emotion}
+                                            {emotion.slice(0,1).toUpperCase() + emotion.slice(1, emotion.length)}
                                         </label>
                                     </li>
                                 ))}

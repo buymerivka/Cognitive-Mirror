@@ -107,7 +107,7 @@ const AnalyzeManipulations: React.FC = () => {
                     <div className={styles.tooltiptext}>
                         {predictions?.length === 1 ? (
                             <p>
-                                Most likely manipulation expressed - <b>{label}</b>, with probability:
+                                The most likely manipulation technique used - <b>{label}</b>, with a probability of
                                 <b> {Math.round(predictions[0].score * 10000) / 100}%</b>.
                             </p>
                         ) : (
@@ -201,20 +201,20 @@ const AnalyzeManipulations: React.FC = () => {
                         </button>
 
                         <ul className={`${ styles.dropdownMenu } dropdown-menu p-3`} style={{ minWidth: "200px" }}>
-                            <p style={{textAlign: "center", marginTop: "16px"}}><b>Show manipulation techniques:</b></p>
+                            <p style={{textAlign: "center", marginTop: "16px", fontSize: "18px"}}><b>Show manipulation techniques:</b></p>
                             <hr />
                             {Object.keys(selectedManipulations)
                                 .filter((e) => e !== "none")
                                 .map((manipulation) => (
-                                    <li key={manipulation} className="dropdown-ite">
+                                    <li key={manipulation} className="dropdown-item">
                                         <label className={styles.checkboxLabel}>
-                                            <input
+                                            <input style={{borderColor: "#2c2c2c"}}
                                                 type="checkbox"
                                                 checked={selectedManipulations[manipulation]}
                                                 onChange={() => toggleManipulation(manipulation)}
                                                 className={ `${ styles.formCheckInput } form-check-input me-2` }
                                             />
-                                            {manipulation}
+                                            {manipulation.slice(0,1).toUpperCase() + manipulation.slice(1, manipulation.length)}
                                         </label>
                                     </li>
                                 ))}

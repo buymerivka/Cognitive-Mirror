@@ -116,7 +116,7 @@ const Analyze: React.FC = () => {
             // Propaganda info
             if (label === 'LABEL_1') {
                 tooltipContent.push(
-                    `<p style="margin: 0">This is most likely a <b>propagandistic</b> sentence, probability: <b>${Math.round(
+                    `<p style="margin: 0">This is most likely a <b>propagandistic</b> sentence, with a probability of <b>${Math.round(
                         pPredictions[0].score * 10000
                     ) / 100}%</b>.</p>`
                 );
@@ -128,7 +128,7 @@ const Analyze: React.FC = () => {
                 if (mData && mData.predictions.length > 0) {
                     const mPred = mData.predictions[0];
                     tooltipContent.push(
-                        `<p style="margin: 0">Most likely manipulation technique - <b>${mPred.label}</b>, probability: <b>${Math.round(
+                        `<p style="margin: 0">The most likely manipulation technique used - <b>${mPred.label}</b>, with a probability of <b>${Math.round(
                             mPred.score * 10000
                         ) / 100}%</b>.</p>`
                     );
@@ -141,7 +141,7 @@ const Analyze: React.FC = () => {
                 if (eData && eData.predictions.length > 0) {
                     const ePred = eData.predictions[0];
                     tooltipContent.push(
-                        `<p style="margin: 0">Most likely emotion expressed - <b>${ePred.label}</b>, probability: <b>${Math.round(
+                        `<p style="margin: 0">The most likely emotion expressed - <b>${ePred.label}</b>, with a probability of <b>${Math.round(
                             ePred.score * 10000
                         ) / 100}%</b>.</p>`
                     );
@@ -154,14 +154,14 @@ const Analyze: React.FC = () => {
             return (
                 <React.Fragment key={idx}>
                     {showTooltip ? (
-                        <span className={styles.tooltip} style={{ backgroundColor: color }}>
+                        <span className={styles.tooltip} style={{ backgroundColor: color, justifySelf: 'center' }}>
                         {data.text}
                             <div
                                 className={styles.tooltiptext}
                                 dangerouslySetInnerHTML={{ __html: tooltipContent.join('') }}
                             />
                             {isLastInParagraph && <br />}
-                    </span>
+                        </span>
                     ) : (
                         <span>
                         {data.text}
@@ -172,77 +172,6 @@ const Analyze: React.FC = () => {
             );
         });
     };
-
-
-
-    // const renderText = () => {
-    //     if (!analyzedData) return null;
-    //
-    //     const showManipulations = selectedFilters['Show manipulation techniques'];
-    //     const showEmotions = selectedFilters['Show emotions expressed'];
-    //
-    //     const parts: string[] = [];
-    //     let lastParagraphId = -1;
-    //
-    //     analyzedData.propaganda_analyzed.forEach((data, idx) => {
-    //         const { text, predictions, paragraphIndex } = data;
-    //
-    //         // Propaganda color
-    //         const bgColor = PropagandaColors[predictions[0].label];
-    //
-    //         let tooltipHtml = '';
-    //
-    //         // Propaganda info
-    //         if (predictions && predictions[0].label !== 'LABEL_0') {
-    //             const pPred = predictions[0];
-    //             tooltipHtml += `<p>This is most likely a <b>propagandistic</b> sentence, probability: <b>${Math.round(pPred.score * 10000) / 100}%</b>.</p>`;
-    //         }
-    //
-    //         // Manipulation info
-    //         if (showManipulations && idx < analyzedData.manipulations_analyzed.length) {
-    //             const mData = analyzedData.manipulations_analyzed[idx];
-    //             if (mData.text === text && mData.predictions.length > 0) {
-    //                 const mPred = mData.predictions[0];
-    //                 tooltipHtml += `<p>Most likely manipulation technique - <b>${mPred.label}</b>, probability: <b>${Math.round(mPred.score * 10000) / 100}%</b>.</p>`;
-    //             }
-    //         }
-    //
-    //         // Emotion info
-    //         if (showEmotions && idx < analyzedData.emotions_analyzed.length) {
-    //             const eData = analyzedData.emotions_analyzed[idx];
-    //             if (eData.text === text && eData.predictions.length > 0) {
-    //                 const ePred = eData.predictions[0];
-    //                 tooltipHtml += `<p>Most likely emotion expressed - <b>${ePred.label}</b>, probability: <b>${Math.round(ePred.score * 10000) / 100}%</b>.</p>`;
-    //             }
-    //         }
-    //
-    //         // Show tooltip only if we have content
-    //         const showTooltip = tooltipHtml.length > 0;
-    //
-    //         let spanHtml = showTooltip
-    //             ? `<span class="tooltip" style="background-color: ${bgColor}; padding: 2px 4px;">
-    //                 ${text}
-    //                 <span class="tooltiptext">${tooltipHtml}</span>
-    //            </span>`
-    //             : `<span style="background-color: ${bgColor}; padding: 2px 4px;">${text}</span>`;
-    //
-    //         if (lastParagraphId !== paragraphIndex) {
-    //             spanHtml = '<br>' + spanHtml;
-    //             lastParagraphId = paragraphIndex;
-    //         }
-    //
-    //         parts.push(spanHtml);
-    //     });
-    //
-    //     return (
-    //         <div
-    //             style={{ fontSize: '18px', lineHeight: 1.6, textAlign: 'justify' }}
-    //             dangerouslySetInnerHTML={{ __html: parts.join(' ') }}
-    //         />
-    //     );
-    // };
-
-
 
     return (
         <div className={styles.page}>
@@ -291,7 +220,7 @@ const Analyze: React.FC = () => {
                                 .map((emotion) => (
                                     <li key={emotion} className="dropdown-item" style={{paddingLeft: "0"}}>
                                         <label className={styles.checkboxLabel}>
-                                            <input
+                                            <input style={{borderColor: "#2c2c2c"}}
                                                 type="checkbox"
                                                 checked={selectedFilters[emotion]}
                                                 onChange={() => toggleFilters(emotion)}

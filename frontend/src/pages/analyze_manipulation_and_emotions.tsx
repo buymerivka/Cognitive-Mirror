@@ -155,7 +155,7 @@ const AnalyzeManipulations: React.FC = () => {
             let tooltipTable = "";
             if (predictions && predictions.length > 0 && label !== "none" && selectedManipulationsTechniques.includes(label)) {
                 if (predictions.length === 1) {
-                    tooltipTable = `<p>This is most likely a <b>${label}</b> manipulation, with probability: <b>${Math.round(predictions[0].score * 10000) / 100}%</b>.</p>`;
+                    tooltipTable = `<p>The most likely manipulation technique used - <b>${label}</b>, with a probability of <b>${Math.round(predictions[0].score * 10000) / 100}%</b>.</p>`;
                 } else {
                     tooltipTable = `<p><b>Most likely manipulations:</b></p><table>`;
                     predictions
@@ -170,9 +170,9 @@ const AnalyzeManipulations: React.FC = () => {
             const showTooltip = tooltipTable.length > 0 && bgColor.toLowerCase() !== "#ffffff";
 
             const spanHtml = showTooltip
-                ? `<span class="${styles.tooltip}" style="background-color: ${bgColor}; padding: 2px 4px; cursor: pointer;">
+                ? `<span class="${styles.tooltip}" style="background-color: ${bgColor}; padding: 2px 4px; cursor: pointer; justify-self: center">
                 ${text}
-                <span class="${styles.tooltiptext}">${tooltipTable}</span>
+                <div class="${styles.tooltiptext}">${tooltipTable}</div>
                </span>`
                 : `<span style="background-color: ${bgColor}; padding: 2px 4px;">
                 ${text}
@@ -195,7 +195,7 @@ const AnalyzeManipulations: React.FC = () => {
                 if (filtered.length > 0 && filtered[0].label != "neutral") {
                     let paragraphTooltip = "";
                     if (filtered.length === 1) {
-                        paragraphTooltip = `<p>Most likely paragraph's emotion - <b>${filtered[0].label}</b>, probability: <b>${Math.round(filtered[0].score * 10000) / 100}%</b>.</p>`;
+                        paragraphTooltip = `<p>The paragraph’s most likely emotion is <b>${filtered[0].label}</b>, with a probability of <b>${Math.round(filtered[0].score * 10000) / 100}%</b>.</p>`;
                     } else {
                         paragraphTooltip = `<p><b>Most likely paragraph's emotions:</b></p><table>`;
                         filtered.forEach((e) => {
@@ -272,20 +272,20 @@ const AnalyzeManipulations: React.FC = () => {
                             <div className={`${styles.subDropdownDiv} d-flex justify-content-between`}>
                                 {/* Manipulations column */}
                                 <div className={`${styles.dropdownSubMenu} me-3`} style={{ flex: 1 }}>
-                                    <p style={{textAlign: "center", marginTop: "16px"}}><b>Show manipulation techniques:</b></p>
+                                    <p style={{textAlign: "center", marginTop: "16px", fontSize: "18px"}}><b>Show manipulation techniques:</b></p>
                                     <hr />
                                     {Object.keys(selectedManipulations)
                                         .filter((e) => e !== "none")
                                         .map((manipulation) => (
                                             <li key={manipulation} className="dropdown-item">
                                                 <label className={styles.checkboxLabel}>
-                                                    <input
+                                                    <input style={{borderColor: "#2c2c2c"}}
                                                         type="checkbox"
                                                         checked={selectedManipulations[manipulation]}
                                                         onChange={() => toggleManipulation(manipulation)}
                                                         className={ `${ styles.formCheckInput } form-check-input me-2` }
                                                     />
-                                                    {manipulation}
+                                                    {manipulation.slice(0,1).toUpperCase() + manipulation.slice(1, manipulation.length)}
                                                 </label>
                                             </li>
                                         ))}
@@ -293,20 +293,20 @@ const AnalyzeManipulations: React.FC = () => {
 
                                 {/* Emotions column */}
                                 <div className={`${styles.dropdownSubMenu} me-3`} style={{ flex: 1 }}>
-                                    <p style={{textAlign: "center", marginTop: "16px"}}><b>Show emotions expressed:</b></p>
+                                    <p style={{textAlign: "center", marginTop: "16px", fontSize: "18px"}}><b>Show emotions expressed:</b></p>
                                     <hr />
                                     {Object.keys(selectedEmotions)
                                         .filter((e) => e !== "none")
                                         .map((emotion) => (
                                             <li key={emotion} className="dropdown-item">
                                                 <label className={styles.checkboxLabel}>
-                                                    <input
+                                                    <input style={{borderColor: "#2c2c2c"}}
                                                         type="checkbox"
                                                         checked={selectedEmotions[emotion]}
                                                         onChange={() => toggleEmotion(emotion)}
                                                         className={ `${ styles.formCheckInput } form-check-input me-2` }
                                                     />
-                                                    {emotion}
+                                                    {emotion.slice(0,1).toUpperCase() + emotion.slice(1, emotion.length)}
                                                 </label>
                                             </li>
                                         ))}
